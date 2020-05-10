@@ -160,7 +160,7 @@ class _LoginState extends State<Login> {
       final response = await http.get(
         'https://bunkyapp.herokuapp.com/loginUser?mail=$mail', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 3));
+      },).timeout(const Duration(seconds: 10));
 
       setState(() {
         _loading = false;
@@ -173,12 +173,20 @@ class _LoginState extends State<Login> {
           showSnackBar('User Not Found');
         } else {
           print(json.decode(response.body));
-          User user =  User.fromJson(json.decode(response.body));
-          print('${user.name}   ${user.mail}');
-          Navigator.pushReplacementNamed(context, '/home', arguments: {
-            'user': user,
-            'index': 0,
-          });
+          var body = json.decode(response.body);
+          User user =  User.fromJson(body['user']);
+          bool haveApt = body['memberOfApt'];
+          if(haveApt){
+            Navigator.pushReplacementNamed(context, '/home', arguments: {
+              'user': user,
+              'index': 0,
+            });
+          } else {
+            Navigator.pushReplacementNamed(context, '/newApartment', arguments:
+            {
+              'user': user,
+            });
+          }
         }
       } else {
         print('error');

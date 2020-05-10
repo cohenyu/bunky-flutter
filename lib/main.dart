@@ -11,7 +11,7 @@ import 'package:bunky/pages/createApartment.dart';
 import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
 
-// 10.5 22:00
+// 11.5 00:44
 void main() => runApp(MaterialApp(
   initialRoute: '/login',
   routes: {

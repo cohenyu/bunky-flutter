@@ -116,7 +116,35 @@ class _RegisterState extends State<Register> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 25.0,),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 25.0, top: 15.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'Already have an account?',
+                                      style: TextStyle(
+                                          color: Colors.grey
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 5.0,
+                                    ),
+                                    InkWell(
+                                      onTap: (){
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        'Sign in',
+                                        style: TextStyle(
+                                            color: Colors.teal,
+                                            fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                               FloatingActionButton(
                                 onPressed: (){
                                   if(!formKey.currentState.validate()){
@@ -145,21 +173,6 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                    ),
-                    onPressed: (){
-                      Navigator.pop(context);
-                      print('hey');
-                    },
-                  )
-                ],
-              )
             ],
           ),
         ),

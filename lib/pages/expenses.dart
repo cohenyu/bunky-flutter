@@ -598,10 +598,9 @@ class _ExpensesState extends State<Expenses> {
     if(response.statusCode == 200){
       print("200 OK Expenses");
       print(jsonDecode(response.body));
-      int expenseId = jsonDecode(response.body)['expenseId'];
+      Expense expense = Expense.fromJson(jsonDecode(response.body));
+      ExpenseItem newItem = ExpenseItem(expense);
       setState(() {
-        Expense expense = Expense(user: user, title: title, value: value, category: category, date: dateString, id: expenseId);
-        ExpenseItem newItem = ExpenseItem(expense);
         expansesList.add(newItem);
         int tmpVal = int.parse(value);
         print('the value is $value');

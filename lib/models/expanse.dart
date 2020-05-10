@@ -11,13 +11,18 @@ class Expense{
 
   Expense({this.user, this.title, this.value, this.category, this.date, this.id});
 
+
+  factory Expense.fromJson(Map<String, dynamic> json){
+    return Expense(user: json['user'], title: json['title'], value: json['amount'], category: json['categoryId'], date: json['date'], id: json['expenseId']);
+  }
+
   Map<String, dynamic> toJson() =>
       {
         'user': user,
         'title': title,
-        'value' : value,
-        'category': category,
+        'amount' : value,
+        'categoryId': category,
         'date': date,
-        'id': id
+        'expenseId': id
       };
 }
