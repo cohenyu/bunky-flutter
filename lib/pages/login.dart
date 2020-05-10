@@ -3,6 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:bunky/pages/logo.dart';
 import 'package:bunky/widgets/custom_shape_clipper.dart';
 
+// finished
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
