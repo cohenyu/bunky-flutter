@@ -1,0 +1,321 @@
+import 'package:bunky/models/refund.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:bunky/widgets/my_shape_clipper.dart';
+import 'package:bunky/widgets/drop_down_names.dart';
+import 'package:flutter/services.dart';
+import 'package:bunky/widgets/charge_card.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+class Balancing extends StatefulWidget {
+  @override
+  _BalancingState createState() => _BalancingState();
+}
+
+class _BalancingState extends State<Balancing> {
+  bool ready = false;
+  String name;
+  bool isChanged = false;
+  Color primaryColor = Colors.teal;
+  List<Widget> credit = [
+    ChargeCard('yuval', '100'),
+    ChargeCard('Or', '240'),
+    ChargeCard('Miriel', '240'),
+  ];
+  List<Widget> debt = [
+    ChargeCard('yuval', '-96'),
+    ChargeCard('Miriel', '289')
+  ];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    getBalance();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool isBalanceExist  = debt.isNotEmpty || credit.isNotEmpty;
+    return Scaffold(
+        resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Stack(
+          children: <Widget>[
+            ClipPath(
+              clipper: CustomShapeClipper(),
+              child: Container(
+                height: 350.0,
+                decoration: BoxDecoration(color: primaryColor),
+              ),
+            ),
+            Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0, top: 40.0),
+                      child: FloatingActionButton(
+                        onPressed: (){
+                          Navigator.pop(context, isChanged);
+                        },
+                        backgroundColor: Colors.yellow[300],
+                        elevation: 3,
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20.0, right: 25.0, left: 25.0),
+                  child: Container(
+                    height: 450,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            offset: Offset(0.0, 3.0),
+                            blurRadius: 15.0,
+                          )
+                        ]
+                    ),
+                    child: !isBalanceExist ?
+                    Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.mood, size: 45, color: Colors.grey,),
+                            SizedBox(height: 8.0,),
+                            Text(
+                                "Wer'e  all balanced out!",
+                              style: TextStyle(fontSize: 20.0, color: Colors.grey),
+                            )
+                          ],
+                        )
+                    ) :
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: isLoading ? Center(
+                        child: SpinKitCircle(
+                          color: Colors.grey[600],
+                          size: 50.0,
+                        ),
+                      ) :Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Container(
+                            width: 120,
+                            child: Column(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.arrow_downward,
+                                  color: Colors.red,
+                                  size: 50.0,
+                                ),
+                                Text(
+                                  'debt',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0
+                                  ),
+                                ),
+                                SizedBox(height: 10.0,),
+                                Column(
+                                  children: debt
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 120,
+                            child: Column(
+                              children: <Widget>[
+                                AnimatedContainer(
+                                  child: Icon(
+                                    Icons.arrow_upward,
+                                    color: Colors.green,
+                                    size: 50.0,
+                                  ),
+                                  duration: Duration(seconds: 10),
+                                  curve: Curves.bounceIn,
+                                ),
+                                Text(
+                                  'credit',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0
+                                  ),
+                                ),
+                                SizedBox(height: 10.0,),
+                                Column(
+                                  children: credit,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.0,),
+                isBalanceExist && !isLoading ?  Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: RaisedButton(
+                    color: Colors.teal[400],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "refund",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                    ),
+                    onPressed: (){showRefundDialog();},
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30),
+                    ),
+                  ),
+                ) : SizedBox.shrink(),
+              ],
+            ),
+          ],
+        ),
+      )
+
+    );
+  }
+
+
+  Future<void> postRefund(Refund refund)async{
+    setState(() {
+      isLoading = true;
+    });
+    print(refund.toJson());
+    await Future.delayed(const Duration(seconds: 4), (){});
+    setState(() {
+      credit.removeLast();
+      isLoading = false;
+    });
+  }
+
+  Future<void> getBalance()async{
+    await Future.delayed(const Duration(seconds: 4), (){});
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void showRefundDialog(){
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    TextEditingController valueController = new TextEditingController();
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return StatefulBuilder(
+            builder: (context, setState){
+              return Center(
+                child: AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0))
+                  ),
+                  backgroundColor: Colors.teal[100],
+                  content: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Container(
+                      height: 280,
+                      width: double.infinity,
+                      child: Form(
+                        key:  formKey,
+                        child: Stack(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                IconButton(
+                                  icon: Icon(Icons.close),
+                                  color: Colors.grey,
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  SizedBox(height: 10.0,),
+                                  Text(
+                                    'Refund',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        fontSize: 26.0
+                                    ),
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                      child: DropDownNames(callback: (val) => setState(()=> name = val),)
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    child: TextFormField(
+                                      validator: (value){
+                                        if (value.isEmpty) {
+                                          return 'Value is required';
+                                        }
+                                        return null;
+                                      },
+                                      inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                      controller: valueController,
+                                      decoration: InputDecoration(
+                                        hintText: 'value',
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.black)
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20.0,),
+                                  RaisedButton(
+                                    color: Colors.pink[800],
+                                    child: Text(
+                                      "Add",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15.0
+                                      ),
+                                    ),
+                                    onPressed: (){
+                                      if(!formKey.currentState.validate()){
+                                        return;
+                                      }
+                                      formKey.currentState.save();
+                                      postRefund(Refund(name, valueController.text));
+                                      Navigator.pop(context);
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        }
+    );
+  }
+}
