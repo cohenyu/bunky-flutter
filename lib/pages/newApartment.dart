@@ -15,25 +15,11 @@ class NewApartment extends StatefulWidget {
 class _NewApartmentState extends State<NewApartment> {
 
   Map data = {};
-  final String url = 'https://bunkyapp.herokuapp.com/loginUser';
-  User user;
-  User futureUser;
-  bool firstTime = true;
-  
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () {
-      setState(() {
-        data = ModalRoute.of(context).settings.arguments;
-        fetchUser();
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    Logo logo = Logo();
+    data = ModalRoute.of(context).settings.arguments;
+    Logo logo = Logo(title: "Signup");
     return SafeArea(
       child: Scaffold(
 //        resizeToAvoidBottomPadding: false,
@@ -48,15 +34,7 @@ class _NewApartmentState extends State<NewApartment> {
                 decoration: BoxDecoration(color: Colors.white),
               ),
             ),
-            user == null ? Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 30.0),
-                child: SpinKitThreeBounce(
-                  color: Colors.grey[600],
-                  size: 25.0,
-                ),
-              ),
-            ): Container(
+            Container(
               child: ListView(
                 children: <Widget>[
                   logo.getLogo(),
@@ -72,7 +50,7 @@ class _NewApartmentState extends State<NewApartment> {
                             color: Colors.teal,
                             onPressed: (){
                               Navigator.pushReplacementNamed(context,'/createApartment', arguments: {
-                                'user': user,
+                                'user': data['user'],
                               });
                             },
                             icon: Icon(
@@ -103,7 +81,7 @@ class _NewApartmentState extends State<NewApartment> {
                             ),
                             onPressed: (){
                               Navigator.pushReplacementNamed(context, '/connectApartment', arguments: {
-                                'user': user,
+                                'user': data['user'],
                               });
                             },
                             icon: Icon(
@@ -132,31 +110,31 @@ class _NewApartmentState extends State<NewApartment> {
     );
   }
   
-  Future<void> fetchUser() async {
-    print(data['mail']);
-    print(data['name']);
-    final response = await http.post(
-        'https://bunkyapp.herokuapp.com/createUser', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode({
-      'name': data['name'],
-      'mail': data['mail'],
-    }
-    ));
-
-    if(response.statusCode == 200){
-      print("200 OK");
-      setState(() {
-        print(json.decode(response.body));
-        setState(() {
-          user =  User.fromJson(json.decode(response.body));
-        });
-        print('${user.name}   ${user.mail}');
-      });
-    } else {
-      print('somthing went worng');
-    }
-  }
+//  Future<void> fetchUser() async {
+//    print(data['mail']);
+//    print(data['name']);
+//    final response = await http.post(
+//        'https://bunkyapp.herokuapp.com/createUser', headers: <String, String>{
+//      'Content-Type': 'application/json; charset=UTF-8',
+//    }, body: jsonEncode({
+//      'name': data['name'],
+//      'mail': data['mail'],
+//    }
+//    ));
+//
+//    if(response.statusCode == 200){
+//      print("200 OK");
+//      setState(() {
+//        print(json.decode(response.body));
+//        setState(() {
+//          user =  User.fromJson(json.decode(response.body));
+//        });
+//        print('${user.name}   ${user.mail}');
+//      });
+//    } else {
+//      print('somthing went worng');
+//    }
+//  }
 
 }
 

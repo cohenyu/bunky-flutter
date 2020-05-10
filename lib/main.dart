@@ -9,7 +9,9 @@ import 'package:bunky/pages/tasks.dart';
 import 'package:flutter/material.dart';
 import 'package:bunky/pages/createApartment.dart';
 import 'package:bunky/pages/expenses.dart';
+import 'package:bunky/pages/register.dart';
 
+// 10.5 22:00
 void main() => runApp(MaterialApp(
   initialRoute: '/login',
   routes: {
@@ -23,6 +25,7 @@ void main() => runApp(MaterialApp(
     '/tasks': (context)=> Tasks(),
     '/settings': (context)=> Settings(),
     '/balancing': (context) => Balancing(),
+    '/register': (context) => Register(),
   },
 
 ));

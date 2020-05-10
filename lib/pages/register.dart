@@ -1,38 +1,39 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:bunky/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:bunky/pages/logo.dart';
 import 'package:bunky/widgets/custom_shape_clipper.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-// finished
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
-  bool _loading = false;
+class _RegisterState extends State<Register> {
+  String name;
   String mail;
+  bool _loading = false;
   bool _autoValidate = false;
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    Logo logo = Logo(title: "Signin");
+    Logo logo = Logo(title: "Signup");
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
 //        resizeToAvoidBottomPadding: false,
-          resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.teal,
         body: ModalProgressHUD(
-          color: Colors.black,
           inAsyncCall: _loading,
+          color: Colors.black,
           progressIndicator: Center(
             child: SpinKitCircle(
               color: Colors.grey[600],
@@ -50,15 +51,14 @@ class _LoginState extends State<Login> {
               ),
               Container(
                 child: ListView(
-//            crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     logo.getLogo(),
                     SizedBox(height: 0,),
                     Container(
                       padding: EdgeInsets.only(top: 35.0, left: 30.0, right: 30.0),
                       child: Form(
-                        autovalidate: _autoValidate,
                           key:  formKey,
+                          autovalidate: _autoValidate,
                           child: Column(
                             children: <Widget>[
                               TextFormField(
@@ -87,35 +87,36 @@ class _LoginState extends State<Login> {
                                     )
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 25.0, top: 15.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                        'new in Bunky?',
-                                      style: TextStyle(
-                                        color: Colors.grey
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5.0,
-                                    ),
-                                    InkWell(
-                                      onTap: (){
-                                        Navigator.pushNamed(context, '/register');
-                                      },
-                                      child: Text(
-                                        'Register',
-                                        style: TextStyle(
-                                          color: Colors.teal,
-                                          fontWeight: FontWeight.bold
-                                        ),
-                                      ),
-                                    )
-                                  ],
+                              SizedBox(height: 20,),
+                              TextFormField(
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(15),
+                                ],
+                                onSaved: (value){
+                                  this.name = value;
+                                },
+                                validator: (value){
+                                  if (value.isEmpty) {
+                                    return 'Name is required';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'NAME',
+                                  prefixIcon: Icon(
+                                    Icons.account_circle,
+                                    color: Colors.pink,
+                                  ),
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
                                 ),
                               ),
+                              SizedBox(height: 25.0,),
                               FloatingActionButton(
                                 onPressed: (){
                                   if(!formKey.currentState.validate()){
@@ -123,16 +124,12 @@ class _LoginState extends State<Login> {
                                       _autoValidate = true;
                                     });
                                     return;
-                                  } else {
                                   }
                                   formKey.currentState.save();
                                   setState(() {
                                     _loading = true;
                                   });
                                   submit();
-//                                Navigator.pushReplacementNamed(context, '/newApartment', arguments: {
-//                                  'mail': mail,
-//                                });
                                 },
                                 backgroundColor: Colors.yellow[300],
                                 elevation: 3,
@@ -148,6 +145,21 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    ),
+                    onPressed: (){
+                      Navigator.pop(context);
+                      print('hey');
+                    },
+                  )
+                ],
+              )
             ],
           ),
         ),
@@ -157,34 +169,34 @@ class _LoginState extends State<Login> {
 
   Future<void> submit() async {
     try{
-      final response = await http.get(
-        'https://bunkyapp.herokuapp.com/loginUser?mail=$mail', headers: <String, String>{
+      final response = await http.post(
+          'https://bunkyapp.herokuapp.com/createUser', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 3));
-
+      }, body: jsonEncode({
+        'name': name,
+        'mail': mail,
+      }
+      )).timeout(const Duration(seconds: 3));
       setState(() {
         _loading = false;
       });
-
       if(response.statusCode == 200){
         print("200 OK");
         if(response.body.isEmpty){
-          print('the user not found');
-          showSnackBar('User Not Found');
+          print('the mail already exist');
+          showSnackBar('Email Already Exists');
         } else {
-          print(json.decode(response.body));
           User user =  User.fromJson(json.decode(response.body));
           print('${user.name}   ${user.mail}');
-          Navigator.pushReplacementNamed(context, '/home', arguments: {
+          Navigator.pushReplacementNamed(context, '/newApartment', arguments:
+          {
             'user': user,
-            'index': 0,
           });
         }
       } else {
-        print('error');
         showSnackBar('Error');
       }
-    } catch (_) {
+    } catch (_){
       print('No Internet Connection');
       showSnackBar('No Internet Connection');
     }
@@ -207,6 +219,5 @@ class _LoginState extends State<Login> {
       ),
     ));
   }
+
 }
-
-

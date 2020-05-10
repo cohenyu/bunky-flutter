@@ -41,7 +41,7 @@ class ExpenseItem extends StatelessWidget {
                           this.expanse.category,
                           style: TextStyle(
                               color: Colors.pink[200].withOpacity(0.7),
-                              fontSize: 22.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.bold
                           ),
                         ),

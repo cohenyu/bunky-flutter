@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Logo{
+  String title;
+
+  Logo({this.title});
+
   Widget getLogo(){
     return Container(
       child: Stack(
@@ -18,7 +22,7 @@ class Logo{
           Container(
             padding: EdgeInsets.fromLTRB(20.0, 187.0, 0.0, 0.0),
             child: Text(
-              'Singin',
+              this.title,
               style: TextStyle(
                 fontSize: 32.0,
                 fontWeight: FontWeight.bold,

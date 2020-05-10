@@ -42,7 +42,7 @@ class _CreateApartmentState extends State<CreateApartment> {
     print("hey");
 //    load();
 //    loadData();
-    Logo logo = Logo();
+    Logo logo = Logo(title: 'Signup');
     HttpService http = HttpService();
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -182,17 +182,9 @@ class _CreateApartmentState extends State<CreateApartment> {
       ),
     );
   }
-
-//  void share(BuildContext context){
-//    final RenderBox box = context.findRenderObject();
-//    String code = aptCode.toString();
-//    Share.share(code,
-//      subject: 'Apartment code',
-//      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-//  }
+  
 
   Future<int> getApartmentCode() async{
-    await Future.delayed(Duration(seconds: 5));
     print("inside");
     User user = data["user"];
     print(user.name);

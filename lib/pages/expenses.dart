@@ -472,7 +472,9 @@ class _ExpensesState extends State<Expenses> {
                                 }
                                 return null;
                               },
-                              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                              inputFormatters: [
+                                WhitelistingTextInputFormatter.digitsOnly,
+                              ],
                               controller: valueController,
                               decoration: InputDecoration(
                                 hintText: 'value',
