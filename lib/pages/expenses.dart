@@ -21,7 +21,11 @@ class Expenses extends StatefulWidget {
 
 class _ExpensesState extends State<Expenses> {
   Map data = {};
-  List<ExpenseItem> expansesList = [];
+  List<ExpenseItem> expansesList = [
+    ExpenseItem(Expense(user: User('Yuval', 'dd', 40), title: 'pizza 8 pices', date: '12.2.20', id: 4, category: 'Building Committee', value: '180')),
+    ExpenseItem(Expense(user: User('Or', 'dd', 40), title: 'Expanses from the party last night ', date: '12.2.20', id: 4, category: 'Other', value: '6500')),
+  ];
+
   int expenseId = 0;
   DateTime dateTimeExpense = DateTime.now();
   DateTime dateTimeChart = DateTime.now().subtract(Duration(days: 30));
@@ -35,6 +39,16 @@ class _ExpensesState extends State<Expenses> {
     'Internet' : 6,
     'Other': 7
   };
+
+//  Map categories = {
+//    1: 'Supermarket',
+//    2: 'Water Bill',
+//    3: 'Electric Bill',
+//    4: 'Rates',
+//    5: 'Building Committee',
+//    6: 'Internet',
+//    7: 'Other'
+//  };
 
   static Map<String, double> totalMap = {
     "Or" : 120,
@@ -137,9 +151,9 @@ class _ExpensesState extends State<Expenses> {
                   children: <Widget>[
                     CarouselSlider(
                       options: CarouselOptions(
-                          height: 448.0,
+                          height: 410.0,
                           autoPlay: true,
-                          enlargeCenterPage: true,
+                          enlargeCenterPage: false,
                           onPageChanged: (index,  reason){
                             setState(() {
                               _current = index;
@@ -155,7 +169,7 @@ class _ExpensesState extends State<Expenses> {
                       }).toList(),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 360, left: 30),
+                      padding: const EdgeInsets.only(top: 370, left: 35),
                       child: FloatingActionButton(
                         heroTag: "tag1",
                         onPressed: (){
@@ -193,7 +207,7 @@ class _ExpensesState extends State<Expenses> {
                 expansesList.isEmpty ? Padding(
                   padding: EdgeInsets.only(left: 25.0, right: 25.0, top:20),
                   child: Text(
-                    'No expenses yet',
+                    'No Expenses Yet',
                     style: TextStyle(
                         color: Colors.black.withOpacity(0.7),
                         fontSize: 20.0,
@@ -205,7 +219,7 @@ class _ExpensesState extends State<Expenses> {
                   child: Row(
                     children: <Widget>[
                       Text(
-                        'Last expenses',
+                        'Last Expenses',
                         style: TextStyle(
                             color: Colors.black.withOpacity(0.7),
                             fontSize: 20.0,
@@ -575,14 +589,14 @@ class _ExpensesState extends State<Expenses> {
 
 //  this function adds expense to the expenses list
   Future<void> addExpanse(String category,int categoryId, String title, String value, DateTime date) async{
-    print(categoryId);
-    print(category);
 //    parse the date
+    print('add expense');
     String year = date.year.toString();
     year = year.substring(2, year.length);
     String dateString = '${date.day}.${date.month}.$year';
 //    http post
     User user = data['user'];
+//    todo there is an error here
     final response = await http.post(
         'https://bunkyapp.herokuapp.com/addExpense', headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -591,12 +605,13 @@ class _ExpensesState extends State<Expenses> {
       'categoryId': categoryId,
       'title': title,
       'date': date.toString().split(' ')[0],
-      'amount': value
+      'amount': value,
     }
     ));
 
     if(response.statusCode == 200){
       print("200 OK Expenses");
+      print(jsonDecode(response.body));
       print(jsonDecode(response.body));
       Expense expense = Expense.fromJson(jsonDecode(response.body));
       ExpenseItem newItem = ExpenseItem(expense);

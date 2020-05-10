@@ -1,3 +1,4 @@
+import 'package:bunky/models/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:bunky/models/expanse.dart';
 
@@ -8,27 +9,41 @@ class ExpenseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map categoryMap = Categories().categoryToValueMap();
     return Column(
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: Row(
             children: <Widget>[
-              Material(
-                borderRadius: BorderRadius.circular(100.0),
-                color: Colors.teal.withOpacity(0.2),
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                    this.expanse.user.name,
+              Column(
+                children: <Widget>[
+                  Material(
+                    borderRadius: BorderRadius.circular(100.0),
+                    color: Colors.teal.withOpacity(0.2),
+                    child: Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Text(
+                        this.expanse.user.name,
 //                    this.expanse.name,
-                    style: TextStyle(
-                        color: Colors.teal,
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold
+                        style: TextStyle(
+                            color: Colors.teal,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(height: 5.0,),
+                  Text(
+                      this.expanse.value,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold
+                      )
+                  ),
+                ],
               ),
               SizedBox(width: 25.0,),
               Expanded(
@@ -36,12 +51,14 @@ class ExpenseItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(
+//                      todo
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
                           this.expanse.category,
                           style: TextStyle(
                               color: Colors.pink[200].withOpacity(0.7),
-                              fontSize: 14.0,
+                              fontSize: 20.0,
                               fontWeight: FontWeight.bold
                           ),
                         ),
@@ -64,23 +81,22 @@ class ExpenseItem extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 18.0,
-                          fontWeight: FontWeight.bold
                       ),
                     ): SizedBox.shrink(),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 20, left: 10),
-                child: Text(
-                    this.expanse.value,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold
-                    )
-                ),
-              )
+//              Padding(
+//                padding: const EdgeInsets.only(right: 20, left: 10),
+//                child: Text(
+//                    this.expanse.value,
+//                    style: TextStyle(
+//                        color: Colors.black,
+//                        fontSize: 18.0,
+//                        fontWeight: FontWeight.bold
+//                    )
+//                ),
+//              )
             ],
           ),
         ),
