@@ -213,6 +213,9 @@ class _RegisterState extends State<Register> {
       print('No Internet Connection');
       showSnackBar('No Internet Connection');
     }
+    setState(() {
+      _loading = false;
+    });
   }
 
   void showSnackBar (String title){

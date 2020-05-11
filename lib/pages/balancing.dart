@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:bunky/models/refund.dart';
+import 'package:bunky/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bunky/widgets/my_shape_clipper.dart';
@@ -6,6 +9,7 @@ import 'package:bunky/widgets/drop_down_names.dart';
 import 'package:flutter/services.dart';
 import 'package:bunky/widgets/charge_card.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
 
 class Balancing extends StatefulWidget {
   @override
@@ -17,6 +21,8 @@ class _BalancingState extends State<Balancing> {
   String name;
   bool isChanged = false;
   Color primaryColor = Colors.teal;
+  Map data = {};
+  String url = 'https://bunkyapp.herokuapp.com';
   List<Widget> credit = [
     ChargeCard('yuval', '100'),
     ChargeCard('Or', '240'),
@@ -30,12 +36,13 @@ class _BalancingState extends State<Balancing> {
 
   @override
   void initState() {
-    getBalance();
+//    getBalance();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    data  = ModalRoute.of(context).settings.arguments;
     bool isBalanceExist  = debt.isNotEmpty || credit.isNotEmpty;
     return Scaffold(
         resizeToAvoidBottomInset: true,
@@ -204,12 +211,50 @@ class _BalancingState extends State<Balancing> {
     });
   }
 
-  Future<void> getBalance()async{
-    await Future.delayed(const Duration(seconds: 4), (){});
-    setState(() {
-      isLoading = false;
-    });
-  }
+
+//  Future<void> getBalance() async{
+//
+//    print('get sum per category');
+//    User user = data['user'];
+//
+////    try {
+//    final response = await http.post(
+//        '$url/computeUserBalance', headers: <String, String>{
+//      'Content-Type': 'application/json; charset=UTF-8',
+//    }, body: jsonEncode({
+//      'user': user,
+//    }
+//    )).timeout(const Duration(seconds: 3));
+//    print(jsonDecode(response.body));
+//    if(response.statusCode == 200){
+//      print('200 OK');
+//    }
+////    Map<String, dynamic> jsonData = jsonDecode(response.body);
+////    print(jsonData);
+////    if(response.statusCode == 200){
+////      Map<String, double> tmpMap = {};
+////      for(var key in jsonData.keys){
+////        print(key);
+////        print(jsonData[key].runtimeType);
+////
+////        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+////      }
+////
+////      setState(() {
+////        categoricalMap.clear();
+////        categoricalMap.addAll(tmpMap);
+////      });
+////
+////    } else {
+////      showSnackBar('Error');
+////    }
+////    } catch (_) {
+////      showSnackBar('No Internet Connection');
+////    }
+//    setState(() {
+//      isLoading = false;
+//    });
+//  }
 
   void showRefundDialog(){
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();

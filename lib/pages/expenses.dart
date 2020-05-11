@@ -21,7 +21,8 @@ class Expenses extends StatefulWidget {
 
 class _ExpensesState extends State<Expenses> {
   Map data = {};
-  List<ExpenseItem> expansesList = [];
+  List<ExpenseItem> expensesList = [];
+  Future<List<ExpenseItem>> futureExpenseList;
   String url = 'https://bunkyapp.herokuapp.com';
   int expenseId = 0;
   DateTime dateTimeExpense = DateTime.now();
@@ -37,22 +38,15 @@ class _ExpensesState extends State<Expenses> {
     'Other': 7
   };
 
-//  Map categories = {
-//    1: 'Supermarket',
-//    2: 'Water Bill',
-//    3: 'Electric Bill',
-//    4: 'Rates',
-//    5: 'Building Committee',
-//    6: 'Internet',
-//    7: 'Other'
-//  };
-
   static Map<String, double> totalMap = {
     "Or" : 120,
     "Yuval" : 67,
     "Miriel": 200,
-    "Amy": 93
+    "Amy": 93,
+    'matan': 20,
   };
+
+
 
   static Map<String, double> categoricalMap = {
     'Supermarket' : 1,
@@ -70,7 +64,8 @@ class _ExpensesState extends State<Expenses> {
     "Or" : 120,
     "Yuval" : 67,
     "Miriel": 200,
-    "Amy": 93
+    "Amy": 93,
+    'matan': 20,
   };
 
   int _current  = 0;
@@ -95,9 +90,6 @@ class _ExpensesState extends State<Expenses> {
     }
   }
 
-  _getRequests() async{
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +125,7 @@ class _ExpensesState extends State<Expenses> {
                         color: Colors.teal,
                         icon: Icon(Icons.insert_chart),
                         onPressed: (){
-                          Navigator.pushNamed(context, '/balancing');
+                          Navigator.pushNamed(context, '/balancing', arguments: {'user': data['user']});
                         },
                         label: Text(
                           "Balance",
@@ -202,7 +194,7 @@ class _ExpensesState extends State<Expenses> {
                     );
                   })
                 ),
-                expansesList.isEmpty ? Padding(
+                expensesList.isEmpty ? Padding(
                   padding: EdgeInsets.only(left: 25.0, right: 25.0, top:20),
                   child: Text(
                     'No Expenses Yet',
@@ -239,13 +231,16 @@ class _ExpensesState extends State<Expenses> {
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: expansesList.length,
+                itemCount: expensesList.length,
                 itemBuilder: (context, int index){
                   return Dismissible(
-                    key: Key('${expansesList[index].expanse.id}'),
+                    key: Key('${expensesList[index].expanse.id}'),
                     direction: DismissDirection.endToStart,
                     onDismissed: (direction){
                       deleteExpanse(index);
+                      expensesList.removeAt(index);
+                      setState(() {
+                      });
                     },
                     background: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -258,7 +253,7 @@ class _ExpensesState extends State<Expenses> {
                         ),
                       ),
                     ),
-                    child: expansesList[index],
+                    child: expensesList[index],
                   );
                 },
               ),
@@ -583,23 +578,142 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+//  Future<void> sumExpensePerCategory() async{
+//    print('get sum per category');
+//    User user = data['user'];
+//    String date = '2020-05-11';
+//
+////    try {
+//    final response = await http.post(
+//        '$url/computeSumExpensesPerCat', headers: <String, String>{
+//      'Content-Type': 'application/json; charset=UTF-8',
+//    }, body: jsonEncode({
+//      'user': user,
+//      'date': date,
+//    }
+//    )).timeout(const Duration(seconds: 3));
+//    Map<String, dynamic> jsonData = jsonDecode(response.body);
+//    print(jsonData);
+//    if(response.statusCode == 200){
+//      Map<String, double> tmpMap = {};
+//      for(var key in jsonData.keys){
+//        print(key);
+//        print(jsonData[key].runtimeType);
+//
+//        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+//      }
+//
+//      setState(() {
+//        categoricalMap.clear();
+//        categoricalMap.addAll(tmpMap);
+//      });
+//
+//    } else {
+//      showSnackBar('Error');
+//    }
+////    } catch (_) {
+////      showSnackBar('No Internet Connection');
+////    }
+//  }
+
+//  Future<void> sumExpensePerUser() async{
+//    print('get sum per user');
+//    User user = data['user'];
+//    String date = '2020-05-11';
+//
+////    try {
+//      final response = await http.post(
+//          '$url/computeSumExpenses', headers: <String, String>{
+//        'Content-Type': 'application/json; charset=UTF-8',
+//      }, body: jsonEncode({
+//        'user': user,
+//        'date': date,
+//      }
+//      )).timeout(const Duration(seconds: 3));
+//      Map<String, dynamic> jsonData = jsonDecode(response.body);
+//      print(jsonData);
+//      if(response.statusCode == 200){
+//        Map<String, double> tmpMap = {};
+//        for(var key in jsonData.keys){
+//          tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+//        }
+//
+//        setState(() {
+//          totalMap.clear();
+//          totalMap.addAll(tmpMap);
+//        });
+//
+//      } else {
+//        showSnackBar('Error');
+//      }
+////    } catch (_) {
+////      showSnackBar('No Internet Connection');
+////    }
+//  }
+
 // This function delete expense from the expenses list and sends http delete to the server
   Future<void> deleteExpanse(int index) async{
-    Expense expense = expansesList[index].expanse;
+    Expense expense = expensesList[index].expanse;
 
     try{
-
-//      http delete
-      expansesList.removeAt(index);
-      setState(() {
-      });
-      showSnackBar('Expense deleted');
-
+      final response = await http.put(
+          '$url/removeExpense', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode(expense.id,)).timeout(const Duration(seconds: 3));
+      print('delete in DB');
+      print(response.body);
+      if(response.statusCode == 200){
+        if(response.body.isNotEmpty){
+          showSnackBar('Expense deleted');
+          return;
+        } else {
+          showSnackBar('Error');
+        }
+      } else {
+        showSnackBar('Error');
+      }
     }catch(_){
       showSnackBar('No Internet Connection');
     }
+
+//  In case of error we don't want to delete the expense
+    setState(() {
+      expensesList.add(ExpenseItem(expense));
+    });
   }
 
+// This function returns n expenses of the apartment
+  Future<List<ExpenseItem>> getExpenses() async{
+    User user = data['user'];
+    int amount = 100;
+    List<ExpenseItem> expenseItems = [];
+
+    try{
+      final response = await http.put(
+          '$url/getExpenses', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode({
+        'user': user,
+        'amount': amount,
+      }
+      )).timeout(const Duration(seconds: 3));
+      var jsonData = jsonDecode(response.body);
+
+      if(response.statusCode == 200){
+        if(response.body.isNotEmpty){
+          for(var jsonItem in jsonData){
+            ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));
+            expenseItems.add(item);
+          }
+        }
+      } else {
+        print('no expenses yet');
+      }
+    }catch(_){
+      showSnackBar('No Internet Connection');
+    }
+    return expenseItems;
+  }
 
 
 //  this function adds expense to the expenses list
@@ -625,7 +739,7 @@ class _ExpensesState extends State<Expenses> {
         Expense expense = Expense.fromJson(jsonDecode(response.body));
         ExpenseItem newItem = ExpenseItem(expense);
         setState(() {
-          expansesList.add(newItem);
+          expensesList.add(newItem);
 //      update the charts just if the expense was maximum 30 days ago
           if (categoricalMap.containsKey(category)){
             categoricalMap[category] = categoricalMap[category] + value;
