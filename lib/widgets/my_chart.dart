@@ -30,12 +30,13 @@ class _MyChartState extends State<MyChart> {
       showChartValuesOutside: true,
       chartValueBackgroundColor: Colors.grey[200],
       colorList: [
-        Colors.pink,
-        Colors.amber,
+        Colors.lightBlue[200],
+        Colors.pink[400],
+        Colors.orange,
+        Colors.lightGreen,
+        Colors.cyan,
         Colors.teal,
-        Colors.red,
-        Colors.lightBlue,
-
+        Colors.lime,
       ],
       showLegends: true,
       legendPosition: LegendPosition.bottom,

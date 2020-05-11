@@ -602,6 +602,9 @@ class _ExpensesState extends State<Expenses> {
   }
 
   Future<void> sumExpensePerCategory() async{
+    setState(() {
+      categoryLoading = true;
+    });
     print('get sum per category');
     User user = data['user'];
     String date = '2020-05-11';
@@ -646,6 +649,9 @@ class _ExpensesState extends State<Expenses> {
   }
 
   Future<void> sumExpensePerUser() async{
+    setState(() {
+      totalLoading = true;
+    });
     print('get sum per user');
     User user = data['user'];
     String date = '2020-05-11';
