@@ -5,7 +5,7 @@ class Expense{
 
   final User user;
   final String title;
-  final int value;
+  final double value;
   final String category;
   final String date;
   final int id;

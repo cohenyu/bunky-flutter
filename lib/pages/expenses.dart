@@ -20,7 +20,8 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
-  bool refresh = true;
+  bool refreshCharts = true;
+  bool refreshList = true;
   bool totalLoading = true;
   bool categoryLoading = true;
   Map data = {};
@@ -97,10 +98,14 @@ class _ExpensesState extends State<Expenses> {
   @override
   Widget build(BuildContext context) {
     data  = ModalRoute.of(context).settings.arguments;
-    if(refresh){
-      refresh = false;
+    if(refreshCharts){
+      refreshCharts = false;
       sumExpensePerUser();
       sumExpensePerCategory();
+    }
+    if(refreshList){
+      refreshList = false;
+      getExpenses();
     }
     return Scaffold(
       key: _scaffoldKey,
@@ -252,6 +257,7 @@ class _ExpensesState extends State<Expenses> {
             Padding(
               padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
               child: ListView.builder(
+                physics: PageScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 itemCount: expensesList.length,
@@ -281,7 +287,13 @@ class _ExpensesState extends State<Expenses> {
                 },
               ),
             ),
-                SizedBox(height: 70,)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                  child: Divider(
+                    thickness: 4.0,
+                  ),
+                ),
+                SizedBox(height: 30,),
               ],
             ),
           ),
@@ -582,7 +594,7 @@ class _ExpensesState extends State<Expenses> {
                                   }
                                   formKey.currentState.save();
                                   print("im here");
-                                  addExpanse(category, categoryId,  titleController.text, int.parse(valueController.text), dateTimeExpense);
+                                  addExpanse(category, categoryId,  titleController.text, double.parse(valueController.text), dateTimeExpense);
                                   Navigator.pop(context);
                                 },
                               )
@@ -617,7 +629,7 @@ class _ExpensesState extends State<Expenses> {
       'user': user,
       'date': date,
     }
-    )).timeout(const Duration(seconds: 3));
+    )).timeout(const Duration(seconds: 7));
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     print(jsonData);
     if(response.statusCode == 200){
@@ -663,7 +675,7 @@ class _ExpensesState extends State<Expenses> {
       'user': user,
       'date': date,
     }
-    )).timeout(const Duration(seconds: 3));
+    )).timeout(const Duration(seconds: 7));
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     print(jsonData);
     if(response.statusCode == 200){
@@ -705,7 +717,7 @@ class _ExpensesState extends State<Expenses> {
       final response = await http.put(
           '$url/removeExpense', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      }, body: jsonEncode(expense.id,)).timeout(const Duration(seconds: 3));
+      }, body: jsonEncode(expense.id,)).timeout(const Duration(seconds: 7));
       print('delete in DB');
       print(response.body);
       if(response.statusCode == 200){
@@ -719,6 +731,7 @@ class _ExpensesState extends State<Expenses> {
         showSnackBar('Error');
       }
     }catch(_){
+      print('point 2');
       showSnackBar('No Internet Connection');
     }
 
@@ -729,41 +742,44 @@ class _ExpensesState extends State<Expenses> {
   }
 
 // This function returns n expenses of the apartment
-  Future<List<ExpenseItem>> getExpenses() async{
+  Future<void> getExpenses() async{
     User user = data['user'];
-    int amount = 100;
+    int limit = 5;
     List<ExpenseItem> expenseItems = [];
 
-    try{
-      final response = await http.put(
-          '$url/getExpenses', headers: <String, String>{
+//    try{
+      final response = await http.get(
+          '$url/getAptExpensesWithLimit?userId=${user.userId}&name=${user.name}&mail=${user.mail}&limit=$limit', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      }, body: jsonEncode({
-        'user': user,
-        'amount': amount,
-      }
-      )).timeout(const Duration(seconds: 3));
-      var jsonData = jsonDecode(response.body);
+      },).timeout(const Duration(seconds: 7));
 
+      List jsonData = jsonDecode(response.body);
+      var reversedList = List.from(jsonData.reversed);
       if(response.statusCode == 200){
+        print('200 OK');
         if(response.body.isNotEmpty){
-          for(var jsonItem in jsonData){
+          for(var jsonItem in reversedList){
+            print(jsonItem);
             ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));
+            setState(() {
+              expensesList.add(item);
+            });
             expenseItems.add(item);
           }
+
         }
       } else {
         print('no expenses yet');
       }
-    }catch(_){
-      showSnackBar('No Internet Connection');
-    }
-    return expenseItems;
+//    }catch(_){
+//      print('point 1');
+//      showSnackBar('No Internet Connection');
+//    }
   }
 
 
 //  this function adds expense to the expenses list
-  Future<void> addExpanse(String category,int categoryId, String title, int value, DateTime date) async{
+  Future<void> addExpanse(String category,int categoryId, String title, double value, DateTime date) async{
     try{
       //    http post
       User user = data['user'];
@@ -777,7 +793,7 @@ class _ExpensesState extends State<Expenses> {
         'date': date.toString().split(' ')[0],
         'amount': value,
       }
-      )).timeout(const Duration(seconds: 3));
+      )).timeout(const Duration(seconds: 10));
 
       if(response.statusCode == 200){
         print("200 OK Expenses");
@@ -797,13 +813,14 @@ class _ExpensesState extends State<Expenses> {
 //          if(dateMap.containsKey(user.name)){
 //            dateMap[name] += value;
 //          }
-          refresh = true;
+          refreshCharts = true;
         });
       } else {
         showSnackBar('Error');
         print('somthing went worng');
       }
     } catch (_){
+      print('point 3');
       showSnackBar('No Internet Connection');
     }
   }
