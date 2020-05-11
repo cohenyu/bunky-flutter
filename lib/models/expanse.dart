@@ -5,7 +5,7 @@ class Expense{
 
   final User user;
   final String title;
-  final String value;
+  final int value;
   final String category;
   final String date;
   final int id;
@@ -14,7 +14,8 @@ class Expense{
 
 
   factory Expense.fromJson(Map<String, dynamic> json){
-    return Expense(user: json['user'], title: json['title'], value: json['amount'], category: Categories().valueToCategoryMap()[json['categoryId']], date: json['date'], id: json['expenseId']);
+    Map categoryMap = json['expenseCategory'];
+    return Expense(user: User.fromJson(json['user']), title: json['title'], value: json['amount'], category: categoryMap['name'], date: json['date'], id: json['expenseId']);
   }
 
   Map<String, dynamic> toJson() =>

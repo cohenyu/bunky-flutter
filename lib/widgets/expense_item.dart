@@ -9,7 +9,13 @@ class ExpenseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map categoryMap = Categories().categoryToValueMap();
+    var date = this.expanse.date.split('-');
+    String year = date[0];
+    year = year.substring(2, year.length);
+    String month = date[1];
+    String day = date[2];
+    String dateString = '$day.$month.$year';
+
     return Column(
       children: <Widget>[
         Padding(
@@ -36,7 +42,7 @@ class ExpenseItem extends StatelessWidget {
                   ),
                   SizedBox(height: 5.0,),
                   Text(
-                      this.expanse.value,
+                      '${this.expanse.value}',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 18.0,
@@ -65,7 +71,7 @@ class ExpenseItem extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 5, top: 5),
                           child: Text(
-                            this.expanse.date,
+                            dateString,
                             style: TextStyle(
                               letterSpacing: 0.7,
                               color: Colors.grey,
@@ -86,17 +92,6 @@ class ExpenseItem extends StatelessWidget {
                   ],
                 ),
               ),
-//              Padding(
-//                padding: const EdgeInsets.only(right: 20, left: 10),
-//                child: Text(
-//                    this.expanse.value,
-//                    style: TextStyle(
-//                        color: Colors.black,
-//                        fontSize: 18.0,
-//                        fontWeight: FontWeight.bold
-//                    )
-//                ),
-//              )
             ],
           ),
         ),

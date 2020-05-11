@@ -18,7 +18,6 @@ class _CreateApartmentState extends State<CreateApartment> {
   Map data = {};
   final String url = 'https://bunkyapp.herokuapp.com/loginUser';
   Future<int> aptCode;
-  bool firstTime = true;
   int finalCode;
 
   @override
@@ -34,14 +33,9 @@ class _CreateApartmentState extends State<CreateApartment> {
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    if(firstTime){
-      firstTime = false;
-    }
-    print("hey");
-//    load();
-//    loadData();
     Logo logo = Logo(title: 'Signup');
     HttpService http = HttpService();
     return Scaffold(

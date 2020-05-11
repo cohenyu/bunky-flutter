@@ -21,15 +21,12 @@ class Expenses extends StatefulWidget {
 
 class _ExpensesState extends State<Expenses> {
   Map data = {};
-  List<ExpenseItem> expansesList = [
-    ExpenseItem(Expense(user: User('Yuval', 'dd', 40), title: 'pizza 8 pices', date: '12.2.20', id: 4, category: 'Building Committee', value: '180')),
-    ExpenseItem(Expense(user: User('Or', 'dd', 40), title: 'Expanses from the party last night ', date: '12.2.20', id: 4, category: 'Other', value: '6500')),
-  ];
-
+  List<ExpenseItem> expansesList = [];
+  String url = 'https://bunkyapp.herokuapp.com';
   int expenseId = 0;
   DateTime dateTimeExpense = DateTime.now();
   DateTime dateTimeChart = DateTime.now().subtract(Duration(days: 30));
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   Map categories = {
     'Supermarket' : 1,
     'Water Bill' : 2,
@@ -106,6 +103,7 @@ class _ExpensesState extends State<Expenses> {
   Widget build(BuildContext context) {
     data  = ModalRoute.of(context).settings.arguments;
     return Scaffold(
+      key: _scaffoldKey,
       bottomNavigationBar: BottomNavyBar(),
       body: Stack(
         children: <Widget>[
@@ -247,18 +245,16 @@ class _ExpensesState extends State<Expenses> {
                     key: Key('${expansesList[index].expanse.id}'),
                     direction: DismissDirection.endToStart,
                     onDismissed: (direction){
-                      deleteExpanse(expansesList[index].expanse);
-                      expansesList.removeAt(index);
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('Expense deleted', style: TextStyle(fontSize: 14.0),),
-                      ));
+                      deleteExpanse(index);
                     },
                     background: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      padding: const EdgeInsets.symmetric(vertical: 15.0),
                       child: Container(
                         color: Colors.redAccent,
-                        child: ListTile(
-                          trailing: Icon(Icons.delete, color: Colors.white, size: 30.0,),
+                        child: Center(
+                          child: ListTile(
+                            trailing: Icon(Icons.delete, color: Colors.white, size: 30.0,),
+                          ),
                         ),
                       ),
                     ),
@@ -292,10 +288,6 @@ class _ExpensesState extends State<Expenses> {
         ],
       )
     );
-  }
-
-  Future<void> deleteExpanse(Expense expense) async{
-    await Future.delayed(const Duration(seconds: 4), (){});
   }
 
 
@@ -481,8 +473,12 @@ class _ExpensesState extends State<Expenses> {
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             child: TextFormField(
                               validator: (value){
+                                print('the value in int ${int.parse(value)}');
                                 if (value.isEmpty) {
                                   return 'Value is required';
+                                }
+                                if(int.parse(value) < 1){
+                                  return 'Invalid Amount';
                                 }
                                 return null;
                               },
@@ -568,7 +564,7 @@ class _ExpensesState extends State<Expenses> {
                                   }
                                   formKey.currentState.save();
                                   print("im here");
-                                  addExpanse(category, categoryId,  titleController.text, valueController.text, dateTimeExpense);
+                                  addExpanse(category, categoryId,  titleController.text, int.parse(valueController.text), dateTimeExpense);
                                   Navigator.pop(context);
                                 },
                               )
@@ -587,53 +583,85 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
-//  this function adds expense to the expenses list
-  Future<void> addExpanse(String category,int categoryId, String title, String value, DateTime date) async{
-//    parse the date
-    print('add expense');
-    String year = date.year.toString();
-    year = year.substring(2, year.length);
-    String dateString = '${date.day}.${date.month}.$year';
-//    http post
-    User user = data['user'];
-//    todo there is an error here
-    final response = await http.post(
-        'https://bunkyapp.herokuapp.com/addExpense', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode({
-      'user': user,
-      'categoryId': categoryId,
-      'title': title,
-      'date': date.toString().split(' ')[0],
-      'amount': value,
-    }
-    ));
+// This function delete expense from the expenses list and sends http delete to the server
+  Future<void> deleteExpanse(int index) async{
+    Expense expense = expansesList[index].expanse;
 
-    if(response.statusCode == 200){
-      print("200 OK Expenses");
-      print(jsonDecode(response.body));
-      print(jsonDecode(response.body));
-      Expense expense = Expense.fromJson(jsonDecode(response.body));
-      ExpenseItem newItem = ExpenseItem(expense);
+    try{
+
+//      http delete
+      expansesList.removeAt(index);
       setState(() {
-        expansesList.add(newItem);
-        int tmpVal = int.parse(value);
-        print('the value is $value');
-//      update the charts just if the expense was maximum 30 days ago
-        if (categoricalMap.containsKey(category)){
-          categoricalMap[category] = categoricalMap[category] + tmpVal;
-        }
-        String name = user.name;
-        if(totalMap.containsKey(name)){
-          totalMap[name]  += tmpVal;
-        }
-        if(dateMap.containsKey(user.name)){
-          dateMap[name] += tmpVal;
-        }
       });
-    } else {
-      print('somthing went worng');
+      showSnackBar('Expense deleted');
+
+    }catch(_){
+      showSnackBar('No Internet Connection');
     }
   }
 
+
+
+//  this function adds expense to the expenses list
+  Future<void> addExpanse(String category,int categoryId, String title, int value, DateTime date) async{
+    try{
+      //    http post
+      User user = data['user'];
+      final response = await http.post(
+          '$url/addExpense', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode({
+        'user': user,
+        'categoryId': categoryId,
+        'title': title,
+        'date': date.toString().split(' ')[0],
+        'amount': value,
+      }
+      )).timeout(const Duration(seconds: 3));
+
+      if(response.statusCode == 200){
+        print("200 OK Expenses");
+        print(jsonDecode(response.body));
+        Expense expense = Expense.fromJson(jsonDecode(response.body));
+        ExpenseItem newItem = ExpenseItem(expense);
+        setState(() {
+          expansesList.add(newItem);
+//      update the charts just if the expense was maximum 30 days ago
+          if (categoricalMap.containsKey(category)){
+            categoricalMap[category] = categoricalMap[category] + value;
+          }
+          String name = user.name;
+          if(totalMap.containsKey(name)){
+            totalMap[name]  += value;
+          }
+          if(dateMap.containsKey(user.name)){
+            dateMap[name] += value;
+          }
+        });
+      } else {
+        showSnackBar('Error');
+        print('somthing went worng');
+      }
+    } catch (_){
+      showSnackBar('No Internet Connection');
+    }
+  }
+
+  void showSnackBar (String title){
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.pink[50],
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.pink
+            ),
+          ),
+        ],
+      ),
+    ));
+  }
 }

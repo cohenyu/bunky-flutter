@@ -260,10 +260,6 @@ class _HomeState extends State<Home> {
                     return recentExpanses[index];
                   },
                 ),
-//                child: ListView(
-//                  scrollDirection: Axis.horizontal,
-//                  children: recentExpanses,
-//                ),
               ),
             )
           ],
@@ -275,11 +271,11 @@ class _HomeState extends State<Home> {
   Future<void> getExpenses() async{
     User user = User('Or', 'or@gmail.com', 2);
     List<Widget> expenses = [
-      ExpenseCard(expense: Expense(title: 'Food', value: '20', category: 'Building Committee', date: '12.2.20', user: user)),
-      ExpenseCard(expense: Expense(title: 'Food', value: '99', category: 'Internet', date: '12.2.20', user: user)),
-      ExpenseCard(expense: Expense(title: 'Food', value: '330', category: 'Other', date: '12.2.20', user: user)),
-      ExpenseCard(expense: Expense(title: 'Food', value: '200', category: 'Other', date: '12.2.20', user: user)),
-      ExpenseCard(expense: Expense(title: 'Food', value: '67', category: 'Other', date: '12.2.20', user: user)),
+      ExpenseCard(expense: Expense(title: 'Food', value: 20, category: 'Building Committee', date: '12.2.20', user: user)),
+      ExpenseCard(expense: Expense(title: 'Food', value: 99, category: 'Internet', date: '12.2.20', user: user)),
+      ExpenseCard(expense: Expense(title: 'Food', value: 330, category: 'Other', date: '12.2.20', user: user)),
+      ExpenseCard(expense: Expense(title: 'Food', value: 200, category: 'Other', date: '12.2.20', user: user)),
+      ExpenseCard(expense: Expense(title: 'Food', value: 67, category: 'Other', date: '12.2.20', user: user)),
     ];
 
 
