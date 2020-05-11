@@ -162,10 +162,6 @@ class _LoginState extends State<Login> {
         'Content-Type': 'application/json; charset=UTF-8',
       },).timeout(const Duration(seconds: 10));
 
-      setState(() {
-        _loading = false;
-      });
-
       if(response.statusCode == 200){
         print("200 OK");
         if(response.body.isEmpty){
@@ -196,6 +192,10 @@ class _LoginState extends State<Login> {
       print('No Internet Connection');
       showSnackBar('No Internet Connection');
     }
+
+    setState(() {
+      _loading = false;
+    });
   }
 
   void showSnackBar (String title){

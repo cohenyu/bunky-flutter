@@ -1,9 +1,13 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:bunky/models/user.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class DropDownNames extends StatefulWidget {
   final Function callback;
-  DropDownNames({this.callback});
+  User user;
+  DropDownNames({this.callback, this.user});
 
   @override
   _DropDownNamesState createState() => _DropDownNamesState();
@@ -21,6 +25,7 @@ class _DropDownNamesState extends State<DropDownNames> {
 
   @override
   Widget build(BuildContext context) {
+//    getUsers();
     return DropdownButtonFormField(
       validator: (value){
         print(value);
@@ -44,4 +49,28 @@ class _DropDownNamesState extends State<DropDownNames> {
       isExpanded: true,
     );
   }
+
+//  Future<void> getUsers() async {
+//    try{
+////      todo - check if post / put / get ?
+//      final response = await http.post(
+//          'https://bunkyapp.herokuapp.com/allUsersOfAptByUser', headers: <String, String>{
+//        'Content-Type': 'application/json; charset=UTF-8',
+//      }, body: jsonEncode({
+//        'user': widget.user,
+//      }
+//      )).timeout(const Duration(seconds: 3));
+//      print(jsonDecode(response.body));
+//      if(response.statusCode == 200){
+//        print("200 OK");
+//        if(response.body.isNotEmpty){
+//          print(jsonDecode(response.body));
+//        }
+//      } else {
+//        print('Error');
+//      }
+//    } catch (_){
+//      print('No Internet Connection');
+//    }
+//  }
 }

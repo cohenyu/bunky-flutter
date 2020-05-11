@@ -36,7 +36,7 @@ class _BalancingState extends State<Balancing> {
 
   @override
   void initState() {
-//    getBalance();
+    getBalance();
     super.initState();
   }
 
@@ -211,6 +211,14 @@ class _BalancingState extends State<Balancing> {
     });
   }
 
+  Future<void> getBalance()async{
+    await Future.delayed(const Duration(seconds: 4), (){});
+    setState(() {
+      credit.removeLast();
+      isLoading = false;
+    });
+  }
+
 
 //  Future<void> getBalance() async{
 //
@@ -307,7 +315,7 @@ class _BalancingState extends State<Balancing> {
                                   ),
                                   Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                                      child: DropDownNames(callback: (val) => setState(()=> name = val),)
+                                      child: DropDownNames(callback: (val) => setState(()=> name = val), user: data['user'],)
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20),

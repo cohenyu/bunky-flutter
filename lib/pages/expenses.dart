@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bunky/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:bunky/widgets/balance_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:bunky/widgets/bottom_navy_bar.dart';
 import 'package:bunky/widgets/expense_item.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -20,6 +20,9 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
+  bool refresh = true;
+  bool totalLoading = true;
+  bool categoryLoading = true;
   Map data = {};
   List<ExpenseItem> expensesList = [];
   Future<List<ExpenseItem>> futureExpenseList;
@@ -39,23 +42,23 @@ class _ExpensesState extends State<Expenses> {
   };
 
   static Map<String, double> totalMap = {
-    "Or" : 120,
-    "Yuval" : 67,
-    "Miriel": 200,
-    "Amy": 93,
-    'matan': 20,
+//    "Or" : 120,
+//    "Yuval" : 67,
+//    "Miriel": 200,
+//    "Amy": 93,
+//    'matan': 20,
   };
 
 
 
   static Map<String, double> categoricalMap = {
-    'Supermarket' : 1,
-    'Water Bill' : 2,
-    'Electric Bill': 3,
-    'Rates': 4,
-    'Building Committee' : 5,
-    'Internet' : 6,
-    'Other': 7
+//    'Supermarket' : 1,
+//    'Water Bill' : 2,
+//    'Electric Bill': 3,
+//    'Rates': 4,
+//    'Building Committee' : 5,
+//    'Internet' : 6,
+//    'Other': 7
   };
 
   bool removeLast = false;
@@ -76,6 +79,7 @@ class _ExpensesState extends State<Expenses> {
     }
     return result;
   }
+
   List<Widget> balances = [
     BalanceCard(title: 'Monthly Total Balance', map: totalMap, isPercentage: false,),
     BalanceCard(title: 'Monthly Categorical Balance', map: categoricalMap, isPercentage: false,),
@@ -90,10 +94,14 @@ class _ExpensesState extends State<Expenses> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     data  = ModalRoute.of(context).settings.arguments;
+    if(refresh){
+      refresh = false;
+      sumExpensePerUser();
+      sumExpensePerCategory();
+    }
     return Scaffold(
       key: _scaffoldKey,
       bottomNavigationBar: BottomNavyBar(),
@@ -139,7 +147,7 @@ class _ExpensesState extends State<Expenses> {
                 ),
                 Stack(
                   children: <Widget>[
-                    CarouselSlider(
+                    (!totalLoading && !categoryLoading) ? CarouselSlider(
                       options: CarouselOptions(
                           height: 410.0,
                           autoPlay: true,
@@ -157,6 +165,21 @@ class _ExpensesState extends State<Expenses> {
                           },
                         );
                       }).toList(),
+                    ) : Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          height: 410,
+                          width: 310,
+                          child: Center(
+                            child: SpinKitCircle(
+                              color: Colors.grey[600],
+                              size: 50.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 370, left: 35),
@@ -578,78 +601,95 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
-//  Future<void> sumExpensePerCategory() async{
-//    print('get sum per category');
-//    User user = data['user'];
-//    String date = '2020-05-11';
-//
-////    try {
-//    final response = await http.post(
-//        '$url/computeSumExpensesPerCat', headers: <String, String>{
-//      'Content-Type': 'application/json; charset=UTF-8',
-//    }, body: jsonEncode({
-//      'user': user,
-//      'date': date,
-//    }
-//    )).timeout(const Duration(seconds: 3));
-//    Map<String, dynamic> jsonData = jsonDecode(response.body);
-//    print(jsonData);
-//    if(response.statusCode == 200){
-//      Map<String, double> tmpMap = {};
-//      for(var key in jsonData.keys){
-//        print(key);
-//        print(jsonData[key].runtimeType);
-//
-//        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
-//      }
-//
-//      setState(() {
-//        categoricalMap.clear();
-//        categoricalMap.addAll(tmpMap);
-//      });
-//
-//    } else {
-//      showSnackBar('Error');
-//    }
-////    } catch (_) {
-////      showSnackBar('No Internet Connection');
-////    }
-//  }
+  Future<void> sumExpensePerCategory() async{
+    print('get sum per category');
+    User user = data['user'];
+    String date = '2020-05-11';
 
-//  Future<void> sumExpensePerUser() async{
-//    print('get sum per user');
-//    User user = data['user'];
-//    String date = '2020-05-11';
-//
-////    try {
-//      final response = await http.post(
-//          '$url/computeSumExpenses', headers: <String, String>{
-//        'Content-Type': 'application/json; charset=UTF-8',
-//      }, body: jsonEncode({
-//        'user': user,
-//        'date': date,
-//      }
-//      )).timeout(const Duration(seconds: 3));
-//      Map<String, dynamic> jsonData = jsonDecode(response.body);
-//      print(jsonData);
-//      if(response.statusCode == 200){
-//        Map<String, double> tmpMap = {};
-//        for(var key in jsonData.keys){
-//          tmpMap.putIfAbsent(key, ()=> jsonData[key]);
-//        }
-//
-//        setState(() {
-//          totalMap.clear();
-//          totalMap.addAll(tmpMap);
-//        });
-//
-//      } else {
-//        showSnackBar('Error');
-//      }
-////    } catch (_) {
-////      showSnackBar('No Internet Connection');
-////    }
-//  }
+//    try {
+    final response = await http.post(
+        '$url/computeSumExpensesPerCat', headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    }, body: jsonEncode({
+      'user': user,
+      'date': date,
+    }
+    )).timeout(const Duration(seconds: 3));
+    Map<String, dynamic> jsonData = jsonDecode(response.body);
+    print(jsonData);
+    if(response.statusCode == 200){
+      Map<String, double> tmpMap = {};
+      bool haveExpenses = false;
+      for(var key in jsonData.keys){
+        if(jsonData[key] != 0){
+          haveExpenses = true;
+        }
+        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+      }
+
+      if(haveExpenses){
+        setState(() {
+          categoricalMap.clear();
+          categoricalMap.addAll(tmpMap);
+        });
+      }
+
+    } else {
+      showSnackBar('Error');
+    }
+    setState(() {
+      categoryLoading = false;
+    });
+//    } catch (_) {
+//      showSnackBar('No Internet Connection');
+//    }
+  }
+
+  Future<void> sumExpensePerUser() async{
+    print('get sum per user');
+    User user = data['user'];
+    String date = '2020-05-11';
+
+    final response = await http.post(
+        '$url/computeSumExpenses', headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    }, body: jsonEncode({
+      'user': user,
+      'date': date,
+    }
+    )).timeout(const Duration(seconds: 3));
+    Map<String, dynamic> jsonData = jsonDecode(response.body);
+    print(jsonData);
+    if(response.statusCode == 200){
+      Map<String, double> tmpMap = {};
+      bool haveExpenses = false;
+      for(var key in jsonData.keys){
+        if(jsonData[key] != 0){
+          haveExpenses = true;
+        }
+        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+      }
+
+      if(haveExpenses){
+        setState(() {
+          totalMap.clear();
+          totalMap.addAll(tmpMap);
+        });
+      }
+
+    } else {
+      showSnackBar('Error');
+    }
+    setState(() {
+      totalLoading = false;
+    });
+
+//    try {
+
+//    } catch (_) {
+//      showSnackBar('No Internet Connection');
+//    }
+  }
 
 // This function delete expense from the expenses list and sends http delete to the server
   Future<void> deleteExpanse(int index) async{
@@ -741,16 +781,17 @@ class _ExpensesState extends State<Expenses> {
         setState(() {
           expensesList.add(newItem);
 //      update the charts just if the expense was maximum 30 days ago
-          if (categoricalMap.containsKey(category)){
-            categoricalMap[category] = categoricalMap[category] + value;
-          }
-          String name = user.name;
-          if(totalMap.containsKey(name)){
-            totalMap[name]  += value;
-          }
-          if(dateMap.containsKey(user.name)){
-            dateMap[name] += value;
-          }
+//          if (categoricalMap.containsKey(category)){
+//            categoricalMap[category] = categoricalMap[category] + value;
+//          }
+//          String name = user.name;
+//          if(totalMap.containsKey(name)){
+//            totalMap[name]  += value;
+//          }
+//          if(dateMap.containsKey(user.name)){
+//            dateMap[name] += value;
+//          }
+          refresh = true;
         });
       } else {
         showSnackBar('Error');
