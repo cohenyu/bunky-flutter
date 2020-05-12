@@ -39,10 +39,10 @@ class ExpenseCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(expense.user.name, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),),
-                        Text(expense.category, style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold, fontSize: 20),),
+                        Text(expense.category, style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold, fontSize: 18),),
                       ],
                     ),
-                    Text('${expense.value}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 30.0),),
+                    Text('${expense.value.toInt()}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 30.0),),
                   ],
                 ),
               ),

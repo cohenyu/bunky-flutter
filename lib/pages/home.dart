@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bunky/models/task.dart';
 import 'package:bunky/models/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +9,7 @@ import 'package:bunky/models/expanse.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:bunky/widgets/bottom_navy_bar.dart';
 import 'package:bunky/widgets/expense_card.dart';
+import 'package:http/http.dart' as http;
 
 
 class Home extends StatefulWidget {
@@ -20,6 +23,8 @@ class _HomeState extends State<Home> {
   List<Widget> recentExpanses = [];
   List<Widget> notifications = [];
   bool _load = true;
+  String url = 'https://bunkyapp.herokuapp.com';
+  bool firstTime = true;
 
   List<Task> tasks = [
     Task(performer: 'Or', name: 'throw the garbage out', frequency: 'everyday'),
@@ -27,8 +32,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    print("hello");
-    getExpenses();
     super.initState();
   }
 
@@ -36,7 +39,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
     user = data['user'];
-
+    if(firstTime){
+      firstTime = false;
+      getExpenses();
+    }
     print('build');
 //    Color primaryColor = Color.fromRGBO(255, 82, 48, 1);
     Color primaryColor = Colors.teal;
@@ -268,30 +274,46 @@ class _HomeState extends State<Home> {
     );
   }
 
+
   Future<void> getExpenses() async{
-    User user = User('Or', 'or@gmail.com', 2);
-    List<Widget> expenses = [
-      ExpenseCard(expense: Expense(title: 'Food', value: 20, category: 'Building Committee', date: '12.2.20', user: user)),
-      ExpenseCard(expense: Expense(title: 'Food', value: 99, category: 'Internet', date: '12.2.20', user: user)),
-      ExpenseCard(expense: Expense(title: 'Food', value: 330, category: 'Other', date: '12.2.20', user: user)),
-      ExpenseCard(expense: Expense(title: 'Food', value: 200, category: 'Other', date: '12.2.20', user: user)),
-      ExpenseCard(expense: Expense(title: 'Food', value: 67, category: 'Other', date: '12.2.20', user: user)),
-    ];
 
+    User user = data['user'];
+    int limit = 7;
+    List<ExpenseCard> expenseCards = [];
 
-    for(ExpenseCard ec in expenses){
-      await Future.delayed(const Duration(seconds: 4), (){});
-      if(mounted){
-        setState(() {
-          _load = false;
-          recentExpanses.add(ec);
-        });
+    final response = await http.get(
+      '$url/getAptExpensesWithLimit?userId=${user.userId}&name=${user.name}&mail=${user.mail}&limit=$limit', headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },).timeout(const Duration(seconds: 7));
+
+    if(response.statusCode == 200){
+      print('200 OK');
+      if(response.body.isNotEmpty){
+        List jsonData = jsonDecode(response.body);
+        for(var jsonItem in jsonData){
+
+          ExpenseCard card = ExpenseCard(expense: Expense.fromJson(jsonItem),);
+          if(mounted){
+            setState(() {
+              _load = false;
+              recentExpanses.add(card);
+            });
+          }
+        }
+
       }
+    } else {
+      print('no expenses yet');
     }
-//    setState(() {
-//      recentExpanses.addAll(expenses);
-//    });
-//    http get
+//
+//    List<Widget> expenses = [
+//      ExpenseCard(expense: Expense(title: 'Food', value: 20, category: 'Building Committee', date: '12.2.20', user: user)),
+//      ExpenseCard(expense: Expense(title: 'Food', value: 99, category: 'Internet', date: '12.2.20', user: user)),
+//      ExpenseCard(expense: Expense(title: 'Food', value: 330, category: 'Other', date: '12.2.20', user: user)),
+//      ExpenseCard(expense: Expense(title: 'Food', value: 200, category: 'Other', date: '12.2.20', user: user)),
+//      ExpenseCard(expense: Expense(title: 'Food', value: 67, category: 'Other', date: '12.2.20', user: user)),
+//    ];
+
   }
 
   void showAddDialog(){

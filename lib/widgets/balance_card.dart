@@ -36,6 +36,7 @@ class _BalanceCardState extends State<BalanceCard> {
       child: Container(
         width: 350.0,
         decoration: BoxDecoration(
+//            color: Colors.lime[300],
             color: Colors.amber[200],
             borderRadius: BorderRadius.all(Radius.circular(20)),
             boxShadow: [
