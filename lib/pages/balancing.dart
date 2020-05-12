@@ -19,6 +19,7 @@ class Balancing extends StatefulWidget {
 class _BalancingState extends State<Balancing> {
   bool _autoValidate = false;
   bool ready = false;
+  bool firstTime = true;
   User selectedUser;
   bool isChanged = false;
   Color primaryColor = Colors.teal;
@@ -37,13 +38,16 @@ class _BalancingState extends State<Balancing> {
 
   @override
   void initState() {
-    getBalance();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     data  = ModalRoute.of(context).settings.arguments;
+    if(firstTime){
+      firstTime = false;
+      getBalance();
+    }
     bool isBalanceExist  = debt.isNotEmpty || credit.isNotEmpty;
     return Scaffold(
         resizeToAvoidBottomInset: true,
@@ -224,8 +228,6 @@ class _BalancingState extends State<Balancing> {
 
 
 //  Future<void> getBalance() async{
-//
-//    print('get sum per category');
 //    User user = data['user'];
 //
 ////    try {
