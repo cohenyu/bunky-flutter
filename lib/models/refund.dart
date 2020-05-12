@@ -1,13 +1,15 @@
+import 'package:bunky/models/user.dart';
+
 class Refund {
-  final String username;
+  final User user;
   final String value;
 
-  Refund(this.username, this.value);
+  Refund(this.user, this.value);
 
 
   Map<String, dynamic> toJson() =>
       {
-        'username': username,
-        'value': value,
+        'user': user.toJson(),
+        'amount': value,
       };
 }

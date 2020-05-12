@@ -96,7 +96,10 @@ class _BalanceCardState extends State<BalanceCard> {
           ],
         ),
         Center(
-          child: MyChart(data: this.widget.map, isPercentage: widget.isPercentage,),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 18.0),
+            child: MyChart(data: this.widget.map, isPercentage: widget.isPercentage,),
+          ),
         )
       ],
     );

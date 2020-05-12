@@ -14,18 +14,18 @@ class DropDownNames extends StatefulWidget {
 }
 
 class _DropDownNamesState extends State<DropDownNames> {
-  String selected;
+  User selected;
 
-  final List<String> _dropdownValues = [
-    "Or",
-    "Yuval",
-    "Miriel"
-  ];
+  List<User> _dropdownValues = [];
 
+  @override
+  void initState() {
+    getUsers();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-//    getUsers();
     return DropdownButtonFormField(
       validator: (value){
         print(value);
@@ -37,7 +37,7 @@ class _DropDownNamesState extends State<DropDownNames> {
       value: selected,
       hint: Text('select roomate'),
       items: _dropdownValues.map((value) => DropdownMenuItem(
-        child: Text(value,),
+        child: Text(value.name,),
         value: value,
       )).toList(),
       onChanged: (value){
@@ -50,27 +50,32 @@ class _DropDownNamesState extends State<DropDownNames> {
     );
   }
 
-//  Future<void> getUsers() async {
-//    try{
-////      todo - check if post / put / get ?
-//      final response = await http.post(
-//          'https://bunkyapp.herokuapp.com/allUsersOfAptByUser', headers: <String, String>{
-//        'Content-Type': 'application/json; charset=UTF-8',
-//      }, body: jsonEncode({
-//        'user': widget.user,
-//      }
-//      )).timeout(const Duration(seconds: 3));
-//      print(jsonDecode(response.body));
-//      if(response.statusCode == 200){
-//        print("200 OK");
-//        if(response.body.isNotEmpty){
-//          print(jsonDecode(response.body));
-//        }
-//      } else {
-//        print('Error');
-//      }
-//    } catch (_){
-//      print('No Internet Connection');
-//    }
-//  }
+  Future<void> getUsers() async {
+    try{
+      User user = widget.user;
+      final response = await http.get(
+          'https://bunkyapp.herokuapp.com/allUsersOfAptByUser?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },).timeout(const Duration(seconds: 6));
+
+      if(response.statusCode == 200){
+        print("200 OK");
+        if(response.body.isNotEmpty){
+          List jsonData = jsonDecode(response.body);
+          List<User> usersNames = [];
+          for(var jsonUser in jsonData){
+            User user = User.fromJson(jsonUser);
+            usersNames.add(user);
+          }
+          setState(() {
+            _dropdownValues = usersNames;
+          });
+        }
+      } else {
+        print('Error');
+      }
+    } catch (_){
+      print('No Internet Connection');
+    }
+  }
 }

@@ -17,8 +17,9 @@ class Balancing extends StatefulWidget {
 }
 
 class _BalancingState extends State<Balancing> {
+  bool _autoValidate = false;
   bool ready = false;
-  String name;
+  User selectedUser;
   bool isChanged = false;
   Color primaryColor = Colors.teal;
   Map data = {};
@@ -206,7 +207,9 @@ class _BalancingState extends State<Balancing> {
     print(refund.toJson());
     await Future.delayed(const Duration(seconds: 4), (){});
     setState(() {
-      credit.removeLast();
+      if(credit.isNotEmpty){
+        credit.removeLast();
+      }
       isLoading = false;
     });
   }
@@ -286,59 +289,69 @@ class _BalancingState extends State<Balancing> {
                       width: double.infinity,
                       child: Form(
                         key:  formKey,
-                        child: Stack(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.close),
-                                  color: Colors.grey,
-                                  onPressed: (){
-                                    Navigator.pop(context);
-                                  },
+                        autovalidate: _autoValidate,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Text(
+                                'Refund',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontSize: 26.0
                                 ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Column(
+                              ),
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                  child: DropDownNames(callback: (val) => setState(()=> selectedUser = val), user: data['user'],)
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2),
+                                child: TextFormField(
+                                  validator: (value){
+                                    if (value.isEmpty) {
+                                      return 'Value is required';
+                                    }
+                                    return null;
+                                  },
+                                  inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                  controller: valueController,
+                                  decoration: InputDecoration(
+                                    hintText: 'value',
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black)
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10.0,),
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  SizedBox(height: 10.0,),
-                                  Text(
-                                    'Refund',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                        fontSize: 26.0
-                                    ),
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                                      child: DropDownNames(callback: (val) => setState(()=> name = val), user: data['user'],)
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                                    child: TextFormField(
-                                      validator: (value){
-                                        if (value.isEmpty) {
-                                          return 'Value is required';
-                                        }
-                                        return null;
-                                      },
-                                      inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                                      controller: valueController,
-                                      decoration: InputDecoration(
-                                        hintText: 'value',
-                                        enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black)
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 20.0,),
                                   RaisedButton(
                                     color: Colors.pink[800],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15.0
+                                      ),
+                                    ),
+                                    onPressed: (){
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  RaisedButton(
+                                    color: Colors.pink[800],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.circular(10),
+                                    ),
                                     child: Text(
                                       "Add",
                                       style: TextStyle(
@@ -349,17 +362,20 @@ class _BalancingState extends State<Balancing> {
                                     ),
                                     onPressed: (){
                                       if(!formKey.currentState.validate()){
+                                        setState(() {
+                                          _autoValidate = true;
+                                        });
                                         return;
                                       }
                                       formKey.currentState.save();
-                                      postRefund(Refund(name, valueController.text));
+                                      postRefund(Refund(selectedUser, valueController.text));
                                       Navigator.pop(context);
                                     },
-                                  )
+                                  ),
                                 ],
-                              ),
-                            ),
-                          ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),

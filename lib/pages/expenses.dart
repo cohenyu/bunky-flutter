@@ -84,8 +84,8 @@ class _ExpensesState extends State<Expenses> {
   }
 
   List<Widget> balances = [
-    BalanceCard(title: 'Monthly Total Balance', map: totalMap, isPercentage: false,),
-    BalanceCard(title: 'Monthly Categorical Balance', map: categoricalMap, isPercentage: false,),
+    BalanceCard(title: 'Monthly Total Expenses', map: totalMap, isPercentage: false,),
+    BalanceCard(title: 'Monthly Categorical Expenses', map: categoricalMap, isPercentage: false,),
 //    BalanceCard(title: 'Total Balance', map: totalMap, isPercentage: true,),
 //    BalanceCard(title: 'Categorical Balance', map: categoricalMap, isPercentage: true,),
   ];
@@ -201,7 +201,7 @@ class _ExpensesState extends State<Expenses> {
                   children: <Widget>[
                     (!totalLoading && !categoryLoading) ? CarouselSlider(
                       options: CarouselOptions(
-                          height: 410.0,
+                          height: 425.0,
                           autoPlay: true,
                           enlargeCenterPage: false,
                           onPageChanged: (index,  reason){
@@ -234,7 +234,7 @@ class _ExpensesState extends State<Expenses> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 370, left: 35),
+                      padding: const EdgeInsets.only(top: 380, left: 40),
                       child: FloatingActionButton(
                         heroTag: "tag1",
                         onPressed: (){
@@ -270,7 +270,7 @@ class _ExpensesState extends State<Expenses> {
                   })
                 ),
                 expensesList.isEmpty ? Padding(
-                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top:20),
+                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 6.0),
                   child: Text(
                     'No Expenses Yet',
                     style: TextStyle(
@@ -280,7 +280,7 @@ class _ExpensesState extends State<Expenses> {
                     ),
                   ),
                 ): Padding(
-                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top:20),
+                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top:6.0),
                   child: Row(
                     children: <Widget>[
                       Text(
@@ -662,10 +662,8 @@ class _ExpensesState extends State<Expenses> {
     setState(() {
       categoryLoading = true;
     });
-    print('get sum per category');
     User user = data['user'];
     String date = DateTime.now().subtract(Duration(days: 30)).toString().split(' ')[0];
-    print(date);
 
 //    try {
     final response = await http.post(
@@ -677,7 +675,6 @@ class _ExpensesState extends State<Expenses> {
     }
     )).timeout(const Duration(seconds: 7));
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    print(jsonData);
     if(response.statusCode == 200){
       Map<String, double> tmpMap = {};
       bool haveExpenses = false;
@@ -724,7 +721,7 @@ class _ExpensesState extends State<Expenses> {
     }
     )).timeout(const Duration(seconds: 7));
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    print(jsonData);
+
     if(response.statusCode == 200){
       Map<String, double> tmpMap = {};
       bool haveExpenses = false;
@@ -772,8 +769,7 @@ class _ExpensesState extends State<Expenses> {
           '$url/removeExpense', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       }, body: jsonEncode(expense.id,)).timeout(const Duration(seconds: 7));
-      print('delete in DB');
-      print(response.body);
+
       if(response.statusCode == 200){
         if(response.body.isNotEmpty){
           showSnackBar('Expense deleted');
@@ -813,7 +809,6 @@ class _ExpensesState extends State<Expenses> {
         print('200 OK');
         if(response.body.isNotEmpty){
           for(var jsonItem in jsonData){
-            print(jsonItem);
             ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));
             setState(() {
               expensesList.add(item);
@@ -851,7 +846,6 @@ class _ExpensesState extends State<Expenses> {
 
       if(response.statusCode == 200){
         print("200 OK Expenses");
-        print(jsonDecode(response.body));
         Expense expense = Expense.fromJson(jsonDecode(response.body));
         ExpenseItem newItem = ExpenseItem(expense);
         setState(() {

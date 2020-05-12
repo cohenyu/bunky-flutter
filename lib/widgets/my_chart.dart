@@ -24,7 +24,7 @@ class _MyChartState extends State<MyChart> {
           fontWeight: FontWeight.bold,
           color: Colors.black.withOpacity(0.8)
       ),
-      chartRadius: MediaQuery.of(context).size.width / 2.9,
+      chartRadius:widget.data.length < 5 ?  MediaQuery.of(context).size.width / 2: MediaQuery.of(context).size.width / 2.7,
       showChartValuesInPercentage: this.widget.isPercentage,
       showChartValues: true,
       showChartValuesOutside: true,
