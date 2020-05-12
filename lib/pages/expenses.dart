@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bunky/models/expanse.dart';
 import 'package:bunky/widgets/drop_down_category.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:bunky/widgets/balance_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -12,7 +13,10 @@ import 'package:bunky/widgets/expense_item.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 
-
+enum Chart{
+  month,
+  date
+}
 
 class Expenses extends StatefulWidget {
   @override
@@ -25,6 +29,8 @@ class _ExpensesState extends State<Expenses> {
   bool totalLoading = true;
   bool categoryLoading = true;
   Map data = {};
+  FloatingActionButton fab;
+  FloatingActionButton fabAdd;
   List<ExpenseItem> expensesList = [];
   Future<List<ExpenseItem>> futureExpenseList;
   String url = 'https://bunkyapp.herokuapp.com';
@@ -41,6 +47,7 @@ class _ExpensesState extends State<Expenses> {
     'Internet' : 6,
     'Other': 7
   };
+  ScrollController scrollController;
 
   static Map<String, double> totalMap = {
 //    "Or" : 120,
@@ -64,13 +71,8 @@ class _ExpensesState extends State<Expenses> {
 
   bool removeLast = false;
   DateTime selectedDate;
-  static Map<String, double> dateMap = {
-    "Or" : 120,
-    "Yuval" : 67,
-    "Miriel": 200,
-    "Amy": 93,
-    'matan': 20,
-  };
+  static Map<String, double> dateMap = {};
+  bool reversing = false;
 
   int _current  = 0;
   List<T> map<T>(List list, Function handler){
@@ -95,12 +97,55 @@ class _ExpensesState extends State<Expenses> {
     }
   }
 
+  FloatingActionButton getFab(){
+    if(reversing){
+      return fab;
+    }
+    return fabAdd;
+  }
+  @override
+  void initState() {
+    scrollController = ScrollController();
+    fab = FloatingActionButton(
+      backgroundColor: Colors.teal[300].withOpacity(0.9),
+      child: Icon(Icons.arrow_upward),
+      onPressed: (){
+      scrollController.animateTo(0, duration: Duration(milliseconds: 700), curve: Curves.ease);
+    },);
+    fabAdd = FloatingActionButton(
+      heroTag: "tag2",
+      child: Icon(
+          Icons.add
+      ),
+      onPressed: (){
+        setState(() {
+          showAddDialog();
+        });
+      },
+      backgroundColor: Colors.pink.withOpacity(0.9),
+    );
+
+    scrollController.addListener((){
+      if (scrollController.position.pixels > 600 && scrollController.position.userScrollDirection == ScrollDirection.forward){
+        // you are at bottom position
+        setState(() {
+          reversing = true;
+        });
+      } else {
+        setState(() {
+          reversing = false;
+        });
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     data  = ModalRoute.of(context).settings.arguments;
     if(refreshCharts){
       refreshCharts = false;
-      sumExpensePerUser();
+      sumExpensePerUser(Chart.month, DateTime.now().subtract(Duration(days: 30)));
       sumExpensePerCategory();
     }
     if(refreshList){
@@ -110,9 +155,11 @@ class _ExpensesState extends State<Expenses> {
     return Scaffold(
       key: _scaffoldKey,
       bottomNavigationBar: BottomNavyBar(),
+      floatingActionButton: getFab(),
       body: Stack(
         children: <Widget>[
           SingleChildScrollView(
+            controller: scrollController,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -287,34 +334,34 @@ class _ExpensesState extends State<Expenses> {
                 },
               ),
             ),
-                Padding(
+                expensesList.isNotEmpty ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 150.0),
                   child: Divider(
                     thickness: 4.0,
                   ),
-                ),
+                ): SizedBox.shrink(),
                 SizedBox(height: 30,),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: FloatingActionButton(
-                heroTag: "tag2",
-                child: Icon(
-                    Icons.add
-                ),
-                onPressed: (){
-                  setState(() {
-                    showAddDialog();
-                  });
-                },
-                backgroundColor: Colors.pink.withOpacity(0.9),
-              ),
-            ),
-          ),
+//          Padding(
+//            padding: const EdgeInsets.all(10.0),
+//            child: Align(
+//              alignment: Alignment.bottomRight,
+//              child: FloatingActionButton(
+//                heroTag: "tag2",
+//                child: Icon(
+//                    Icons.add
+//                ),
+//                onPressed: (){
+//                  setState(() {
+//                    showAddDialog();
+//                  });
+//                },
+//                backgroundColor: Colors.pink.withOpacity(0.9),
+//              ),
+//            ),
+//          ),
         ],
       )
     );
@@ -430,7 +477,6 @@ class _ExpensesState extends State<Expenses> {
   }
 
   void addDateChart(DateTime date, String title, bool isPercentage){
-    print(removeLast);
     selectedDate = date;
     setState(() {
       if(removeLast){
@@ -440,6 +486,7 @@ class _ExpensesState extends State<Expenses> {
       }
       balances.add(BalanceCard(title: title , map: dateMap, isPercentage: isPercentage,));
     });
+//    sumExpensePerUser(Chart.date, date);
   }
 
   void showAddDialog(){
@@ -619,7 +666,8 @@ class _ExpensesState extends State<Expenses> {
     });
     print('get sum per category');
     User user = data['user'];
-    String date = '2020-05-11';
+    String date = DateTime.now().subtract(Duration(days: 30)).toString().split(' ')[0];
+    print(date);
 
 //    try {
     final response = await http.post(
@@ -660,13 +708,14 @@ class _ExpensesState extends State<Expenses> {
 //    }
   }
 
-  Future<void> sumExpensePerUser() async{
+  Future<void> sumExpensePerUser(Chart kind, DateTime dateTime) async{
     setState(() {
       totalLoading = true;
     });
     print('get sum per user');
     User user = data['user'];
-    String date = '2020-05-11';
+    String date = dateTime.toString().split(' ')[0];
+//    String date = DateTime.now().subtract(Duration(days: 30)).toString().split(' ')[0];
 
     final response = await http.post(
         '$url/computeSumExpenses', headers: <String, String>{
@@ -689,10 +738,17 @@ class _ExpensesState extends State<Expenses> {
       }
 
       if(haveExpenses){
-        setState(() {
-          totalMap.clear();
-          totalMap.addAll(tmpMap);
-        });
+        if(kind == Chart.month){
+          setState(() {
+            totalMap.clear();
+            totalMap.addAll(tmpMap);
+          });
+        } else {
+          setState(() {
+            dateMap.clear();
+            dateMap.addAll(tmpMap);
+          });
+        }
       }
 
     } else {
@@ -744,7 +800,7 @@ class _ExpensesState extends State<Expenses> {
 // This function returns n expenses of the apartment
   Future<void> getExpenses() async{
     User user = data['user'];
-    int limit = 5;
+    int limit = 20;
     List<ExpenseItem> expenseItems = [];
 
 //    try{
@@ -754,11 +810,11 @@ class _ExpensesState extends State<Expenses> {
       },).timeout(const Duration(seconds: 7));
 
       List jsonData = jsonDecode(response.body);
-      var reversedList = List.from(jsonData.reversed);
+//      var reversedList = List.from(jsonData.reversed);
       if(response.statusCode == 200){
         print('200 OK');
         if(response.body.isNotEmpty){
-          for(var jsonItem in reversedList){
+          for(var jsonItem in jsonData){
             print(jsonItem);
             ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));
             setState(() {
@@ -801,7 +857,7 @@ class _ExpensesState extends State<Expenses> {
         Expense expense = Expense.fromJson(jsonDecode(response.body));
         ExpenseItem newItem = ExpenseItem(expense);
         setState(() {
-          expensesList.add(newItem);
+          expensesList.insert(0, newItem);
 //      update the charts just if the expense was maximum 30 days ago
 //          if (categoricalMap.containsKey(category)){
 //            categoricalMap[category] = categoricalMap[category] + value;
