@@ -86,7 +86,7 @@ class _ConnectApartmentState extends State<ConnectApartment> {
                               decoration: InputDecoration(
                                 labelText: 'Apartment code',
                                 prefixIcon: Icon(
-                                  Icons.account_circle,
+                                  Icons.home,
                                   color: Colors.pink,
                                 ),
                                 labelStyle: TextStyle(

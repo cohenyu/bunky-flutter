@@ -224,14 +224,7 @@ class _HomeState extends State<Home> {
                 )
               ],
             ),
-            _load ? Padding(
-              padding: const EdgeInsets.only(top: 30.0),
-              child: SpinKitThreeBounce(
-                color: Colors.grey[600],
-                size: 25.0,
-              ),
-            ) :
-            Padding(
+            recentExpanses.isEmpty || _load ? SizedBox.shrink() : Padding(
 //              padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 30.0),
               padding: EdgeInsets.only(left: 25.0, top: 30.0, bottom: 10.0, right: 10.0),
               child: Row(
@@ -255,7 +248,15 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            Padding(
+//            _load ? Padding(
+//              padding: const EdgeInsets.only(top: 30.0),
+//              child: SpinKitThreeBounce(
+//                color: Colors.grey[600],
+//                size: 25.0,
+//              ),
+//            ) :
+//            ,
+              recentExpanses.isEmpty || _load ? SizedBox.shrink() :Padding(
               padding: EdgeInsets.only(left: 25.0, bottom: 25.0, right: 10.0),
               child: Container(
                 height: 140.0,
@@ -291,7 +292,6 @@ class _HomeState extends State<Home> {
       if(response.body.isNotEmpty){
         List jsonData = jsonDecode(response.body);
         for(var jsonItem in jsonData){
-
           ExpenseCard card = ExpenseCard(expense: Expense.fromJson(jsonItem),);
           if(mounted){
             setState(() {
@@ -305,6 +305,9 @@ class _HomeState extends State<Home> {
     } else {
       print('no expenses yet');
     }
+    setState(() {
+      _load = false;
+    });
 //
 //    List<Widget> expenses = [
 //      ExpenseCard(expense: Expense(title: 'Food', value: 20, category: 'Building Committee', date: '12.2.20', user: user)),
