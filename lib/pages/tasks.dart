@@ -12,9 +12,9 @@ class Tasks extends StatefulWidget {
 class _TasksState extends State<Tasks> {
 
   List<TasksItem> tasksList = [
-    TasksItem('yuval','wash','every week'),
-    TasksItem('yuval','clean','every week'),
-    TasksItem('yuval','living roon organize','every day')
+    TasksItem('every week','yuval','wash'),
+    TasksItem('every week','yuval','clean'),
+    TasksItem('every day','yuval','living roon organize')
   ];
 
   @override
@@ -203,7 +203,7 @@ class _TasksState extends State<Tasks> {
                       child: TextField(
                         controller: performerController,
                         decoration: InputDecoration(
-                            hintText: 'preformer',
+                            hintText: 'task name',
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black)
                             )
@@ -214,15 +214,26 @@ class _TasksState extends State<Tasks> {
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Container(
-                      child: TextField(
-                        controller: frequencyController,
-                        decoration: InputDecoration(
-                            hintText: 'frequency',
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)
-                            )
+                      child: RaisedButton(
+                        color: Colors.teal.withOpacity(0.2),
+                        child: Text("partisipans",
+                            style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0
                         ),
+                        ),
+                        onPressed: ()=> _showMultiSelect(context),
                       ),
+//                      child: TextField(
+//                        controller: frequencyController,
+//                        decoration: InputDecoration(
+//                            hintText: 'preformer',
+//                            enabledBorder: UnderlineInputBorder(
+//                                borderSide: BorderSide(color: Colors.black)
+//                            )
+//                        ),
+//                      ),
                     ),
                   ),
                   SizedBox(height: 10,),
@@ -277,13 +288,40 @@ class _TasksState extends State<Tasks> {
     });
   }
 
+
+
+  void _showMultiSelect(BuildContext context) async {
+
+     final items = <MultiSelectDialogItem<int>>[
+       MultiSelectDialogItem(1, 'Yuval'),
+       MultiSelectDialogItem(2, 'Miriel'),
+       MultiSelectDialogItem(3, 'OR'),
+       MultiSelectDialogItem(4, 'Eyme'),
+     ];
+
+    final selectedValues = await showDialog<Set<int>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelectDialog(
+          items: items,
+//          initialSelectedValues: [1,2].toSet(),
+        );
+      },
+    );
+
+    print(selectedValues);
+
+  }
+
+
 }
+
 
 
 class TasksItem extends StatelessWidget {
   final Task task;
 
-  TasksItem(String performer,String name,String frequency) : task = Task(performer: performer,name: name,frequency:frequency);
+  TasksItem(String frequency,String performer,String task_name) : task = Task(frequency: frequency,performer: performer,task_name:task_name);
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +352,7 @@ class TasksItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      this.task.name,
+                      this.task.task_name,
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 18.0,
@@ -343,3 +381,97 @@ class TasksItem extends StatelessWidget {
     );
   }
 }
+
+
+
+
+// ================== coped from stakeoverflow
+
+class MultiSelectDialogItem<V> {
+  const MultiSelectDialogItem(this.value, this.label);
+
+  final V value;
+  final String label;
+}
+
+class MultiSelectDialog<V> extends StatefulWidget {
+  MultiSelectDialog({Key key, this.items, this.initialSelectedValues}) : super(key: key);
+
+  final List<MultiSelectDialogItem<V>> items;
+  final Set<V> initialSelectedValues;
+
+  @override
+  State<StatefulWidget> createState() => _MultiSelectDialogState<V>();
+}
+
+class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
+  final _selectedValues = Set<V>();
+
+  void initState() {
+    super.initState();
+    if (widget.initialSelectedValues != null) {
+      _selectedValues.addAll(widget.initialSelectedValues);
+    }
+  }
+
+  void _onItemCheckedChange(V itemValue, bool checked) {
+    setState(() {
+      if (checked) {
+        _selectedValues.add(itemValue);
+      } else {
+        _selectedValues.remove(itemValue);
+      }
+    });
+  }
+
+  void _onCancelTap() {
+    Navigator.pop(context);
+  }
+
+  void _onSubmitTap() {
+    Navigator.pop(context, _selectedValues);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Select task partisipance'),
+      contentPadding: EdgeInsets.only(top: 12.0),
+      content: SingleChildScrollView(
+        child: ListTileTheme(
+          contentPadding: EdgeInsets.fromLTRB(14.0, 0.0, 24.0, 0.0),
+          textColor: Colors.teal,
+          child: ListBody(
+            children: widget.items.map(_buildItem).toList(),
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('CANCEL'),
+          color: Colors.teal,
+          onPressed: _onCancelTap,
+        ),
+        FlatButton(
+          child: Text('OK'),
+          color: Colors.teal,
+          onPressed: _onSubmitTap,
+        )
+      ],
+    );
+  }
+
+  Widget _buildItem(MultiSelectDialogItem<V> item) {
+    final checked = _selectedValues.contains(item.value);
+    return CheckboxListTile(
+      value: checked,
+      activeColor: Colors.amberAccent,
+      title: Text(item.label),
+//      checkColor: Colors.teal,
+      controlAffinity: ListTileControlAffinity.leading,
+      onChanged: (checked) => _onItemCheckedChange(item.value, checked),
+    );
+  }
+}
+
+// =================== overflow

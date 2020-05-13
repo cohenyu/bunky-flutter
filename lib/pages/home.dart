@@ -27,7 +27,7 @@ class _HomeState extends State<Home> {
   bool firstTime = true;
 
   List<Task> tasks = [
-    Task(performer: 'Or', name: 'throw the garbage out', frequency: 'everyday'),
+    Task(frequency: 'everyday',performer: 'Or', task_name: 'throw the garbage out'),
   ];
 
   @override
