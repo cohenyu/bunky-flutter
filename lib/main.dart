@@ -11,7 +11,7 @@ import 'package:bunky/pages/createApartment.dart';
 import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
 
-// Yuval - 12.5 23:17
+// Yuval - 14.5 00:33
 //miriel 13.5 17:00
 void main() => runApp(MaterialApp(
   initialRoute: '/login',
@@ -28,5 +28,4 @@ void main() => runApp(MaterialApp(
     '/balancing': (context) => Balancing(),
     '/register': (context) => Register(),
   },
-
 ));

@@ -30,12 +30,12 @@ class _DropDownNamesState extends State<DropDownNames> {
       validator: (value){
         print(value);
         if (value == null) {
-          return 'Select a roomate';
+          return 'Select roommate';
         }
         return null;
       },
       value: selected,
-      hint: Text('select roomate'),
+      hint: Text('Select roommate'),
       items: _dropdownValues.map((value) => DropdownMenuItem(
         child: Text(value.name,),
         value: value,
@@ -64,8 +64,10 @@ class _DropDownNamesState extends State<DropDownNames> {
           List jsonData = jsonDecode(response.body);
           List<User> usersNames = [];
           for(var jsonUser in jsonData){
-            User user = User.fromJson(jsonUser);
-            usersNames.add(user);
+            User roommate = User.fromJson(jsonUser);
+            if(roommate.userId != user.userId){
+              usersNames.add(roommate);
+            }
           }
           setState(() {
             _dropdownValues = usersNames;

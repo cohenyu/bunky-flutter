@@ -15,7 +15,12 @@ import 'package:http/http.dart' as http;
 
 enum Chart{
   month,
-  date
+  date,
+}
+
+enum Chart2{
+  user,
+  category,
 }
 
 class Expenses extends StatefulWidget {
@@ -28,16 +33,22 @@ class _ExpensesState extends State<Expenses> {
   bool refreshList = true;
   bool totalLoading = true;
   bool categoryLoading = true;
-  Map data = {};
+  bool removeDateChart = false;
+  bool reversing = false;
+
+  DateTime dateTimeExpense = DateTime.now();
+  DateTime dateTimeFrom = DateTime.now().subtract(Duration(days: 30));
+  DateTime dateTimeTo = DateTime.now();
+  DateTime selectedDate;
+
   FloatingActionButton fab;
   FloatingActionButton fabAdd;
   List<ExpenseItem> expensesList = [];
-  Future<List<ExpenseItem>> futureExpenseList;
   String url = 'https://bunkyapp.herokuapp.com';
-  int expenseId = 0;
-  DateTime dateTimeExpense = DateTime.now();
-  DateTime dateTimeChart = DateTime.now().subtract(Duration(days: 30));
+
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Map data = {};
   Map categories = {
     'Supermarket' : 1,
     'Water Bill' : 2,
@@ -47,32 +58,11 @@ class _ExpensesState extends State<Expenses> {
     'Internet' : 6,
     'Other': 7
   };
-  ScrollController scrollController;
-
-  static Map<String, double> totalMap = {
-//    "Or" : 120,
-//    "Yuval" : 67,
-//    "Miriel": 200,
-//    "Amy": 93,
-//    'matan': 20,
-  };
-
-
-
-  static Map<String, double> categoricalMap = {
-//    'Supermarket' : 1,
-//    'Water Bill' : 2,
-//    'Electric Bill': 3,
-//    'Rates': 4,
-//    'Building Committee' : 5,
-//    'Internet' : 6,
-//    'Other': 7
-  };
-
-  bool removeLast = false;
-  DateTime selectedDate;
+  static Map<String, double> totalMap = {};
+  static Map<String, double> categoricalMap = {};
   static Map<String, double> dateMap = {};
-  bool reversing = false;
+
+  ScrollController scrollController;
 
   int _current  = 0;
   List<T> map<T>(List list, Function handler){
@@ -389,29 +379,25 @@ class _ExpensesState extends State<Expenses> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              IconButton(
-                                icon: Icon(Icons.close),
-                                color: Colors.grey,
-                                onPressed: (){
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          ),
                           Text(
-                            'Choose a date to see the balance from that date to today:',
+                            'Show expenses',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 6.0,),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
                               SizedBox(width: 20.0,),
-                              Text('${dateTimeChart.day}.${dateTimeChart.month}.${dateTimeChart.year}'),
+                              Text(
+                                'From:',
+                                style: TextStyle(fontSize: 18.0),
+                              ),
+//                              SizedBox(width: 4.0,),
+                              Text(
+                                  '${dateTimeFrom.day}/${dateTimeFrom.month}/${dateTimeFrom.year.toString().substring(2)}',
+                                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                              ),
                               RaisedButton(
                                 color: Colors.deepOrange[200],
                                 shape: CircleBorder(),
@@ -419,7 +405,7 @@ class _ExpensesState extends State<Expenses> {
                                 onPressed: (){
                                   showDatePicker(
                                     context: context,
-                                    initialDate: dateTimeChart == null ? DateTime.now() : dateTimeChart,
+                                    initialDate: dateTimeFrom == null ? DateTime.now() : dateTimeFrom,
                                     firstDate: DateTime(2020),
                                     lastDate: DateTime(2222),
                                     builder: (BuildContext context, Widget child){
@@ -434,7 +420,50 @@ class _ExpensesState extends State<Expenses> {
                                   ).then((dateValue){
                                     setState(() {
                                       if(dateValue != null){
-                                        dateTimeChart = dateValue;
+                                        dateTimeFrom = dateValue;
+                                      }
+                                    });
+                                  });
+                                },
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              SizedBox(width: 20.0,),
+                              Text(
+                                'To:',
+                                style: TextStyle(fontSize: 18.0),
+                              ),
+                              SizedBox(width: 15.0,),
+                              Text(
+                                '${dateTimeTo.day}/${dateTimeTo.month}/${dateTimeTo.year.toString().substring(2)}',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                              ),
+                              RaisedButton(
+                                color: Colors.deepOrange[200],
+                                shape: CircleBorder(),
+                                child: Icon(Icons.today),
+                                onPressed: (){
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: dateTimeTo == null ? DateTime.now() : dateTimeTo,
+                                    firstDate: DateTime(2020),
+                                    lastDate: DateTime(2222),
+                                    builder: (BuildContext context, Widget child){
+                                      return Theme(
+                                        data: ThemeData.light().copyWith(
+                                            primaryColor: Colors.teal[100],
+                                            accentColor: Colors.deepOrange[300]
+                                        ),
+                                        child: child,
+                                      );
+                                    },
+                                  ).then((dateValue){
+                                    setState(() {
+                                      if(dateValue != null){
+                                        dateTimeTo = dateValue;
                                       }
                                     });
                                   });
@@ -443,26 +472,48 @@ class _ExpensesState extends State<Expenses> {
                             ],
                           ),
                           SizedBox(height: 10.0,),
-                          RaisedButton(
-                            color: Colors.pink[800],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(10.0),
-                            ),
-                            child: Text(
-                              "Add",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15.0
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              RaisedButton(
+                                color: Colors.pink[800],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0
+                                  ),
+                                ),
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                },
                               ),
-                            ),
-                            onPressed: (){
-                              String year = dateTimeChart.year.toString();
-                              year = year.substring(2, year.length);
-                              String date = '${dateTimeChart.day}.${dateTimeChart.month}.$year';
-                              addDateChart(dateTimeChart, "balance from $date", false);
-                              Navigator.pop(context);
-                            },
+                              RaisedButton(
+                                color: Colors.pink[800],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
+                                child: Text(
+                                  "OK",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0
+                                  ),
+                                ),
+                                onPressed: (){
+                                  String year = dateTimeFrom.year.toString();
+                                  year = year.substring(2, year.length);
+                                  String date = '${dateTimeFrom.day}.${dateTimeFrom.month}.$year';
+                                  addDateChart(dateTimeFrom, "balance from $date", false);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
                           )
                         ],
                       ),
@@ -479,14 +530,14 @@ class _ExpensesState extends State<Expenses> {
   void addDateChart(DateTime date, String title, bool isPercentage){
     selectedDate = date;
     setState(() {
-      if(removeLast){
-        balances.removeLast();
+      if(removeDateChart){
+        balances.removeAt(0);
       } else {
-        removeLast = true;
+        removeDateChart = true;
       }
-      balances.add(BalanceCard(title: title , map: dateMap, isPercentage: isPercentage,));
+      balances.insert(0, BalanceCard(title: title , map: dateMap, isPercentage: isPercentage,));
     });
-//    sumExpensePerUser(Chart.date, date);
+    sumExpensePerUser(Chart.date, date);
   }
 
   void showAddDialog(){
@@ -518,7 +569,7 @@ class _ExpensesState extends State<Expenses> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Text(
-                            'Add new Expanse',
+                            'Add new expense',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -539,7 +590,7 @@ class _ExpensesState extends State<Expenses> {
                             child: TextFormField(
                               controller: titleController,
                               decoration: InputDecoration(
-                                  hintText: 'title',
+                                  hintText: 'Title',
                                   enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.black)
                                   )
@@ -562,7 +613,7 @@ class _ExpensesState extends State<Expenses> {
                               inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
                               controller: valueController,
                               decoration: InputDecoration(
-                                hintText: 'value',
+                                hintText: 'Value',
                                 enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.black)
                                 ),
@@ -611,6 +662,9 @@ class _ExpensesState extends State<Expenses> {
                             children: <Widget>[
                               RaisedButton(
                                 color: Colors.pink[800],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
                                 child: Text(
                                   "Cancel",
                                   style: TextStyle(
@@ -625,6 +679,9 @@ class _ExpensesState extends State<Expenses> {
                               ),
                               RaisedButton(
                                 color: Colors.pink[800],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
                                 child: Text(
                                   "Add",
                                   style: TextStyle(
@@ -759,6 +816,115 @@ class _ExpensesState extends State<Expenses> {
 //      showSnackBar('No Internet Connection');
 //    }
   }
+
+
+//  **********************************************************************************************
+  // This function returns n expenses of the apartment
+  Future<void> getExpensesByDate(DateTime dateTimeFrom, DateTime dateTimeTo) async{
+    User user = data['user'];
+    String dateFrom = dateTimeFrom.toString().split(' ')[0];
+    String dateTo = dateTimeTo.toString().split(' ')[0];
+
+    List<ExpenseItem> expenseItems = [];
+
+//    try{
+    final response = await http.get(
+      '$url/getAptExpensesWithDate?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },).timeout(const Duration(seconds: 7));
+
+    List jsonData = jsonDecode(response.body);
+//      var reversedList = List.from(jsonData.reversed);
+    if(response.statusCode == 200){
+      print('200 OK');
+      if(response.body.isNotEmpty){
+        for(var jsonItem in jsonData){
+          ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));
+          setState(() {
+            expensesList.add(item);
+          });
+          expenseItems.add(item);
+        }
+
+      }
+    } else {
+      print('no expenses yet');
+    }
+//    }catch(_){
+//      print('point 1');
+//      showSnackBar('No Internet Connection');
+//    }
+  }
+
+  Future<void>  getChart (Chart2 kind, DateTime dateTimeFrom, DateTime dateTimeTo) async{
+    setState(() {
+      if(kind == Chart2.user){
+        categoryLoading = true;
+      } else{
+        totalLoading = true;
+      }
+    });
+
+    String specificUrl = kind == Chart2.user ? 'computeSumExpenses': 'computeSumExpensesPerCat';
+    User user = data['user'];
+    String dateFrom = dateTimeFrom.toString().split(' ')[0];
+    String dateTo = dateTimeTo.toString().split(' ')[0];
+
+    final response = await http.post(
+        '$url/$specificUrl', headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    }, body: jsonEncode({
+      'user': user,
+      'dateFrom': dateFrom,
+      'dateTo': dateTo,
+    }
+    )).timeout(const Duration(seconds: 7));
+    Map<String, dynamic> jsonData = jsonDecode(response.body);
+
+    if(response.statusCode == 200){
+      Map<String, double> tmpMap = {};
+      bool haveExpenses = false;
+      for(var key in jsonData.keys){
+        if(jsonData[key] != 0){
+          haveExpenses = true;
+        }
+        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+      }
+
+      if(haveExpenses){
+        if(kind == Chart2.user){
+          setState(() {
+            totalMap.clear();
+            totalMap.addAll(tmpMap);
+          });
+        } else {
+          setState(() {
+            categoricalMap.clear();
+            categoricalMap.addAll(tmpMap);
+          });
+        }
+      }
+
+    } else {
+      showSnackBar('Error');
+    }
+    setState(() {
+      if(kind == Chart2.user){
+        categoryLoading = false;
+      } else{
+        totalLoading = false;
+      }
+    });
+
+//    try {
+
+//    } catch (_) {
+//      showSnackBar('No Internet Connection');
+//    }
+  }
+
+//  **********************************************************************************************
+
 
 // This function delete expense from the expenses list and sends http delete to the server
   Future<void> deleteExpanse(int index) async{
