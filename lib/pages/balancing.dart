@@ -19,18 +19,18 @@ class Balancing extends StatefulWidget {
 class _BalancingState extends State<Balancing> {
   bool _autoValidate = false;
   bool ready = false;
-  bool firstTime = true;
+  bool refreshBalance = true;
   User selectedUser;
   bool isChanged = false;
   Color primaryColor = Colors.teal;
   Map data = {};
   String url = 'https://bunkyapp.herokuapp.com';
-  List<Widget> credit = [
+  List<ChargeCard> credit = [
     ChargeCard('yuval', '100'),
     ChargeCard('Or', '240'),
     ChargeCard('Miriel', '240'),
   ];
-  List<Widget> debt = [
+  List<ChargeCard> debt = [
     ChargeCard('yuval', '-96'),
     ChargeCard('Miriel', '289')
   ];
@@ -44,8 +44,8 @@ class _BalancingState extends State<Balancing> {
   @override
   Widget build(BuildContext context) {
     data  = ModalRoute.of(context).settings.arguments;
-    if(firstTime){
-      firstTime = false;
+    if(refreshBalance){
+      refreshBalance = false;
       getBalance();
     }
     bool isBalanceExist  = debt.isNotEmpty || credit.isNotEmpty;
@@ -209,65 +209,91 @@ class _BalancingState extends State<Balancing> {
       isLoading = true;
     });
     print(refund.toJson());
-    await Future.delayed(const Duration(seconds: 4), (){});
+    final response = await http.post(
+        '$url/addRefund', headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    }, body: jsonEncode(refund.toJson(),)).timeout(const Duration(seconds: 5));
+
+    print(jsonDecode(response.body));
+    if(response.statusCode == 200){
+      print('200 OK - refund');
+    }
+
     setState(() {
-      if(credit.isNotEmpty){
-        credit.removeLast();
-      }
-      isLoading = false;
+      refreshBalance = true;
     });
   }
 
-  Future<void> getBalance()async{
-    await Future.delayed(const Duration(seconds: 4), (){});
-    setState(() {
-      credit.removeLast();
-      isLoading = false;
-    });
-  }
-
-
-//  Future<void> getBalance() async{
-//    User user = data['user'];
-//
-////    try {
-//    final response = await http.post(
-//        '$url/computeUserBalance', headers: <String, String>{
-//      'Content-Type': 'application/json; charset=UTF-8',
-//    }, body: jsonEncode({
-//      'user': user,
-//    }
-//    )).timeout(const Duration(seconds: 3));
-//    print(jsonDecode(response.body));
-//    if(response.statusCode == 200){
-//      print('200 OK');
-//    }
-////    Map<String, dynamic> jsonData = jsonDecode(response.body);
-////    print(jsonData);
-////    if(response.statusCode == 200){
-////      Map<String, double> tmpMap = {};
-////      for(var key in jsonData.keys){
-////        print(key);
-////        print(jsonData[key].runtimeType);
-////
-////        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
-////      }
-////
-////      setState(() {
-////        categoricalMap.clear();
-////        categoricalMap.addAll(tmpMap);
-////      });
-////
-////    } else {
-////      showSnackBar('Error');
-////    }
-////    } catch (_) {
-////      showSnackBar('No Internet Connection');
-////    }
+//  Future<void> getBalance()async{
+//    await Future.delayed(const Duration(seconds: 4), (){});
 //    setState(() {
+//      credit.removeLast();
 //      isLoading = false;
 //    });
 //  }
+
+
+  Future<void> getBalance() async{
+    User user = data['user'];
+
+//    try {
+    final response = await http.post(
+        '$url/computeUserBalance', headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    }, body: jsonEncode(user.toJson())).timeout(const Duration(seconds: 5));
+
+    print(jsonDecode(response.body));
+    if(response.statusCode == 200){
+      print('200 OK');
+      if(response.body.isNotEmpty){
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        Map<String, dynamic> userDebt = jsonData['userDebt'];
+        Map<String, dynamic> userCredit = jsonData['userCredit'];
+
+        List<ChargeCard> tmpCredit = [];
+        List<ChargeCard> tmpDebt = [];
+
+        for(var key in userDebt.keys){
+          tmpDebt.add(ChargeCard(key, userDebt[key].toString()));
+        }
+
+        for(var key in userCredit.keys){
+          tmpCredit.add(ChargeCard(key, userCredit[key].toString()));
+        }
+        setState(() {
+          credit = tmpCredit;
+          debt = tmpDebt;
+          isLoading = false;
+        });
+
+      }
+    }
+//    Map<String, dynamic> jsonData = jsonDecode(response.body);
+//    print(jsonData);
+//    if(response.statusCode == 200){
+//      Map<String, double> tmpMap = {};
+//      for(var key in jsonData.keys){
+//        print(key);
+//        print(jsonData[key].runtimeType);
+//
+//        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+//      }
+//
+//      setState(() {
+//        categoricalMap.clear();
+//        categoricalMap.addAll(tmpMap);
+//      });
+//
+//    } else {
+//      showSnackBar('Error');
+//    }
+//    } catch (_) {
+//      showSnackBar('No Internet Connection');
+//    }
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   void showRefundDialog(){
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -370,7 +396,9 @@ class _BalancingState extends State<Balancing> {
                                         return;
                                       }
                                       formKey.currentState.save();
-                                      postRefund(Refund(selectedUser, valueController.text));
+                                      String refundDate = DateTime.now().toString().split(' ')[0];
+                                      Refund refund = Refund(user: data['user'], receiver: selectedUser, amount: double.parse(valueController.text),  date: refundDate);
+                                      postRefund(refund);
                                       Navigator.pop(context);
                                     },
                                   ),

@@ -14,7 +14,7 @@ import 'package:bunky/pages/register.dart';
 // Yuval - 12.5 23:17
 //miriel 13.5 17:00
 void main() => runApp(MaterialApp(
-  initialRoute: '/tasks',
+  initialRoute: '/login',
   routes: {
     '/': (context) => Loading(),
     '/login': (context) => Login(),
