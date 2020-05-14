@@ -166,7 +166,7 @@ class _ExpensesState extends State<Expenses> {
                             style: TextStyle(
                                 color: Colors.black.withOpacity(0.2),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 32.0
+                                fontSize: 34.0
                             ),
                           ),
                         ],

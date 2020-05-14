@@ -186,7 +186,7 @@ class _CreateApartmentState extends State<CreateApartment> {
     var response = await http.post('https://bunkyapp.herokuapp.com/newApt',headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     }, body: jsonEncode({
-      'user': user,
+      'user': user.toJson(),
       'aptName': 'yuval&miriel',
     }
     ));

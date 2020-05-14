@@ -189,7 +189,7 @@ class _RegisterState extends State<Register> {
         'name': name,
         'mail': mail,
       }
-      )).timeout(const Duration(seconds: 3));
+      )).timeout(const Duration(seconds: 10));
       setState(() {
         _loading = false;
       });
