@@ -32,9 +32,9 @@ class _BalanceCardState extends State<BalanceCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: Container(
-        width: 350.0,
+        width: 360.0,
         decoration: BoxDecoration(
 //            color: Colors.lime[300],
             color: Colors.amber[200],
@@ -48,7 +48,7 @@ class _BalanceCardState extends State<BalanceCard> {
             ]
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+          padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
           child: widget.map.isEmpty ? noExpenses() : balance(),
         ),
       ),
@@ -85,22 +85,31 @@ class _BalanceCardState extends State<BalanceCard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              this.widget.title,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold
+            Padding(
+              padding: const EdgeInsets.only(top: 7.0),
+              child: Text(
+                this.widget.title,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold
+                ),
               ),
             )
           ],
         ),
         Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 18.0),
-            child: MyChart(data: this.widget.map, isPercentage: widget.isPercentage,),
-          ),
-        )
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: MyChart(data: this.widget.map, isPercentage: widget.isPercentage,),
+            )
+        ),
+//        Center(
+//          child: Padding(
+//            padding: const EdgeInsets.only(top: 15.0, left: 5),
+//            child: MyChart(data: this.widget.map, isPercentage: widget.isPercentage,),
+//          ),
+//        )
       ],
     );
   }

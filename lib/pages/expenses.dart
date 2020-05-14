@@ -98,8 +98,8 @@ class _ExpensesState extends State<Expenses> {
     totalMap = {};
     categoricalMap = {};
     dateMap = {};
-    balances.add(BalanceCard(title: 'Monthly Total Expenses', map: totalMap, isPercentage: false,));
-    balances.add(BalanceCard(title: 'Monthly Categorical Expenses', map: categoricalMap, isPercentage: false,));
+    balances.add(BalanceCard(title: 'Total Expenses', map: totalMap, isPercentage: false,));
+    balances.add(BalanceCard(title: 'Categorical Expenses', map: categoricalMap, isPercentage: false,));
     scrollController = ScrollController();
     fab = FloatingActionButton(
       backgroundColor: Colors.teal[300].withOpacity(0.9),
@@ -157,15 +157,15 @@ class _ExpensesState extends State<Expenses> {
           SingleChildScrollView(
             controller: scrollController,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 25,),
                 Padding(
-                  padding: EdgeInsets.only(top: 25.0, left: 25.0, bottom: 20.0, right: 25.0),
+                  padding: EdgeInsets.only(top: 50.0, left: 25.0, bottom: 20.0, right: 25.0),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
                             'Expenses',
@@ -175,171 +175,58 @@ class _ExpensesState extends State<Expenses> {
                                 fontSize: 34.0
                             ),
                           ),
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                '12/2/20 - 15/2/20',
+                                style: TextStyle(fontSize: 18.0, color: Colors.black.withOpacity(0.5)),
+                              ),
+                              SizedBox(width: 5.0,),
+                              InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    showChartDialog();
+                                  });
+                                },
+                                child: Icon(Icons.edit, color: Colors.pink,),
+                              )
+                            ],
+                          )
                         ],
                       ),
-                      RaisedButton.icon(
-                        color: Colors.teal,
-                        icon: Icon(Icons.insert_chart),
-                        onPressed: (){
-                          Navigator.pushNamed(context, '/balancing', arguments: {'user': data['user']});
-                        },
-                        label: Text(
-                          "Balance",
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Stack(
-                  children: <Widget>[
-                    (!totalLoading && !categoryLoading) ? CarouselSlider(
-                      options: CarouselOptions(
-                          height: 425.0,
-                          autoPlay: true,
-                          enlargeCenterPage: false,
-                          onPageChanged: (index,  reason){
-                            setState(() {
-                              _current = index;
-                            });
-                          }
-                      ),
-                      items: balances.map((i){
-                        return Builder(
-                          builder: (BuildContext context){
-                            return i;
-                          },
-                        );
-                      }).toList(),
-                    ) : Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          height: 410,
-                          width: 310,
-                          child: Center(
-                            child: SpinKitCircle(
-                              color: Colors.grey[600],
-                              size: 50.0,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0.0),
+                        child: Container(
+                          height: 55.0,
+                          width: 140,
+                          child: RaisedButton.icon(
+                            color: Colors.teal,
+                            icon: Icon(Icons.insert_chart),
+                            onPressed: (){
+                              Navigator.pushNamed(context, '/balancing', arguments: {'user': data['user']});
+                            },
+                            label: Text(
+                              "Balance",
+                              style: TextStyle(fontSize: 17.0),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 380, left: 40),
-                      child: FloatingActionButton(
-                        heroTag: "tag1",
-                        onPressed: (){
-                          print(balances);
-                          setState(() {
-                            showChartDialog();
-                          });
-                          print(balances);
-                        },
-                        backgroundColor: Colors.amber[100],
-                        elevation: 3,
-                        child: Icon(
-                          Icons.event,
-                          color: Colors.amber[300],
-                          size: 30.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: map(balances, (index, url){
-                    return Container(
-                      width: 10.0,
-                      height: 10.0,
-                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _current == index ? Colors.grey[800] : Colors.grey
-                      ),
-                    );
-                  })
-                ),
-                expensesList.isEmpty ? Padding(
-                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 6.0),
-                  child: Text(
-                    'No Expenses Yet',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(0.7),
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ): Padding(
-                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top:6.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        'Last Expenses',
-                        style: TextStyle(
-                            color: Colors.black.withOpacity(0.7),
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Icon(
-                          Icons.arrow_drop_down
-                        ),
                       )
                     ],
                   ),
                 ),
-            SizedBox(height: 5.0),
-            Padding(
-              padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
-              child: ListView.builder(
-                physics: PageScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: expensesList.length,
-                itemBuilder: (context, int index){
-                  return Dismissible(
-                    key: Key('${expensesList[index].expanse.id}'),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (direction){
-                      deleteExpanse(index);
-                      expensesList.removeAt(index);
-                      setState(() {
-                      });
-                    },
-                    background: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15.0),
-                      child: Container(
-                        color: Colors.redAccent,
-                        child: Center(
-                          child: ListTile(
-                            trailing: Icon(Icons.delete, color: Colors.white, size: 30.0,),
-                          ),
-                        ),
-                      ),
-                    ),
-                    child: expensesList[index],
-                  );
-                },
-              ),
-            ),
-                expensesList.isNotEmpty ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 150.0),
-                  child: Divider(
-                    thickness: 4.0,
-                  ),
-                ): SizedBox.shrink(),
-                SizedBox(height: 30,),
+                Column(
+                  children:  expensesList.isNotEmpty ? showExpenses() : hideExpenses(),
+                )
+
+
               ],
             ),
           ),
+
 //          Padding(
 //            padding: const EdgeInsets.all(10.0),
 //            child: Align(
@@ -363,7 +250,180 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+  List<Widget> hideExpenses(){
+    return [
+      Center(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 100,),
+            Container(
+              height: 90,
+              width: 150,
+              child: Stack(
+                children: <Widget>[
+                  Positioned(
+                    child: Icon(
+                      Icons.star,
+                      size: 100.0,
+                      color: Colors.teal.withOpacity(0.2),
+                    ),
+                    left: 45,
+                  ),
+                  Positioned(
+                    child: Icon(
+                      Icons.star_border,
+                      size: 40.0,
+                      color: Colors.teal.withOpacity(0.2),
+                    ),
+                    top: 40,
+                    left: 25,
+                  )
+                ],
+              ),
+            ),
+            Text(
+                'no expenses',
+              style: TextStyle(
+                fontSize: 40.0,
+                color: Colors.black.withOpacity(0.4)
+              ),
+            )
+          ],
+        ),
+      )
+       ,
+    ];
+  }
 
+  List<Widget> showExpenses(){
+    return [
+      (!totalLoading && !categoryLoading) ? CarouselSlider(
+        options: CarouselOptions(
+            aspectRatio: 2.0,
+            height: 320.0,
+            autoPlay: true,
+            enlargeCenterPage: false,
+            onPageChanged: (index,  reason){
+              setState(() {
+                _current = index;
+              });
+            }
+        ),
+        items: balances.map((i){
+          return Builder(
+            builder: (BuildContext context){
+              return i;
+            },
+          );
+        }).toList(),
+      ) : Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            height: 320,
+            width: 310,
+            child: Center(
+              child: SpinKitCircle(
+                color: Colors.grey[600],
+                size: 50.0,
+              ),
+            ),
+          ),
+        ],
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: map(balances, (index, url){
+              return Container(
+                width: 10.0,
+                height: 10.0,
+                margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 2.0),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _current == index ? Colors.grey[800] : Colors.grey
+                ),
+              );
+            })
+        ),
+      ),
+      //                expensesList.isEmpty ? Padding(
+//                  padding: EdgeInsets.only(left: 25.0, right: 25.0,),
+//                  child: Text(
+//                    'No Expenses Yet',
+//                    style: TextStyle(
+//                        color: Colors.black.withOpacity(0.7),
+//                        fontSize: 20.0,
+//                        fontWeight: FontWeight.bold
+//                    ),
+//                  ),
+//                ): Padding(
+//                  padding: EdgeInsets.only(left: 25.0, right: 25.0),
+//                  child: Row(
+//                    children: <Widget>[
+//                      Text(
+//                        'Expenses',
+//                        style: TextStyle(
+//                            color: Colors.black.withOpacity(0.7),
+//                            fontSize: 20.0,
+//                            fontWeight: FontWeight.bold
+//                        ),
+//                      ),
+//                      Padding(
+//                        padding: const EdgeInsets.only(top: 5.0),
+//                        child: Icon(
+//                          Icons.arrow_drop_down
+//                        ),
+//                      )
+//                    ],
+//                  ),
+//                ),
+      Padding(
+        padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
+        child: ListView.builder(
+          physics: PageScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: expensesList.length,
+          itemBuilder: (context, int index){
+            return Dismissible(
+              key: Key('${expensesList[index].expanse.id}'),
+              direction: DismissDirection.endToStart,
+              onDismissed: (direction){
+                deleteExpanse(index);
+                expensesList.removeAt(index);
+                setState(() {
+                });
+              },
+              background: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: Container(
+                  color: Colors.redAccent,
+                  child: Center(
+                    child: ListTile(
+                      trailing: Icon(Icons.delete, color: Colors.white, size: 30.0,),
+                    ),
+                  ),
+                ),
+              ),
+              child: expensesList[index],
+            );
+          },
+        ),
+      ),
+      expensesList.isNotEmpty ? Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 150.0),
+        child: Divider(
+          thickness: 4.0,
+        ),
+      ): SizedBox.shrink(),
+      SizedBox(height: 30,),
+
+
+    ];
+  }
 
   void showChartDialog(){
     showDialog(
@@ -386,7 +446,7 @@ class _ExpensesState extends State<Expenses> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Text(
-                            'Show expenses',
+                            'Show Expenses',
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),

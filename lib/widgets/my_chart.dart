@@ -17,14 +17,14 @@ class _MyChartState extends State<MyChart> {
   Widget build(BuildContext context) {
     return PieChart(
       dataMap: widget.data,
-      animationDuration: Duration(milliseconds: 2000),
-      chartLegendSpacing: 17.0,
+      animationDuration: Duration(milliseconds: 0),
+      chartLegendSpacing: 25.0,
       legendStyle: TextStyle(
           fontSize: 15.0,
           fontWeight: FontWeight.bold,
           color: Colors.black.withOpacity(0.8)
       ),
-      chartRadius:widget.data.length < 5 ?  MediaQuery.of(context).size.width / 2: MediaQuery.of(context).size.width / 2.7,
+      chartRadius: MediaQuery.of(context).size.width / 3.0,
       showChartValuesInPercentage: this.widget.isPercentage,
       showChartValues: true,
       showChartValuesOutside: true,
@@ -39,7 +39,7 @@ class _MyChartState extends State<MyChart> {
         Colors.indigo,
       ],
       showLegends: true,
-      legendPosition: LegendPosition.bottom,
+      legendPosition: LegendPosition.right,
       decimalPlaces: 0,
       showChartValueLabel: true,
       initialAngle: 0,
