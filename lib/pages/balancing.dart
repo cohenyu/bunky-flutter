@@ -17,7 +17,7 @@ class Balancing extends StatefulWidget {
 }
 
 class _BalancingState extends State<Balancing> {
-  bool _autoValidate = false;
+//  bool _autoValidate = false;
   bool ready = false;
   bool refreshBalance = true;
   User selectedUser;
@@ -131,7 +131,7 @@ class _BalancingState extends State<Balancing> {
                                   size: 50.0,
                                 ),
                                 Text(
-                                  'debt',
+                                  'Debt',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0
@@ -158,7 +158,7 @@ class _BalancingState extends State<Balancing> {
                                   curve: Curves.bounceIn,
                                 ),
                                 Text(
-                                  'credit',
+                                  'Credit',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0
@@ -184,7 +184,7 @@ class _BalancingState extends State<Balancing> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "refund",
+                        "Refund",
                         style: TextStyle(fontSize: 20.0),
                       ),
                     ),
@@ -296,6 +296,7 @@ class _BalancingState extends State<Balancing> {
   }
 
   void showRefundDialog(){
+    bool _autoValidate = false;
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     TextEditingController valueController = new TextEditingController();
 
@@ -339,15 +340,24 @@ class _BalancingState extends State<Balancing> {
                                 padding: const EdgeInsets.symmetric(horizontal: 2),
                                 child: TextFormField(
                                   validator: (value){
+                                    double amount;
+                                    try{
+                                      amount = double.parse(value);
+                                      if(amount < 0){
+                                        return 'Invalid Amount';
+                                      }
+                                    } catch(_){
+                                      return 'Invalid Amount';
+                                    }
                                     if (value.isEmpty) {
                                       return 'Value is required';
                                     }
                                     return null;
                                   },
-                                  inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                  keyboardType: TextInputType.number,
                                   controller: valueController,
                                   decoration: InputDecoration(
-                                    hintText: 'value',
+                                    hintText: 'Value',
                                     enabledBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(color: Colors.black)
                                     ),

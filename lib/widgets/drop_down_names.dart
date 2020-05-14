@@ -30,12 +30,12 @@ class _DropDownNamesState extends State<DropDownNames> {
       validator: (value){
         print(value);
         if (value == null) {
-          return 'Select roommate';
+          return 'Select Roommate';
         }
         return null;
       },
       value: selected,
-      hint: Text('Select roommate'),
+      hint: Text('Select Roommate'),
       items: _dropdownValues.map((value) => DropdownMenuItem(
         child: Text(value.name,),
         value: value,

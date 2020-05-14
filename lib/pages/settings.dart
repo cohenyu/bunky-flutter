@@ -182,24 +182,12 @@ class _SettingsState extends State<Settings> {
                       ),
                       color: Colors.grey[300],
                       onPressed: (){
+                        Navigator.pushReplacementNamed(context, '/login');
                       },
                       child: Text(
                         "Log Out",
                       ),
                     )
-//                    InkWell(
-//                      onTap: (){
-//                        Navigator.pushReplacementNamed(context, '/login');
-//                      },
-//                      child: Text(
-//                        'Log Out',
-//                        style: TextStyle(
-//                            color: Colors.black.withOpacity(0.7),
-//                            fontWeight: FontWeight.bold,
-//                          fontSize: 20.0
-//                        ),
-//                      ),
-//                    ),
                   ],
                 ),
               )

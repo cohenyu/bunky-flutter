@@ -58,9 +58,9 @@ class _ExpensesState extends State<Expenses> {
     'Internet' : 6,
     'Other': 7
   };
-  static Map<String, double> totalMap = {};
-  static Map<String, double> categoricalMap = {};
-  static Map<String, double> dateMap = {};
+  static Map<String, double> totalMap;
+  static Map<String, double> categoricalMap;
+  static Map<String, double> dateMap;
 
   ScrollController scrollController;
 
@@ -74,8 +74,6 @@ class _ExpensesState extends State<Expenses> {
   }
 
   List<Widget> balances = [
-    BalanceCard(title: 'Monthly Total Expenses', map: totalMap, isPercentage: false,),
-    BalanceCard(title: 'Monthly Categorical Expenses', map: categoricalMap, isPercentage: false,),
 //    BalanceCard(title: 'Total Balance', map: totalMap, isPercentage: true,),
 //    BalanceCard(title: 'Categorical Balance', map: categoricalMap, isPercentage: true,),
   ];
@@ -83,6 +81,7 @@ class _ExpensesState extends State<Expenses> {
   @override
   void setState(fn) {
     if(mounted){
+
       super.setState(fn);
     }
   }
@@ -93,8 +92,14 @@ class _ExpensesState extends State<Expenses> {
     }
     return fabAdd;
   }
+
   @override
   void initState() {
+    totalMap = {};
+    categoricalMap = {};
+    dateMap = {};
+    balances.add(BalanceCard(title: 'Monthly Total Expenses', map: totalMap, isPercentage: false,));
+    balances.add(BalanceCard(title: 'Monthly Categorical Expenses', map: categoricalMap, isPercentage: false,));
     scrollController = ScrollController();
     fab = FloatingActionButton(
       backgroundColor: Colors.teal[300].withOpacity(0.9),
@@ -129,6 +134,7 @@ class _ExpensesState extends State<Expenses> {
     });
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -546,6 +552,7 @@ class _ExpensesState extends State<Expenses> {
     TextEditingController valueController = new TextEditingController();
     int categoryId;
     String category;
+    bool _autoValidate = false;
 
     showDialog(
       context: context,
@@ -563,13 +570,14 @@ class _ExpensesState extends State<Expenses> {
                     height: 340,
                     width: 100,
                     child: Form(
+                      autovalidate: _autoValidate,
                       key:  formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Text(
-                            'Add new expense',
+                            'Add Expense',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -601,16 +609,23 @@ class _ExpensesState extends State<Expenses> {
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             child: TextFormField(
                               validator: (value){
-                                print('the value in int ${int.parse(value)}');
+                                double amount;
+                                try{
+                                  amount = double.parse(value);
+                                  print(amount);
+                                  if(amount < 1){
+                                    return 'Invalid Amount';
+                                  }
+                                } catch(_){
+                                  return 'Invalid Amount';
+                                }
                                 if (value.isEmpty) {
                                   return 'Value is required';
                                 }
-                                if(int.parse(value) < 1){
-                                  return 'Invalid Amount';
-                                }
                                 return null;
                               },
-                              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+//                              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                              keyboardType: TextInputType.number,
                               controller: valueController,
                               decoration: InputDecoration(
                                 hintText: 'Value',
@@ -692,6 +707,9 @@ class _ExpensesState extends State<Expenses> {
                                 ),
                                 onPressed: (){
                                   if(!formKey.currentState.validate()){
+                                    setState(() {
+                                      _autoValidate = true;
+                                    });
                                     return;
                                   }
                                   formKey.currentState.save();
