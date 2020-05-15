@@ -36,6 +36,7 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    data = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       key: _scaffoldKey,
       bottomNavigationBar: BottomNavyBar(),
@@ -73,7 +74,7 @@ class _SettingsState extends State<Settings> {
                 color: Colors.teal[400],
                 child: ListTile(
                   onTap: (){},
-                  title: Text('yuval cohen', style: TextStyle(fontSize: 18.0),),
+                  title: Text('${data['user'].name}', style: TextStyle(fontSize: 18.0),),
                   trailing: Icon(Icons.edit),
                 ),
               ),

@@ -29,8 +29,7 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
-  bool refreshCharts = true;
-  bool refreshList = true;
+  bool isLoading = true;
   bool totalLoading = true;
   bool categoryLoading = true;
   bool removeDateChart = false;
@@ -133,21 +132,21 @@ class _ExpensesState extends State<Expenses> {
       }
     });
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      print(MediaQuery.of(context).size.toString());
+      data = ModalRoute.of(context).settings.arguments;
+      setState(() {
+        getExpenses();
+        updateExpenses();
+      });
+
+    });
   }
 
 
   @override
   Widget build(BuildContext context) {
-    data  = ModalRoute.of(context).settings.arguments;
-    if(refreshCharts){
-      refreshCharts = false;
-      sumExpensePerUser(Chart.month, DateTime.now().subtract(Duration(days: 30)));
-      sumExpensePerCategory();
-    }
-    if(refreshList){
-      refreshList = false;
-      getExpenses();
-    }
     return Scaffold(
       key: _scaffoldKey,
       bottomNavigationBar: BottomNavyBar(),
@@ -218,33 +217,21 @@ class _ExpensesState extends State<Expenses> {
                     ],
                   ),
                 ),
-                Column(
+                isLoading ?  Container(
+                  height: 320,
+                  width: 310,
+                  child: Center(
+                    child: SpinKitCircle(
+                      color: Colors.grey[600],
+                      size: 50.0,
+                    ),
+                  ),
+                ) : Column(
                   children:  expensesList.isNotEmpty ? showExpenses() : hideExpenses(),
                 )
-
-
               ],
             ),
           ),
-
-//          Padding(
-//            padding: const EdgeInsets.all(10.0),
-//            child: Align(
-//              alignment: Alignment.bottomRight,
-//              child: FloatingActionButton(
-//                heroTag: "tag2",
-//                child: Icon(
-//                    Icons.add
-//                ),
-//                onPressed: (){
-//                  setState(() {
-//                    showAddDialog();
-//                  });
-//                },
-//                backgroundColor: Colors.pink.withOpacity(0.9),
-//              ),
-//            ),
-//          ),
         ],
       )
     );
@@ -393,8 +380,9 @@ class _ExpensesState extends State<Expenses> {
               direction: DismissDirection.endToStart,
               onDismissed: (direction){
                 deleteExpanse(index);
-                expensesList.removeAt(index);
                 setState(() {
+                  expensesList.removeAt(index);
+                  showSnackBar('Expense deleted');
                 });
               },
               background: Padding(
@@ -413,15 +401,13 @@ class _ExpensesState extends State<Expenses> {
           },
         ),
       ),
-      expensesList.isNotEmpty ? Padding(
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 150.0),
         child: Divider(
           thickness: 4.0,
         ),
-      ): SizedBox.shrink(),
+      ),
       SizedBox(height: 30,),
-
-
     ];
   }
 
@@ -700,35 +686,6 @@ class _ExpensesState extends State<Expenses> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 SizedBox(width: 20.0,),
-//                                Text('${dateTimeExpense.day}.${dateTimeExpense.month}.${dateTimeExpense.year}'),
-//                                RaisedButton(
-//                                  color: Colors.deepOrange[200],
-//                                  shape: CircleBorder(),
-//                                  child: Icon(Icons.today),
-//                                  onPressed: (){
-//                                    showDatePicker(
-//                                        context: context,
-//                                        initialDate: dateTimeExpense == null ? DateTime.now() : dateTimeExpense,
-//                                        firstDate: DateTime(2020),
-//                                        lastDate: DateTime(2222),
-//                                        builder: (BuildContext context, Widget child){
-//                                          return Theme(
-//                                            data: ThemeData.light().copyWith(
-//                                              primaryColor: Colors.teal[100],
-//                                              accentColor: Colors.deepOrange[300]
-//                                            ),
-//                                            child: child,
-//                                          );
-//                                        },
-//                                    ).then((dateValue){
-//                                      setState(() {
-//                                        if(dateValue != null){
-//                                          dateTimeExpense = dateValue;
-//                                        }
-//                                      });
-//                                    });
-//                                  },
-//                                )
                               ],
                             ),
                           ),
@@ -772,6 +729,9 @@ class _ExpensesState extends State<Expenses> {
                                     });
                                     return;
                                   }
+                                  if(expensesList.isEmpty){
+                                    isLoading = true;
+                                  }
                                   formKey.currentState.save();
                                   print("im here");
                                   addExpanse(category, categoryId,  titleController.text, double.parse(valueController.text), dateTimeExpense);
@@ -793,10 +753,13 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+  Future<void> updateExpenses() async{
+    sumExpensePerCategory();
+    sumExpensePerUser(Chart.month, DateTime.now().subtract(Duration(days: 30)));
+  }
+
   Future<void> sumExpensePerCategory() async{
-    setState(() {
-      categoryLoading = true;
-    });
+
     User user = data['user'];
     String date = DateTime.now().subtract(Duration(days: 30)).toString().split(' ')[0];
 
@@ -839,9 +802,6 @@ class _ExpensesState extends State<Expenses> {
   }
 
   Future<void> sumExpensePerUser(Chart kind, DateTime dateTime) async{
-    setState(() {
-      totalLoading = true;
-    });
     print('get sum per user');
     User user = data['user'];
     String date = dateTime.toString().split(' ')[0];
@@ -1016,7 +976,7 @@ class _ExpensesState extends State<Expenses> {
 
       if(response.statusCode == 200){
         if(response.body.isNotEmpty){
-          showSnackBar('Expense deleted');
+//          todo refresh charts if the date is between the range
           return;
         } else {
           showSnackBar('Error');
@@ -1064,6 +1024,10 @@ class _ExpensesState extends State<Expenses> {
       } else {
         print('no expenses yet');
       }
+
+      setState(() {
+        isLoading = false;
+      });
 //    }catch(_){
 //      print('point 1');
 //      showSnackBar('No Internet Connection');
@@ -1073,6 +1037,10 @@ class _ExpensesState extends State<Expenses> {
 
 //  this function adds expense to the expenses list
   Future<void> addExpanse(String category,int categoryId, String title, double value, DateTime date) async{
+    setState(() {
+      categoryLoading = true;
+      totalLoading = true;
+    });
     try{
       //    http post
       User user = data['user'];
@@ -1094,18 +1062,7 @@ class _ExpensesState extends State<Expenses> {
         ExpenseItem newItem = ExpenseItem(expense);
         setState(() {
           expensesList.insert(0, newItem);
-//      update the charts just if the expense was maximum 30 days ago
-//          if (categoricalMap.containsKey(category)){
-//            categoricalMap[category] = categoricalMap[category] + value;
-//          }
-//          String name = user.name;
-//          if(totalMap.containsKey(name)){
-//            totalMap[name]  += value;
-//          }
-//          if(dateMap.containsKey(user.name)){
-//            dateMap[name] += value;
-//          }
-          refreshCharts = true;
+          updateExpenses();
         });
       } else {
         showSnackBar('Error');
@@ -1115,10 +1072,14 @@ class _ExpensesState extends State<Expenses> {
       print('point 3');
       showSnackBar('No Internet Connection');
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void showSnackBar (String title){
     _scaffoldKey.currentState.showSnackBar(SnackBar(
+      duration: Duration(seconds: 1),
       backgroundColor: Colors.pink[50],
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
