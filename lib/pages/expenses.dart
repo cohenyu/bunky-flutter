@@ -35,10 +35,10 @@ class _ExpensesState extends State<Expenses> {
   bool removeDateChart = false;
   bool reversing = false;
 
-  DateTime dateTimeExpense = DateTime.now();
-  DateTime dateTimeFrom = DateTime.now().subtract(Duration(days: 30));
-  DateTime dateTimeTo = DateTime.now();
   DateTime selectedDate;
+
+  DateTime fromDate;
+  DateTime toDate;
 
   FloatingActionButton fab;
   FloatingActionButton fabAdd;
@@ -97,6 +97,8 @@ class _ExpensesState extends State<Expenses> {
     totalMap = {};
     categoricalMap = {};
     dateMap = {};
+    fromDate = DateTime.now().subtract(Duration(days: 30));
+    toDate = DateTime.now();
     balances.add(BalanceCard(title: 'Total Expenses', map: totalMap, isPercentage: false,));
     balances.add(BalanceCard(title: 'Categorical Expenses', map: categoricalMap, isPercentage: false,));
     scrollController = ScrollController();
@@ -116,11 +118,11 @@ class _ExpensesState extends State<Expenses> {
           showAddDialog();
         });
       },
-      backgroundColor: Colors.pink.withOpacity(0.9),
+      backgroundColor: Colors.pink.withOpacity(0.8),
     );
 
     scrollController.addListener((){
-      if (scrollController.position.pixels > 600 && scrollController.position.userScrollDirection == ScrollDirection.forward){
+      if (scrollController.position.pixels > 200 && scrollController.position.userScrollDirection == ScrollDirection.forward){
         // you are at bottom position
         setState(() {
           reversing = true;
@@ -137,8 +139,9 @@ class _ExpensesState extends State<Expenses> {
       print(MediaQuery.of(context).size.toString());
       data = ModalRoute.of(context).settings.arguments;
       setState(() {
-        getExpenses();
-        updateExpenses();
+//        getExpenses();
+        getExpensesByDate(fromDate, toDate);
+        updateChartExpenses();
       });
 
     });
@@ -177,14 +180,15 @@ class _ExpensesState extends State<Expenses> {
                           Row(
                             children: <Widget>[
                               Text(
-                                '12/2/20 - 15/2/20',
+                                '${parseDate(fromDate)} - ${parseDate(toDate)}',
+//                                '12/2/20 - 15/2/20',
                                 style: TextStyle(fontSize: 18.0, color: Colors.black.withOpacity(0.5)),
                               ),
                               SizedBox(width: 5.0,),
                               InkWell(
                                 onTap: (){
                                   setState(() {
-                                    showChartDialog();
+                                    showDateDialog();
                                   });
                                 },
                                 child: Icon(Icons.edit, color: Colors.pink,),
@@ -280,6 +284,16 @@ class _ExpensesState extends State<Expenses> {
       )
        ,
     ];
+  }
+
+  String parseDate(DateTime dateTime){
+    String date = dateTime.toString().split(' ')[0];
+    var dateData = date.split('-');
+    String year = dateData[0];
+    year = year.substring(2, year.length);
+    String month = dateData[1];
+    String day = dateData[2];
+    return '$day/$month/$year';
   }
 
   List<Widget> showExpenses(){
@@ -386,7 +400,7 @@ class _ExpensesState extends State<Expenses> {
                 });
               },
               background: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                padding: const EdgeInsets.only(bottom: 18.0),
                 child: Container(
                   color: Colors.redAccent,
                   child: Center(
@@ -411,10 +425,12 @@ class _ExpensesState extends State<Expenses> {
     ];
   }
 
-  void showChartDialog(){
+  void showDateDialog(){
     showDialog(
         context: context,
         builder: (BuildContext context){
+          DateTime tmpFrom = fromDate;
+          DateTime tmpTo = toDate;
           return StatefulBuilder(
             builder: (context, setState){
               return Center(
@@ -447,7 +463,7 @@ class _ExpensesState extends State<Expenses> {
                               ),
 //                              SizedBox(width: 4.0,),
                               Text(
-                                  '${dateTimeFrom.day}/${dateTimeFrom.month}/${dateTimeFrom.year.toString().substring(2)}',
+                                  '${tmpFrom.day}/${tmpFrom.month}/${tmpFrom.year.toString().substring(2)}',
                                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                               ),
                               RaisedButton(
@@ -457,7 +473,7 @@ class _ExpensesState extends State<Expenses> {
                                 onPressed: (){
                                   showDatePicker(
                                     context: context,
-                                    initialDate: dateTimeFrom == null ? DateTime.now() : dateTimeFrom,
+                                    initialDate: tmpFrom == null ? DateTime.now() : tmpFrom,
                                     firstDate: DateTime(2020),
                                     lastDate: DateTime(2222),
                                     builder: (BuildContext context, Widget child){
@@ -472,7 +488,7 @@ class _ExpensesState extends State<Expenses> {
                                   ).then((dateValue){
                                     setState(() {
                                       if(dateValue != null){
-                                        dateTimeFrom = dateValue;
+                                        tmpFrom = dateValue;
                                       }
                                     });
                                   });
@@ -490,7 +506,7 @@ class _ExpensesState extends State<Expenses> {
                               ),
                               SizedBox(width: 15.0,),
                               Text(
-                                '${dateTimeTo.day}/${dateTimeTo.month}/${dateTimeTo.year.toString().substring(2)}',
+                                '${tmpTo.day}/${tmpTo.month}/${tmpTo.year.toString().substring(2)}',
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
                               ),
                               RaisedButton(
@@ -500,9 +516,9 @@ class _ExpensesState extends State<Expenses> {
                                 onPressed: (){
                                   showDatePicker(
                                     context: context,
-                                    initialDate: dateTimeTo == null ? DateTime.now() : dateTimeTo,
-                                    firstDate: DateTime(2020),
-                                    lastDate: DateTime(2222),
+                                    initialDate: tmpTo == null ? DateTime.now() : tmpTo,
+                                    firstDate: tmpFrom,
+                                    lastDate: DateTime.now(),
                                     builder: (BuildContext context, Widget child){
                                       return Theme(
                                         data: ThemeData.light().copyWith(
@@ -515,7 +531,7 @@ class _ExpensesState extends State<Expenses> {
                                   ).then((dateValue){
                                     setState(() {
                                       if(dateValue != null){
-                                        dateTimeTo = dateValue;
+                                        tmpTo = dateValue;
                                       }
                                     });
                                   });
@@ -558,10 +574,12 @@ class _ExpensesState extends State<Expenses> {
                                   ),
                                 ),
                                 onPressed: (){
-                                  String year = dateTimeFrom.year.toString();
-                                  year = year.substring(2, year.length);
-                                  String date = '${dateTimeFrom.day}.${dateTimeFrom.month}.$year';
-                                  addDateChart(dateTimeFrom, "balance from $date", false);
+                                  setState(() {
+                                    fromDate = tmpFrom;
+                                    toDate = tmpTo;
+                                  });
+                                  getExpensesByDate(fromDate, toDate);
+                                  updateChartExpenses();
                                   Navigator.pop(context);
                                 },
                               ),
@@ -734,6 +752,7 @@ class _ExpensesState extends State<Expenses> {
                                   }
                                   formKey.currentState.save();
                                   print("im here");
+                                  DateTime dateTimeExpense = DateTime.now();
                                   addExpanse(category, categoryId,  titleController.text, double.parse(valueController.text), dateTimeExpense);
                                   Navigator.pop(context);
                                 },
@@ -753,7 +772,7 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
-  Future<void> updateExpenses() async{
+  Future<void> updateChartExpenses() async{
     sumExpensePerCategory();
     sumExpensePerUser(Chart.month, DateTime.now().subtract(Duration(days: 30)));
   }
@@ -857,25 +876,30 @@ class _ExpensesState extends State<Expenses> {
 
 
 //  **********************************************************************************************
-  // This function returns n expenses of the apartment
+  // This function returns expenses of the apartment from date x to date y
   Future<void> getExpensesByDate(DateTime dateTimeFrom, DateTime dateTimeTo) async{
+    setState(() {
+      isLoading = true;
+    });
     User user = data['user'];
-    String dateFrom = dateTimeFrom.toString().split(' ')[0];
-    String dateTo = dateTimeTo.toString().split(' ')[0];
+    String fromDate = dateTimeFrom.toString().split(' ')[0];
+    String toDate = dateTimeTo.toString().split(' ')[0];
 
     List<ExpenseItem> expenseItems = [];
 
 //    try{
     final response = await http.get(
-      '$url/getAptExpensesWithDate?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
+      '$url/getAptExpensesBetweenDates?userId=${user.userId}&name=${user.name}&mail=${user.mail}&fromDate=$fromDate&toDate=$toDate',
+      headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },).timeout(const Duration(seconds: 7));
 
     List jsonData = jsonDecode(response.body);
-//      var reversedList = List.from(jsonData.reversed);
+    jsonData = List.from(jsonData.reversed);
     if(response.statusCode == 200){
       print('200 OK');
       if(response.body.isNotEmpty){
+        expensesList.clear();
         for(var jsonItem in jsonData){
           ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));
           setState(() {
@@ -888,6 +912,10 @@ class _ExpensesState extends State<Expenses> {
     } else {
       print('no expenses yet');
     }
+
+    setState(() {
+      isLoading = false;
+    });
 //    }catch(_){
 //      print('point 1');
 //      showSnackBar('No Internet Connection');
@@ -1062,7 +1090,7 @@ class _ExpensesState extends State<Expenses> {
         ExpenseItem newItem = ExpenseItem(expense);
         setState(() {
           expensesList.insert(0, newItem);
-          updateExpenses();
+          updateChartExpenses();
         });
       } else {
         showSnackBar('Error');

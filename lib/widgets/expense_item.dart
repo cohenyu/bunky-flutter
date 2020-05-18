@@ -19,35 +19,29 @@ class ExpenseItem extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: Row(
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Material(
-                    borderRadius: BorderRadius.circular(100.0),
-                    color: Colors.teal.withOpacity(0.2),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.teal.withOpacity(0.2),
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                    width: 120.0,
                     child: Padding(
-                      padding: EdgeInsets.all(15),
+                      padding: EdgeInsets.symmetric(vertical: 15.0,),
                       child: Text(
                         this.expanse.user.name,
-//                    this.expanse.name,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.teal,
-                            fontSize: 24.0,
+                            fontSize: 20.0,
                             fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 5.0,),
-                  Text(
-                      '${this.expanse.value}',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold
-                      )
                   ),
                 ],
               ),
@@ -56,6 +50,44 @@ class ExpenseItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                  this.expanse.value % 1 == 0 ? '${this.expanse.value.toInt()}': '${this.expanse.value}',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold
+                                  )
+                              ),
+                              SizedBox(width: 2,),
+                              Text(
+                                 '\$',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.bold
+                                  )
+                              ),
+                            ],
+                          ),
+                          Text(
+                            dateString,
+                            style: TextStyle(
+                              letterSpacing: 0.7,
+                              color: Colors.grey,
+                              fontSize: 14.0,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5.0,),
                     Row(
 //                      todo
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -63,20 +95,9 @@ class ExpenseItem extends StatelessWidget {
                         Text(
                           this.expanse.category,
                           style: TextStyle(
-                              color: Colors.pink[200].withOpacity(0.7),
-                              fontSize: 18.0,
+                              color: Colors.pink[300].withOpacity(0.7),
+                              fontSize: 19.0,
                               fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5, top: 5),
-                          child: Text(
-                            dateString,
-                            style: TextStyle(
-                              letterSpacing: 0.7,
-                              color: Colors.grey,
-                              fontSize: 12.0,
-                            ),
                           ),
                         ),
                       ],
@@ -86,7 +107,7 @@ class ExpenseItem extends StatelessWidget {
                       softWrap: true,
                       style: TextStyle(
                           color: Colors.black,
-                          fontSize: 18.0,
+                          fontSize: 17.0,
                       ),
                     ): SizedBox.shrink(),
                   ],
