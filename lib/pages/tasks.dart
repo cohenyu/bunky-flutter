@@ -49,11 +49,12 @@ class _TasksState extends State<Tasks> {
                       ],
                     ),
                   ),
+                  _button_icon(context),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.0),
+                    padding: EdgeInsets.symmetric(horizontal: 5.0),
                     child: Container(
                       width: double.infinity,
-                      height: 250.0,
+                      height: 400.0,
                       decoration: BoxDecoration(
                           color: Colors.amber[200],
                           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -62,8 +63,8 @@ class _TasksState extends State<Tasks> {
                                 color: Colors.black.withOpacity(0.1),
                                 offset: Offset(0.0, 0.3),
                                 blurRadius: 15.0
-                            )
-                          ]
+                            ),
+                          ],
                       ),
                       child: Column(
                         children: <Widget>[
@@ -95,22 +96,40 @@ class _TasksState extends State<Tasks> {
                                     )
                                   ],
                                 ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.today,
-                                  ),
-                                  onPressed: (){
-
-                                  },
-                                  color: Colors.white,
-                                  iconSize: 30.0,
-                                )
+//                                IconButton(
+//                                  icon: Icon(
+//                                    Icons.today,
+//                                  ),
+//                                  onPressed: (){
+//
+//                                  },
+//                                  color: Colors.white,
+//                                  iconSize: 30.0,
+//                                )
                               ],
                             ),
                           )
                         ],
                       ),
                     ),
+                  ),
+                  /////////////////////////////////////////youtoub
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        height:35,
+                        color: Theme.of(context).accentColor,
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: Text("6",
+                          style: TextStyle(fontSize: 200,
+                            color: Color(0x10000000),
+                          ),
+                        ),
+                      ),
+                      _mainContent(context)
+                    ],
                   ),
                   tasksList.isEmpty ? Padding(
                     padding: EdgeInsets.only(left: 25.0, right: 25.0, top:30),
@@ -181,7 +200,7 @@ class _TasksState extends State<Tasks> {
             backgroundColor: Colors.teal[100],
             content: Container(
               height: 250,
-              width: 100,
+              width: 500,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -193,6 +212,44 @@ class _TasksState extends State<Tasks> {
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                         fontSize: 20
+                    ),
+                  ),
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: Container(
+                      child: SizedBox(
+                        width: 500,
+                        height: 40,
+                        child: RaisedButton(
+                          //color:Colors.teal[100],
+                          color: Colors.teal.withOpacity(0.2),
+                          child:
+//                          TextField(
+//                            decoration: InputDecoration(
+//                                border: InputBorder.none,
+//                                hintText: "press to choose partisipans"
+//                            ),
+//                          ),
+                          Text("press to choose partisipans",
+                              style: TextStyle(
+                              color: Colors.black45,
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 18.0
+                            ),
+                          ),
+                          onPressed: ()=> _showMultiSelect(context),
+                        ),
+                      ),
+//                      child: TextField(
+//                        controller: frequencyController,
+//                        decoration: InputDecoration(
+//                            hintText: 'preformer',
+//                            enabledBorder: UnderlineInputBorder(
+//                                borderSide: BorderSide(color: Colors.black)
+//                            )
+//                        ),
+//                      ),
                     ),
                   ),
                   SizedBox(height: 10.0,),
@@ -209,31 +266,6 @@ class _TasksState extends State<Tasks> {
                             )
                         ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Container(
-                      child: RaisedButton(
-                        color: Colors.teal.withOpacity(0.2),
-                        child: Text("partisipans",
-                            style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.0
-                        ),
-                        ),
-                        onPressed: ()=> _showMultiSelect(context),
-                      ),
-//                      child: TextField(
-//                        controller: frequencyController,
-//                        decoration: InputDecoration(
-//                            hintText: 'preformer',
-//                            enabledBorder: UnderlineInputBorder(
-//                                borderSide: BorderSide(color: Colors.black)
-//                            )
-//                        ),
-//                      ),
                     ),
                   ),
                   SizedBox(height: 10,),
@@ -266,7 +298,7 @@ class _TasksState extends State<Tasks> {
                         ),
                         onPressed: (){
                           if(performerController.text != ''){
-                            addTask(performerController.text,'Clean', frequencyController.text );
+                            addTask(frequencyController.text ,performerController.text,'Clean');
                             Navigator.pop(context);
                           }
                         },
@@ -281,15 +313,15 @@ class _TasksState extends State<Tasks> {
     );
   }
 
-  void addTask(String performer, String category,String frequency){
+  void addTask(String frequency,String performer, String category){
 //    http post
     setState(() {
-      tasksList.add(TasksItem(performer,category,frequency));
+      tasksList.add(TasksItem(frequency,performer,category));
     });
   }
 
 
-
+  //the multi roomatie option
   void _showMultiSelect(BuildContext context) async {
 
      final items = <MultiSelectDialogItem<int>>[
@@ -308,13 +340,281 @@ class _TasksState extends State<Tasks> {
         );
       },
     );
-
     print(selectedValues);
 
   }
 
 
+//////////////// youtube//////////////////////////
+
+
+  Widget _mainContent(BuildContext context){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(height: 60,),
+        Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Text("Monday",
+            style: TextStyle(fontSize: 32,fontWeight: FontWeight.bold),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: _button(context),
+        ),
+        _taskUncomlete("clean the home"),
+        _taskUncomlete("trip with frind"),
+        _taskUncomlete("make food"),
+        Divider(
+          height: 1.0,
+        ),
+        SizedBox(height: 16.0,),
+        _taskComlete("take ths dog to trip"),
+      ],
+    );
+  }
+
+
+
+  Widget _taskUncomlete(String task){
+    return  Padding(
+      padding: const EdgeInsets.only(left:20.0,bottom: 24.0),
+      child: Row(
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.radio_button_unchecked,
+              color: Colors.teal,
+            ),
+            onPressed: (){
+              //to move to compelete and change icon
+              setState(() {
+//                this._taskUncomlete(task);
+              });
+            },
+          ),
+//          Icon(
+//            Icons.radio_button_unchecked,
+////            color:Theme.of(context).accentColor,
+//            color: Colors.teal,
+//            size: 30,
+//          ),
+          SizedBox(
+            width: 28,
+          ),
+          Text(task,style: TextStyle(fontSize: 20,),),
+        ],
+      ),
+    );
+  }
+
+  Widget _taskComlete(String task){
+    return  Container(
+      //foregroundDecoration: BoxDecoration(color: Colors.amber),
+      child: Padding(
+        padding: const EdgeInsets.only(left:20.0,top: 24.0),
+        child: Row(
+          children: <Widget>[
+            Icon(
+              Icons.radio_button_checked,
+//              color:Theme.of(context).accentColor,
+            color: Colors.teal,
+              size: 30,
+            ),
+            SizedBox(
+              width: 28,
+            ),
+            Text(task,style: TextStyle(fontSize: 20,),)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _button_icon(BuildContext context){
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: RaisedButton.icon(
+            color: Colors.teal,
+            icon: Icon(Icons.playlist_add_check),
+            onPressed: (){
+              //dayShowDialog();
+            },
+            label: Text(
+              "Day",
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        Expanded(
+          child:RaisedButton.icon(
+            color: Colors.teal,
+            icon: Icon(Icons.view_week),
+            onPressed: (){
+              Navigator.pushNamed(context, '/week');
+            },
+            label: Text(
+              "Week",
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        Expanded(
+          child: RaisedButton.icon(
+            color: Colors.teal,
+//          color: Colors.amber[200],
+            icon: Icon(Icons.today),
+            onPressed: (){
+
+            },
+            label: Text(
+              "Month",
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(10),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _button(BuildContext context){
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: MaterialButton(
+            onPressed: () {},
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+            color:Theme.of(context).accentColor,
+            textColor: Colors.white,
+            padding: const EdgeInsets.all(14.0),
+            child: Text("day"),
+          ),
+        ),
+        SizedBox(width: 32,),
+        Expanded(
+          child: MaterialButton(
+            onPressed: () {},
+            shape: RoundedRectangleBorder(
+                side:BorderSide(color:Theme.of(context).accentColor, ),
+                borderRadius: BorderRadius.circular(12.0)),
+            color:Colors.white,
+            textColor: Theme.of(context).accentColor,
+            padding: const EdgeInsets.all(14.0),
+            child: Text("week"),
+          ),
+        ),
+        Expanded(
+          child: MaterialButton(
+            onPressed: () {},
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+            color:Theme.of(context).accentColor,
+            textColor: Colors.white,
+            padding: const EdgeInsets.all(14.0),
+            child: Text("month"),
+          ),
+        ),
+      ],
+    );
+  }
 }
+
+
+// from youtube
+//class MyListTask extends StatelessWidget{
+//  Widget build(BuildContext context){
+//    return Scaffold(
+//      body:
+//      Column(
+//        crossAxisAlignment: CrossAxisAlignment.start,
+//        children: <Widget>[
+//          SizedBox(height: 60,),
+//          Padding(
+//            padding: const EdgeInsets.all(24.0),
+//            child: Text("Monday",
+//              style: TextStyle(fontSize: 32,fontWeight: FontWeight.bold),
+//            ),
+//          ),
+//          Padding(
+//            padding: const EdgeInsets.all(24.0),
+//            child: _button(context),
+//          ),
+//          _taskUncomlete("clean the home"),
+//          _taskUncomlete("trip with frind"),
+//          _taskUncomlete("make food"),
+//        ],
+//      ) ,
+//    );
+//  }
+//
+//  Widget _taskUncomlete(String task){
+//    return  Padding(
+//      padding: const EdgeInsets.all(8.0),
+//      child: Row(
+//        children: <Widget>[
+//          Icon(
+//            Icons.radio_button_unchecked,
+//            color:Theme.of(context).accentColor,
+//            size: 20,
+//          ),
+//          SizedBox(
+//            width: 28,
+//          ),
+//          Text(task)
+//        ],
+//      ),
+//    );
+//  }
+//
+//
+//  Widget _button(BuildContext context){
+//    return Row(
+//      children: <Widget>[
+//        Expanded(
+//          child: MaterialButton(
+//            onPressed: () {},
+//            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+//            color:Theme.of(context).accentColor,
+//            textColor: Colors.white,
+//            padding: const EdgeInsets.all(14.0),
+//            child: Text("day"),
+//          ),
+//        ),
+//        SizedBox(width: 32,),
+//        Expanded(
+//          child: MaterialButton(
+//            onPressed: () {},
+//            shape: RoundedRectangleBorder(
+//                side:BorderSide(color:Theme.of(context).accentColor, ),
+//                borderRadius: BorderRadius.circular(12.0)),
+//            color:Colors.white,
+//            textColor: Theme.of(context).accentColor,
+//            padding: const EdgeInsets.all(14.0),
+//            child: Text("week"),
+//          ),
+//        ),
+//        Expanded(
+//          child: MaterialButton(
+//            onPressed: () {},
+//            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+//            color:Theme.of(context).accentColor,
+//            textColor: Colors.white,
+//            padding: const EdgeInsets.all(14.0),
+//            child: Text("month"),
+//          ),
+//        ),
+//      ],
+//    );
+//  }
+//}
+
+
 
 
 
@@ -340,7 +640,7 @@ class TasksItem extends StatelessWidget {
                     this.task.performer,
                     style: TextStyle(
                         color: Colors.teal,
-                        fontSize: 24.0,
+                        fontSize: 15.0,
                         fontWeight: FontWeight.bold
                     ),
                   ),
