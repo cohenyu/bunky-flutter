@@ -62,7 +62,7 @@ class _SettingsState extends State<Settings> {
                       style: TextStyle(
                           color: Colors.black.withOpacity(0.4),
                           fontWeight: FontWeight.bold,
-                          fontSize: 34.0
+                          fontSize: 35.0
                       ),
                     ),
                   ],

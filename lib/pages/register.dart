@@ -63,7 +63,7 @@ class _RegisterState extends State<Register> {
                             children: <Widget>[
                               TextFormField(
                                 onSaved: (value){
-                                  this.mail = value;
+                                  this.mail = value.toLowerCase();
                                 },
                                 validator: (value){
                                   if (EmailValidator.validate(value)){

@@ -4,6 +4,7 @@ import 'package:bunky/pages/home.dart';
 import 'package:bunky/pages/loading.dart';
 import 'package:bunky/pages/login.dart';
 import 'package:bunky/pages/newApartment.dart';
+import 'package:bunky/pages/notifications.dart';
 import 'package:bunky/pages/settings.dart';
 import 'package:bunky/pages/tasks.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ import 'package:bunky/pages/register.dart';
 // miriel 18.5 10:45
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/login',
+  initialRoute: '/notifications',
   routes: {
     '/': (context) => Loading(),
     '/login': (context) => Login(),
@@ -28,5 +29,6 @@ void main() => runApp(MaterialApp(
     '/settings': (context)=> Settings(),
     '/balancing': (context) => Balancing(),
     '/register': (context) => Register(),
+    '/notifications': (context) => Notifications(),
   },
 ));

@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 
 class ExpenseCard extends StatelessWidget {
   Expense expense;
-  final Color color = Colors.amber[300];
+  final Color color = Colors.amber[300].withOpacity(0.8);
   ExpenseCard({this.expense});
 
   @override
   Widget build(BuildContext context) {
-    Map categoryMap = Categories().categoryToValueMap();
+    String value = expense.value % 1 == 0 ? '${expense.value.toInt()}': '${expense.value}';
     return Padding(
       padding: EdgeInsets.only(right: 15),
       child: Container(
@@ -42,7 +42,7 @@ class ExpenseCard extends StatelessWidget {
                         Text(expense.category, style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold, fontSize: 18),),
                       ],
                     ),
-                    Text('${expense.value.toInt()}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 30.0),),
+                    Text('$value', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 30.0),),
                   ],
                 ),
               ),

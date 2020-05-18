@@ -49,205 +49,226 @@ class _HomeState extends State<Home> {
     return Scaffold(
       bottomNavigationBar: BottomNavyBar(),
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: primaryColor,
-                border: Border.all(color: primaryColor)
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(top: 30.0, right: 15.0, left: 15.0),
-                child: SizedBox(
-                  height: 20,
-                )
-              ),
+      body: Stack(
+        children: <Widget>[
+          ClipPath(
+            clipper: CustomShapeClipper(),
+            child: Container(
+              height: 350.0,
+              decoration: BoxDecoration(color: primaryColor),
             ),
-            Stack(
+          ),
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                ClipPath(
-                  clipper: CustomShapeClipper(),
-                  child: Container(
-                    height: 350.0,
-                    decoration: BoxDecoration(color: primaryColor),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Hey ${user.name},',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          Text(
-                            'Let\'s see your updates for today',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 120.0, right: 25.0, left: 25.0),
-                  child: Container(
-                    width: double.infinity,
-                    height: 370.0,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          offset: Offset(0.0, 3.0),
-                          blurRadius: 15.0,
-                        )
-                      ]
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.deepOrange[400].withOpacity(0.5),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(6.0),
-                                      child: Icon(
-                                        Icons.notifications_none,
-                                        color: Colors.deepOrange[400],
-                                        size: 25.0,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
+//            Container(
+//              width: double.infinity,
+//              decoration: BoxDecoration(
+//                color: primaryColor,
+//                border: Border.all(color: primaryColor)
+//              ),
+//              child: Padding(
+//                padding: EdgeInsets.only(top: 30.0, right: 15.0, left: 15.0),
+//                child: SizedBox(
+//                  height: 20,
+//                )
+//              ),
+//            ),
+                Stack(
+                  children: <Widget>[
+//                ClipPath(
+//                  clipper: CustomShapeClipper(),
+//                  child: Container(
+//                    height: 350.0,
+//                    decoration: BoxDecoration(color: primaryColor),
+//                  ),
+//                ),
+                    Positioned(
+                      right: 40.0,
+                      top: 50.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(100.0),
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Icon(
+                            Icons.notifications_none,
+                            color: Colors.teal[400],
+                            size: 27.0,
                           ),
                         ),
-                        SizedBox(height: 30,),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      ),
+                    ),
+                    Positioned(
+                      right: 65.0,
+                      top: 40.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          color: Colors.red,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                          child: Text(
+                            '357',
+                            style: TextStyle(
+                                color: Colors.white
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  'Your task is to throw the garbage out.',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.7),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
+                              SizedBox(height: 40.0,),
+                              Text(
+                                'Hey ${user.name},',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30.0,
+                                    fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Text(
+                                'Let\'s see your updates for today',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20.0
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 20.0),
+                                child: Container(
+                                  width: 350,
+                                  height: 370.0,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.8),
+                                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          offset: Offset(0.0, 3.0),
+                                          blurRadius: 15.0,
+                                        )
+                                      ]
+                                  ),
+                                  child: Column(
+                                    children: <Widget>[
+                                      SizedBox(height: 30,),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 25.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Text(
+                                                'Your task is to throw the garbage out.',
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  color: Colors.black.withOpacity(0.7),
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                            ),
+                                            Material(
+                                              borderRadius: BorderRadius.circular(100),
+                                              color: Colors.grey[400].withOpacity(0.15),
+                                              child: IconButton(
+                                                icon: Icon(Icons.check),
+                                                color: Colors.amberAccent,
+                                                onPressed: (){
+                                                  showAddDialog();
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 40,),
+                                      Divider(
+                                        thickness: 1,
+                                      ),
+                                      SizedBox(height: 40,),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 25.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Your total balance:',
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                      color: Colors.black.withOpacity(0.7),
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    '-2000',
+                                                    style: TextStyle(
+                                                        fontSize: 30,
+                                                        color: Colors.lightBlue[700],
+                                                        fontWeight: FontWeight.bold
+                                                    ),
+                                                  )
+                                                ],
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                              Material(
-                                borderRadius: BorderRadius.circular(100),
-                                color: Colors.grey[400].withOpacity(0.15),
-                                child: IconButton(
-                                  icon: Icon(Icons.check),
-                                  color: Colors.amberAccent,
-                                  onPressed: (){
-                                    showAddDialog();
-                                  },
-                                ),
-                              ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: 40,),
-                        Divider(
-                          thickness: 1,
-                        ),
-                        SizedBox(height: 40,),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(
-                                      'Your total balance:',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.7),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                      '-2000',
-                                      style: TextStyle(
-                                        fontSize: 30,
-                                        color: Colors.lightBlue[700],
-                                        fontWeight: FontWeight.bold
-                                      ),
-                                    )
-                                  ],
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),
-            recentExpanses.isEmpty || _load ? SizedBox.shrink() : Padding(
+                  ],
+                ),
+                recentExpanses.isEmpty || _load ? SizedBox.shrink() : Padding(
 //              padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 30.0),
-              padding: EdgeInsets.only(left: 25.0, top: 30.0, bottom: 10.0, right: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    recentExpanses.isNotEmpty ? 'Recently expenses' : 'No expenses yet',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.7),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
+                  padding: EdgeInsets.only(left: 25.0, top: 30.0, bottom: 10.0, right: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        recentExpanses.isNotEmpty ? 'Recently expenses' : 'No expenses yet',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.7),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Icon(
+                          Icons.arrow_right,
+                          size: 30.0,
+                        ),
+                      )
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2.0),
-                    child: Icon(
-                      Icons.arrow_right,
-                      size: 30.0,
-                    ),
-                  )
-                ],
-              ),
-            ),
+                ),
 //            _load ? Padding(
 //              padding: const EdgeInsets.only(top: 30.0),
 //              child: SpinKitThreeBounce(
@@ -256,21 +277,23 @@ class _HomeState extends State<Home> {
 //              ),
 //            ) :
 //            ,
-              recentExpanses.isEmpty || _load ? SizedBox.shrink() :Padding(
-              padding: EdgeInsets.only(left: 25.0, bottom: 25.0, right: 10.0),
-              child: Container(
-                height: 140.0,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: recentExpanses.length,
-                  itemBuilder: (context, int index){
-                    return recentExpanses[index];
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
+                  recentExpanses.isEmpty || _load ? SizedBox.shrink() :Padding(
+                  padding: EdgeInsets.only(left: 25.0, bottom: 25.0, right: 10.0),
+                  child: Container(
+                    height: 140.0,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: recentExpanses.length,
+                      itemBuilder: (context, int index){
+                        return recentExpanses[index];
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -385,5 +408,30 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+//                        Padding(
+//                          padding: EdgeInsets.all(20.0),
+//                          child: Row(
+//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                            children: <Widget>[
+//                              Column(
+//                                children: <Widget>[
+//                                  Material(
+//                                    borderRadius: BorderRadius.circular(100.0),
+//                                    color: Colors.deepOrange[400].withOpacity(0.5),
+//                                    child: Padding(
+//                                      padding: const EdgeInsets.all(6.0),
+//                                      child: Icon(
+//                                        Icons.notifications_none,
+//                                        color: Colors.deepOrange[400],
+//                                        size: 25.0,
+//                                      ),
+//                                    ),
+//                                  )
+//                                ],
+//                              )
+//                            ],
+//                          ),
+//                        ),
 
 

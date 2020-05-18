@@ -97,7 +97,8 @@ class _ExpensesState extends State<Expenses> {
     totalMap = {};
     categoricalMap = {};
     dateMap = {};
-    fromDate = DateTime.now().subtract(Duration(days: 30));
+    fromDate = DateTime.now().subtract(Duration(days: DateTime.now().day - 1));
+    print(fromDate);
     toDate = DateTime.now();
     balances.add(BalanceCard(title: 'Total Expenses', map: totalMap, isPercentage: false,));
     balances.add(BalanceCard(title: 'Categorical Expenses', map: categoricalMap, isPercentage: false,));
@@ -118,7 +119,7 @@ class _ExpensesState extends State<Expenses> {
           showAddDialog();
         });
       },
-      backgroundColor: Colors.pink.withOpacity(0.8),
+      backgroundColor: Colors.pink.withOpacity(0.9),
     );
 
     scrollController.addListener((){
@@ -139,7 +140,6 @@ class _ExpensesState extends State<Expenses> {
       print(MediaQuery.of(context).size.toString());
       data = ModalRoute.of(context).settings.arguments;
       setState(() {
-//        getExpenses();
         getExpensesByDate(fromDate, toDate);
         updateChartExpenses();
       });
@@ -172,9 +172,9 @@ class _ExpensesState extends State<Expenses> {
                           Text(
                             'Expenses',
                             style: TextStyle(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withOpacity(0.3),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 34.0
+                                fontSize: 35.0
                             ),
                           ),
                           Row(
@@ -182,7 +182,7 @@ class _ExpensesState extends State<Expenses> {
                               Text(
                                 '${parseDate(fromDate)} - ${parseDate(toDate)}',
 //                                '12/2/20 - 15/2/20',
-                                style: TextStyle(fontSize: 18.0, color: Colors.black.withOpacity(0.5)),
+                                style: TextStyle(fontSize: 16.7, color: Colors.black.withOpacity(0.5)),
                               ),
                               SizedBox(width: 5.0,),
                               InkWell(
@@ -191,7 +191,7 @@ class _ExpensesState extends State<Expenses> {
                                     showDateDialog();
                                   });
                                 },
-                                child: Icon(Icons.edit, color: Colors.pink,),
+                                child: Icon(Icons.edit, color: Colors.pink, size: 19.0,),
                               )
                             ],
                           )
@@ -200,17 +200,18 @@ class _ExpensesState extends State<Expenses> {
                       Padding(
                         padding: const EdgeInsets.only(top: 0.0),
                         child: Container(
-                          height: 55.0,
-                          width: 140,
                           child: RaisedButton.icon(
-                            color: Colors.teal,
+                            color: Colors.teal[400],
                             icon: Icon(Icons.insert_chart),
                             onPressed: (){
                               Navigator.pushNamed(context, '/balancing', arguments: {'user': data['user']});
                             },
-                            label: Text(
-                              "Balance",
-                              style: TextStyle(fontSize: 17.0),
+                            label: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15.0),
+                              child: Text(
+                                "Balance",
+                                style: TextStyle(fontSize: 17.0),
+                              ),
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(30),
@@ -350,37 +351,6 @@ class _ExpensesState extends State<Expenses> {
             })
         ),
       ),
-      //                expensesList.isEmpty ? Padding(
-//                  padding: EdgeInsets.only(left: 25.0, right: 25.0,),
-//                  child: Text(
-//                    'No Expenses Yet',
-//                    style: TextStyle(
-//                        color: Colors.black.withOpacity(0.7),
-//                        fontSize: 20.0,
-//                        fontWeight: FontWeight.bold
-//                    ),
-//                  ),
-//                ): Padding(
-//                  padding: EdgeInsets.only(left: 25.0, right: 25.0),
-//                  child: Row(
-//                    children: <Widget>[
-//                      Text(
-//                        'Expenses',
-//                        style: TextStyle(
-//                            color: Colors.black.withOpacity(0.7),
-//                            fontSize: 20.0,
-//                            fontWeight: FontWeight.bold
-//                        ),
-//                      ),
-//                      Padding(
-//                        padding: const EdgeInsets.only(top: 5.0),
-//                        child: Icon(
-//                          Icons.arrow_drop_down
-//                        ),
-//                      )
-//                    ],
-//                  ),
-//                ),
       Padding(
         padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
         child: ListView.builder(
@@ -475,7 +445,7 @@ class _ExpensesState extends State<Expenses> {
                                     context: context,
                                     initialDate: tmpFrom == null ? DateTime.now() : tmpFrom,
                                     firstDate: DateTime(2020),
-                                    lastDate: DateTime(2222),
+                                    lastDate: tmpTo,
                                     builder: (BuildContext context, Widget child){
                                       return Theme(
                                         data: ThemeData.light().copyWith(
