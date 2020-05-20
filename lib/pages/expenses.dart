@@ -141,7 +141,7 @@ class _ExpensesState extends State<Expenses> {
       data = ModalRoute.of(context).settings.arguments;
       setState(() {
         getExpensesByDate(fromDate, toDate);
-        updateChartExpenses();
+        updateChartExpenses(fromDate, toDate);
       });
 
     });
@@ -549,7 +549,7 @@ class _ExpensesState extends State<Expenses> {
                                     toDate = tmpTo;
                                   });
                                   getExpensesByDate(fromDate, toDate);
-                                  updateChartExpenses();
+                                  updateChartExpenses(fromDate, toDate);
                                   Navigator.pop(context);
                                 },
                               ),
@@ -742,9 +742,11 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
-  Future<void> updateChartExpenses() async{
-    sumExpensePerCategory();
-    sumExpensePerUser(Chart.month, DateTime.now().subtract(Duration(days: 30)));
+  Future<void> updateChartExpenses(DateTime from, DateTime to) async{
+    getChart(Chart2.user, from, to);
+    getChart(Chart2.category, from, to);
+//    sumExpensePerCategory();
+//    sumExpensePerUser(Chart.month, DateTime.now().subtract(Duration(days: 30)));
   }
 
   Future<void> sumExpensePerCategory() async{
@@ -855,8 +857,6 @@ class _ExpensesState extends State<Expenses> {
     String fromDate = dateTimeFrom.toString().split(' ')[0];
     String toDate = dateTimeTo.toString().split(' ')[0];
 
-    List<ExpenseItem> expenseItems = [];
-
 //    try{
     final response = await http.get(
       '$url/getAptExpensesBetweenDates?userId=${user.userId}&name=${user.name}&mail=${user.mail}&fromDate=$fromDate&toDate=$toDate',
@@ -865,17 +865,19 @@ class _ExpensesState extends State<Expenses> {
     },).timeout(const Duration(seconds: 7));
 
     List jsonData = jsonDecode(response.body);
-    jsonData = List.from(jsonData.reversed);
+    print(jsonData);
+//    jsonData = List.from(jsonData.reversed);
     if(response.statusCode == 200){
       print('200 OK');
       if(response.body.isNotEmpty){
         expensesList.clear();
         for(var jsonItem in jsonData){
-          ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));
+          Expense expense = Expense.fromJson(jsonItem);
+          print(expense.id);
+          ExpenseItem item = ExpenseItem(expense);
           setState(() {
             expensesList.add(item);
           });
-          expenseItems.add(item);
         }
 
       }
@@ -901,18 +903,18 @@ class _ExpensesState extends State<Expenses> {
       }
     });
 
-    String specificUrl = kind == Chart2.user ? 'computeSumExpenses': 'computeSumExpensesPerCat';
+    String path = kind == Chart2.user ? 'computeSumExpensesPerUserDates': 'computeSumExpensesPerCatDates';
     User user = data['user'];
     String dateFrom = dateTimeFrom.toString().split(' ')[0];
     String dateTo = dateTimeTo.toString().split(' ')[0];
 
     final response = await http.post(
-        '$url/$specificUrl', headers: <String, String>{
+        '$url/$path', headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     }, body: jsonEncode({
       'user': user,
-      'dateFrom': dateFrom,
-      'dateTo': dateTo,
+      'fromDate': dateFrom,
+      'toDate': dateTo,
     }
     )).timeout(const Duration(seconds: 7));
     Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -1060,7 +1062,7 @@ class _ExpensesState extends State<Expenses> {
         ExpenseItem newItem = ExpenseItem(expense);
         setState(() {
           expensesList.insert(0, newItem);
-          updateChartExpenses();
+          updateChartExpenses(fromDate, toDate);
         });
       } else {
         showSnackBar('Error');
