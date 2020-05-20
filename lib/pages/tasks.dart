@@ -10,6 +10,13 @@ class Tasks extends StatefulWidget {
 }
 
 class _TasksState extends State<Tasks> {
+  bool task_complete=false;
+
+//  List<Task>completeTasks = [
+//    Task(frequency:'every day','miriel','clean home',true),
+//    Task(),
+//    Task(),
+//  ];
 
   List<TasksItem> tasksList = [
     TasksItem('every week','yuval','wash'),
