@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyDropDown extends StatefulWidget {
-
-  const MyDropDown({
-    Key key,
-  }) : super(key: key);
+  final Function callback;
+  const MyDropDown({Key key, this.callback}) : super(key: key);
 
   @override
   _MyDropDownState createState() => _MyDropDownState();
@@ -35,6 +33,7 @@ class _MyDropDownState extends State<MyDropDown> {
         onChanged: (value){
           setState(() {
             selected = value;
+            this.widget.callback(value);
           });
         },
         isExpanded: true,

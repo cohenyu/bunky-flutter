@@ -26,8 +26,9 @@ class _HomeState extends State<Home> {
   String url = 'https://bunkyapp.herokuapp.com';
   bool firstTime = true;
 
+
   List<Task> tasks = [
-    Task(frequency: 'everyday',performer: 'Or', task_name: 'throw the garbage out'),
+    Task(frequency: 'everyday',performers: [], task_name: 'throw the garbage out'),
   ];
 
   @override
