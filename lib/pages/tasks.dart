@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'package:bunky/models/task.dart';
 import 'package:bunky/models/user.dart';
-import 'package:bunky/pages/task_page.dart';
-import 'package:bunky/pages/week_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:bunky/models/task.dart';
 import 'package:bunky/widgets/drop_down_category_tasks.dart';
 import 'package:bunky/widgets/bottom_navy_bar.dart';
 import 'package:http/http.dart' as http;
