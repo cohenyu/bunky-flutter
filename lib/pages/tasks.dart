@@ -13,19 +13,18 @@ class Tasks extends StatefulWidget {
 }
 
 class _TasksState extends State<Tasks> {
-  bool all_day_finish=true;
-  bool all_week_finish=true;
-  bool all_month_finish=true;
-  bool day_pressed_button=true;
-  bool week_pressed_button=false;
-  bool month_pressed_button=false;
+  bool all_day_finish = true;
+  bool all_week_finish = true;
+  bool all_month_finish = true;
+  bool day_pressed_button = true;
+  bool week_pressed_button = false;
+  bool month_pressed_button = false;
   List<User> usersList = [];
-  List<User> participensInTask=[];
+  List<User> participensInTask = [];
   Map data = {};
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String url = 'https://bunkyapp.herokuapp.com';
-  bool start=true;
-
+  bool start = true;
 
 //  List<TasksItem> tasksList = [
 //    TasksItem('every week','yuval','wash'),
@@ -33,10 +32,10 @@ class _TasksState extends State<Tasks> {
 //    TasksItem('every day','yuval','living roon organize')
 //  ];
 
-  List<Task>_taskList=[];
-  List<Task>_dayTaskList=[];
-  List<Task>_weekTaskList=[];
-  List<Task>_monthTaskList=[];
+  List<Task> _taskList = [];
+  List<Task> _dayTaskList = [];
+  List<Task> _weekTaskList = [];
+  List<Task> _monthTaskList = [];
 
 //  List<Task>_taskList=[
 //    Task(frequency: 'every day',performers:[User('miriel','miriel@gmail.com',1),User('yuval','yuval@gmail.com',2)],task_name: 'claen the room',isFinish:false),
@@ -63,27 +62,23 @@ class _TasksState extends State<Tasks> {
 //    splitTasks(_taskList,_dayTaskList,_weekTaskList,_monthTaskList);
     super.initState();
 
-//    WidgetsBinding.instance.addPostFrameCallback((_){
-//      print(MediaQuery.of(context).size.toString());
-//      data = ModalRoute.of(context).settings.arguments;
-//      getTaskList();
-//      setState(() {
-//      });
-//
-//    });
-
-
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      data = ModalRoute.of(context).settings.arguments;
+      getTaskList();
+      setState(() {
+        _taskList = _dayTaskList;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    data  = ModalRoute.of(context).settings.arguments;
-    if(start==true) {
-      getTaskList();
-      start=false;
-    }
-   // splitTasks(_taskList, _dayTaskList, _weekTaskList, _monthTaskList);
+//    data  = ModalRoute.of(context).settings.arguments;
+//    if(start==true) {
+//      getTaskList();
+//      start=false;
+//    }
+    // splitTasks(_taskList, _dayTaskList, _weekTaskList, _monthTaskList);
 //    data  = ModalRoute.of(context).settings.arguments;
     //_taskList=_dayTaskList;
     return Scaffold(
@@ -94,9 +89,12 @@ class _TasksState extends State<Tasks> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: 25,),
+                  SizedBox(
+                    height: 25,
+                  ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.5, vertical: 30.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 25.5, vertical: 30.0),
                     child: Row(
                       children: <Widget>[
                         Icon(
@@ -104,14 +102,15 @@ class _TasksState extends State<Tasks> {
                           color: Colors.black.withOpacity(0.7),
                           size: 30.0,
                         ),
-                        SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Text(
                           'Tasks',
                           style: TextStyle(
                               color: Colors.black.withOpacity(0.7),
                               fontWeight: FontWeight.bold,
-                              fontSize: 32.0
-                          ),
+                              fontSize: 32.0),
                         ),
                       ],
                     ),
@@ -123,38 +122,59 @@ class _TasksState extends State<Tasks> {
                       width: double.infinity,
                       height: 400.0,
                       decoration: BoxDecoration(
-                          color: Colors.amber[200],
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                offset: Offset(0.0, 0.3),
-                                blurRadius: 15.0
-                            ),
-                          ],
+                        color: Colors.amber[200],
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              offset: Offset(0.0, 0.3),
+                              blurRadius: 15.0),
+                        ],
                       ),
                       child: Column(
                         children: <Widget>[
-                          SizedBox(height: 20,),
+                          SizedBox(
+                            height: 20,
+                          ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(1, 0,170,0),
-                            child: day_pressed_button ? Text("your Task for Today:",style: TextStyle(fontSize: 20.0,),)
-                                : week_pressed_button?Text("your Task for Week:",style: TextStyle(fontSize: 20.0,),)
-                                : Text("your Task for Month:",style: TextStyle(fontSize: 20.0,),),
+                            padding: const EdgeInsets.fromLTRB(1, 0, 170, 0),
+                            child: day_pressed_button
+                                ? Text(
+                                    "your Task for Today:",
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                    ),
+                                  )
+                                : week_pressed_button
+                                    ? Text(
+                                        "your Task for Week:",
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                        ),
+                                      )
+                                    : Text(
+                                        "your Task for Month:",
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
                           ),
-                          SizedBox(height: 10.0,),
-                        //youtube
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(0),
-                            itemCount: _taskList.length,
-                            itemBuilder: (context, index) {
-                              return _taskList[index].isFinish
-                                  ? _taskComlete(_taskList[index].task_name)
-                                  : _taskUncomlete(_taskList[index].task_name);
-                            },
+                          SizedBox(
+                            height: 10.0,
                           ),
-                        ),
+                          //youtube
+                          Expanded(
+                            child: ListView.builder(
+                              padding: const EdgeInsets.all(0),
+                              itemCount: _taskList.length,
+                              itemBuilder: (context, index) {
+                                return _taskList[index].isFinish
+                                    ? _taskComlete(_taskList[index].task_name, index)
+                                    : _taskUncomlete(
+                                        _taskList[index].task_name, index);
+                              },
+                            ),
+                          ),
 
 //                          Expanded(child: TaskPage()),
                         ],
@@ -218,14 +238,13 @@ class _TasksState extends State<Tasks> {
 //                    ),
 //                  ):
                   Padding(
-                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top:30),
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 30),
                     child: Text(
-                      'Scedual Appartment Tasks:',
+                      'All Appartment Tasks:',
                       style: TextStyle(
                           color: Colors.black.withOpacity(0.7),
                           fontSize: 20.0,
-                          fontWeight: FontWeight.bold
-                      ),
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                   SizedBox(height: 25.0),
@@ -235,7 +254,9 @@ class _TasksState extends State<Tasks> {
 //                      children: tasksList,
 //                    ),
 //                  ),
-                  SizedBox(height: 70,)
+                  SizedBox(
+                    height: 70,
+                  )
                 ],
               ),
             ),
@@ -244,10 +265,8 @@ class _TasksState extends State<Tasks> {
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: FloatingActionButton(
-                  child: Icon(
-                      Icons.add
-                  ),
-                  onPressed: (){
+                  child: Icon(Icons.add),
+                  onPressed: () {
                     setState(() {
                       showAddDialog();
                       getUsers();
@@ -258,23 +277,19 @@ class _TasksState extends State<Tasks> {
               ),
             ),
           ],
-        )
-    );
+        ));
   }
 
-
-
-  void showAddDialog(){
+  void showAddDialog() {
     String frequency;
     TextEditingController taskNameController = new TextEditingController();
     TextEditingController frequencyController = new TextEditingController();
     showDialog(
         context: context,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return AlertDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))
-            ),
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.teal[100],
             content: Container(
               height: 250,
@@ -283,16 +298,19 @@ class _TasksState extends State<Tasks> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Text(
                     'Add new Task',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
-                        fontSize: 20
-                    ),
+                        fontSize: 20),
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Container(
@@ -309,15 +327,14 @@ class _TasksState extends State<Tasks> {
 //                                hintText: "press to choose partisipans"
 //                            ),
 //                          ),
-                          Text("press to choose partisipans",
-                              style: TextStyle(
-                              color: Colors.black45,
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 18.0
-                            ),
+                              Text(
+                            "press to choose partisipans",
+                            style: TextStyle(
+                                color: Colors.black45,
+                                //fontWeight: FontWeight.bold,
+                                fontSize: 18.0),
                           ),
-                          onPressed: ()=> _showMultiSelect(context),
-
+                          onPressed: () => _showMultiSelect(context),
                         ),
                       ),
 //                      child: TextField(
@@ -331,11 +348,14 @@ class _TasksState extends State<Tasks> {
 //                      ),
                     ),
                   ),
-                  SizedBox(height: 10.0,),
-                  MyDropDown(callback: (val){
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  MyDropDown(callback: (val) {
                     setState(() {
-                    frequency = val;
-                    });}),
+                      frequency = val;
+                    });
+                  }),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Container(
@@ -344,13 +364,13 @@ class _TasksState extends State<Tasks> {
                         decoration: InputDecoration(
                             hintText: 'task name',
                             enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)
-                            )
-                        ),
+                                borderSide: BorderSide(color: Colors.black))),
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -361,10 +381,9 @@ class _TasksState extends State<Tasks> {
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 15.0
-                          ),
+                              fontSize: 15.0),
                         ),
-                        onPressed: (){
+                        onPressed: () {
                           Navigator.pop(context);
                         },
                       ),
@@ -375,12 +394,12 @@ class _TasksState extends State<Tasks> {
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 15.0
-                          ),
+                              fontSize: 15.0),
                         ),
-                        onPressed: (){
-                          if(taskNameController.text != ''){
-                            sendAddTak(frequency,this.participensInTask,taskNameController.text,false);
+                        onPressed: () {
+                          if (taskNameController.text != '') {
+                            sendAddTak(frequency, this.participensInTask,
+                                taskNameController.text, false);
                             Navigator.pop(context);
                             //send to or
                           }
@@ -392,25 +411,36 @@ class _TasksState extends State<Tasks> {
               ),
             ),
           );
-        }
-    );
+        });
   }
 
-
   //this function add tsk to each list by frequency
-  void showAddTask(String frequency,List<User>performers,String task_name,bool isFinish){
+  void showAddTask(String frequency, List<User> performers, String task_name,
+      bool isFinish) {
 //    http post
     setState(() {
       //_taskList.add(Task(frequency:frequency,performer:performer,task_name:task_name,isFinish:isFinish));
-      if(frequency=="evey day"){
+      if (frequency == "evey day") {
         print("add to day");
-        _dayTaskList.add(Task(frequency:frequency,performers:performers,task_name:task_name,isFinish:isFinish));
-      }else if(frequency =="evey week"){
+        _dayTaskList.add(Task(
+            frequency: frequency,
+            performers: performers,
+            task_name: task_name,
+            isFinish: isFinish));
+      } else if (frequency == "evey week") {
         print("add to week");
-        _weekTaskList.add(Task(frequency:frequency,performers:performers,task_name:task_name,isFinish:isFinish));
-      }else{
+        _weekTaskList.add(Task(
+            frequency: frequency,
+            performers: performers,
+            task_name: task_name,
+            isFinish: isFinish));
+      } else {
         print("add to month");
-        _monthTaskList.add(Task(frequency:frequency,performers:performers,task_name:task_name,isFinish:isFinish));
+        _monthTaskList.add(Task(
+            frequency: frequency,
+            performers: performers,
+            task_name: task_name,
+            isFinish: isFinish));
       }
       print(task_name);
       print(frequency);
@@ -420,8 +450,7 @@ class _TasksState extends State<Tasks> {
     //(frequency =="evey month")
   }
 
-
-  void showSnackBar (String title){
+  void showSnackBar(String title) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       duration: Duration(seconds: 1),
       backgroundColor: Colors.pink[50],
@@ -430,36 +459,36 @@ class _TasksState extends State<Tasks> {
         children: <Widget>[
           Text(
             title,
-            style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.pink
-            ),
+            style: TextStyle(fontSize: 16.0, color: Colors.pink),
           ),
         ],
       ),
     ));
   }
 
-
-
-  Future<void> sendAddTak(String frequency,List<User>performers,String task_name,bool isFinish) async{
-    setState(() {
-
-    });
-      try{
+  Future<void> sendAddTak(String frequency, List<User> performers,
+      String task_name, bool isFinish) async {
+    setState(() {});
+    try {
       //    http post
       User user = data['user'];
-      final response = await http.post(
-          '$url/addDuty', headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      }, body: jsonEncode({
-        'name': task_name,
-        'participants':performers,
-        'frequency':changeFrequencyNameToServer(frequency),
-        'isExecuted':isFinish,
+      for (User u in performers) {
+        print("yuval check");
+        print(u.name);
       }
-      )).timeout(const Duration(seconds: 10));
-      if(response.statusCode == 200) {
+      final response = await http
+          .post('$url/addDuty',
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode({
+                'name': task_name,
+                'participants': performers,
+                'frequency': changeFrequencyNameToServer(frequency),
+                'isExecuted': isFinish,
+              }))
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
         print("200 OK Task");
         print("BODY RESPONSE");
         print(jsonDecode(response.body));
@@ -473,34 +502,34 @@ class _TasksState extends State<Tasks> {
         setState(() {
           showAddTask(frequency, performers, task_name, isFinish);
         });
-      }
-        else {
-       // showSnackBar('Error');
+      } else {
+        // showSnackBar('Error');
         print('somthing went worng');
       }
-    }//end try
-    catch (_){
+    } //end try
+    catch (_) {
       print('point 3');
       showSnackBar('No Internet Connection');
     }
-  }//end function
-
+  } //end function
 
   Future<void> getUsers() async {
-    try{
+    try {
       User user = data['user'];
       final response = await http.get(
-        'https://bunkyapp.herokuapp.com/allUsersOfAptByUser?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 6));
+        'https://bunkyapp.herokuapp.com/allUsersOfAptByUser?userId=${user.userId}&name=${user.name}&mail=${user.mail}',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      ).timeout(const Duration(seconds: 6));
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         print("get users");
         print("200 OK");
-        if(response.body.isNotEmpty){
+        if (response.body.isNotEmpty) {
           List jsonData = jsonDecode(response.body);
           List<User> usersNames = [];
-          for(var jsonUser in jsonData){
+          for (var jsonUser in jsonData) {
             User roommate = User.fromJson(jsonUser);
             usersNames.add(roommate);
           }
@@ -511,7 +540,7 @@ class _TasksState extends State<Tasks> {
       } else {
         print('Error');
       }
-    } catch (_){
+    } catch (_) {
       print('No Internet Connection');
     }
   }
@@ -521,54 +550,44 @@ class _TasksState extends State<Tasks> {
     List<Task> listOfTaskFromServer = [];
     print("in all duty");
 //    try{
-   // data['user'].
+    // data['user'].
     User user = data['user'];
     print(user.name);
     print(user.userId);
     print(user.mail);
     final response = await http.get(
-      'https://bunkyapp.herokuapp.com/getMyDuties?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },).timeout(const Duration(seconds: 6));
+      'https://bunkyapp.herokuapp.com/getMyDuties?userId=${user.userId}&name=${user.name}&mail=${user.mail}',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).timeout(const Duration(seconds: 6));
 
-      print("the body response");
-      print(jsonDecode(response.body));
-      if(response.statusCode == 200){
-        print("all task 200 OK");
-        if(response.body.isNotEmpty){
-          List jsonData = jsonDecode(response.body);
+    print("the body response");
+    print(jsonDecode(response.body));
+    if (response.statusCode == 200) {
+      print("all task 200 OK");
+      if (response.body.isNotEmpty) {
+        List jsonData = jsonDecode(response.body);
 
-          for(var jsonTask in jsonData){
-            Task userTask = Task.fromJson(jsonTask);
-            listOfTaskFromServer.add(userTask);
-          }
-          print("listOfTaskFromServer");
-          setState(() {
-            _taskList = listOfTaskFromServer;
-            splitTasks(_taskList, _dayTaskList, _weekTaskList, _monthTaskList);
-          });
+        for (var jsonTask in jsonData) {
+          Task userTask = Task.fromJson(jsonTask);
+          listOfTaskFromServer.add(userTask);
         }
-      } else {
-        print('Error');
+        print("listOfTaskFromServer");
+        splitTasks(listOfTaskFromServer);
       }
+    } else {
+      print('Error');
+    }
 //    } catch (_){
 //      print('No Internet Connection');
 //    }
   }
 
-
-
-
-
-
-
-
-
-
   //the multi roomatie option
   void _showMultiSelect(BuildContext context) async {
     final List<MultiSelectDialogItem<int>> items = [];
-    for(var i=0;i<usersList.length;i++){
+    for (var i = 0; i < usersList.length; i++) {
       items.add(MultiSelectDialogItem(i, usersList[i].name));
     }
 
@@ -590,7 +609,7 @@ class _TasksState extends State<Tasks> {
     );
     //print the name of the participans by the tapping order.
     participensInTask.clear();
-    for(var i=0 ;i<selectedValues.length;i++){
+    for (var i = 0; i < selectedValues.length; i++) {
       print("user list");
       print(usersList[i].name);
       participensInTask.add(usersList[i]);
@@ -598,29 +617,24 @@ class _TasksState extends State<Tasks> {
       print(participensInTask[i].name);
     }
     print(selectedValues);
-
   }
 
-
-  Widget _button_icon(BuildContext context){
+  Widget _button_icon(BuildContext context) {
     return Row(
       children: <Widget>[
         Expanded(
           child: RaisedButton.icon(
-            color:
-              all_day_finish==true ? Colors.teal :Colors.teal[100],
+            color: all_day_finish == true ? Colors.teal : Colors.teal[100],
             icon: Icon(Icons.playlist_add_check),
-            onPressed: (){
-            day_pressed_button=true;
-            week_pressed_button=false;
-            month_pressed_button=false;
-            print(day_pressed_button);
-            print(week_pressed_button);
-            print(month_pressed_button);
-            _taskList=_dayTaskList;
-            setState(() {
-
-            });
+            onPressed: () {
+              day_pressed_button = true;
+              week_pressed_button = false;
+              month_pressed_button = false;
+              print(day_pressed_button);
+              print(week_pressed_button);
+              print(month_pressed_button);
+              _taskList = _dayTaskList;
+              setState(() {});
             },
             label: Text(
               "Day",
@@ -631,20 +645,18 @@ class _TasksState extends State<Tasks> {
           ),
         ),
         Expanded(
-          child:RaisedButton.icon(
-            color:  all_week_finish==true ? Colors.teal :Colors.teal[100],
+          child: RaisedButton.icon(
+            color: all_week_finish == true ? Colors.teal : Colors.teal[100],
             icon: Icon(Icons.view_week),
-            onPressed: (){
-              day_pressed_button=false;
-              week_pressed_button=true;
-              month_pressed_button=false;
+            onPressed: () {
+              day_pressed_button = false;
+              week_pressed_button = true;
+              month_pressed_button = false;
               print(day_pressed_button);
               print(week_pressed_button);
               print(month_pressed_button);
-              _taskList=_weekTaskList;
-              setState(() {
-
-              });
+              _taskList = _weekTaskList;
+              setState(() {});
             },
             label: Text(
               "Week",
@@ -656,20 +668,18 @@ class _TasksState extends State<Tasks> {
         ),
         Expanded(
           child: RaisedButton.icon(
-            color:  all_month_finish==true ? Colors.teal :Colors.teal[100],
+            color: all_month_finish == true ? Colors.teal : Colors.teal[100],
 //          color: Colors.amber[200],
             icon: Icon(Icons.today),
-            onPressed: (){
-              day_pressed_button=false;
-              week_pressed_button=false;
-              month_pressed_button=true;
+            onPressed: () {
+              day_pressed_button = false;
+              week_pressed_button = false;
+              month_pressed_button = true;
               print(day_pressed_button);
               print(week_pressed_button);
               print(month_pressed_button);
-              _taskList=_monthTaskList;
-              setState(() {
-
-              });
+              _taskList = _monthTaskList;
+              setState(() {});
             },
             label: Text(
               "Month",
@@ -683,27 +693,32 @@ class _TasksState extends State<Tasks> {
     );
   }
 
-  Widget _button(BuildContext context){
+  Widget _button(BuildContext context) {
     return Row(
       children: <Widget>[
         Expanded(
           child: MaterialButton(
             onPressed: () {},
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-            color:Theme.of(context).accentColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            color: Theme.of(context).accentColor,
             textColor: Colors.white,
             padding: const EdgeInsets.all(14.0),
             child: Text("day"),
           ),
         ),
-        SizedBox(width: 32,),
+        SizedBox(
+          width: 32,
+        ),
         Expanded(
           child: MaterialButton(
             onPressed: () {},
             shape: RoundedRectangleBorder(
-                side:BorderSide(color:Theme.of(context).accentColor, ),
+                side: BorderSide(
+                  color: Theme.of(context).accentColor,
+                ),
                 borderRadius: BorderRadius.circular(12.0)),
-            color:Colors.white,
+            color: Colors.white,
             textColor: Theme.of(context).accentColor,
             padding: const EdgeInsets.all(14.0),
             child: Text("week"),
@@ -712,8 +727,9 @@ class _TasksState extends State<Tasks> {
         Expanded(
           child: MaterialButton(
             onPressed: () {},
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-            color:Theme.of(context).accentColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            color: Theme.of(context).accentColor,
             textColor: Colors.white,
             padding: const EdgeInsets.all(14.0),
             child: Text("month"),
@@ -722,11 +738,13 @@ class _TasksState extends State<Tasks> {
       ],
     );
   }
-  Widget _taskUncomlete(String task) {
+
+  Widget _taskUncomlete(String task, int index) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
 //            Icon(
 //              Icons.radio_button_checked,
@@ -734,21 +752,56 @@ class _TasksState extends State<Tasks> {
 //              color: Colors.teal,
 //              size: 20,
 //            ),
+            Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.radio_button_unchecked,
+                    color: Colors.teal,
+                  ),
+                  onPressed: () {
+                    //to move to compelete and change icon
+                    //to move to compelete and change icon
+                    this._taskList[index].isFinish = true;
+                    setState(() {});
+                  },
+                ),
+                SizedBox(
+                  width: 15,
+                ),
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                              child: Text(
+                                task,
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                            ),
+                          ),
+                        ],
+                    ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 10,
+            ),
             IconButton(
-              icon: Icon(Icons.radio_button_unchecked,
-                color: Colors.teal,
+              icon: Icon(
+                Icons.delete_outline,
+                color: Colors.pink,
               ),
               onPressed: () {
-                //to move to compelete and change icon
+
                 setState(() {
 
                 });
               },
             ),
-            SizedBox(
-              width: 28,
-            ),
-            Text(task, style: TextStyle(fontSize: 20,),)
           ],
         ),
       ),
@@ -806,64 +859,104 @@ class _TasksState extends State<Tasks> {
 //    );
   }
 
-  Widget _taskComlete(String task) {
+  Widget _taskComlete(String task, int index) {
     return Container(
-      foregroundDecoration: BoxDecoration(color: Color(0x60FDFDFD)),
+      //foregroundDecoration: BoxDecoration(color: Color(0x60FDFDFD)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Icon(
-              Icons.radio_button_checked,
-//              color:Theme.of(context).accentColor,
-              color: Colors.teal,
-              size: 20,
-            ),
-//            IconButton(
-//              icon: Icon(Icons.radio_button_checked,
-//                color: Colors.teal,
-//              ),
-//              onPressed: () {
-//                //to move to compelete and change icon
-//                setState(() {
-//                  _taskList[1].isFinish=false;
-//                });
-//              },
+//            Icon(
+//              Icons.radio_button_checked,
+////              color:Theme.of(context).accentColor,
+//              color: Colors.teal,
+//              size: 20,
 //            ),
-            SizedBox(
-              width: 28,
+            Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.radio_button_checked,
+                    color: Colors.teal,
+                  ),
+                  onPressed: () {
+                    //to move to compelete and change icon
+                    this._taskList[index].isFinish = false;
+                    setState(() {
+
+                    });
+                  },
+                ),
+              ],
             ),
-            Text(task, style: TextStyle(fontSize: 20,),)
+            SizedBox(
+              width: 15,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      task,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.delete_outline,
+                color: Colors.pink,
+              ),
+              onPressed: () {
+
+                setState(() {
+
+                });
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  void splitTasks(List<Task>_taskList,_dayTaskList,_weekTaskList,_monthTaskList){
+  void splitTasks(List<Task> _taskList) {
     print("split task");
 
-    for (var i=0; i<_taskList.length;i++){
+    for (var i = 0; i < _taskList.length; i++) {
       print(_taskList[i].frequency);
-      if(_taskList[i].frequency=="evey day"){
-        _dayTaskList.add(_taskList[i]);
-      }
-      else if(_taskList[i].frequency=="evey week"){
-        _weekTaskList.add(_taskList[i]);
-      }
-      else{
-        _monthTaskList.add(_taskList[i]);
+      if (_taskList[i].frequency == "evey day") {
+        setState(() {
+          _dayTaskList.add(_taskList[i]);
+        });
+      } else if (_taskList[i].frequency == "evey week") {
+        setState(() {
+          _weekTaskList.add(_taskList[i]);
+        });
+      } else {
+        setState(() {
+          _monthTaskList.add(_taskList[i]);
+        });
       }
     }
   }
-
 }
 
-//
+
 //class TasksItem extends StatelessWidget {
 //  final Task task;
 //
-//  TasksItem(String frequency,String performer,String task_name) : task = Task(frequency: frequency,performer: performer,task_name:task_name);
+//  TasksItem(String frequency,String nextPerformer,String task_name) : task = Task(frequency: frequency,performers: nextPerformer,task_name:task_name);
 //
 //  @override
 //  Widget build(BuildContext context) {
@@ -924,9 +1017,6 @@ class _TasksState extends State<Tasks> {
 //  }
 //}
 
-
-
-
 // ================== coped from stakeoverflow
 
 class MultiSelectDialogItem<V> {
@@ -937,7 +1027,8 @@ class MultiSelectDialogItem<V> {
 }
 
 class MultiSelectDialog<V> extends StatefulWidget {
-  MultiSelectDialog({Key key, this.items, this.initialSelectedValues}) : super(key: key);
+  MultiSelectDialog({Key key, this.items, this.initialSelectedValues})
+      : super(key: key);
 
   final List<MultiSelectDialogItem<V>> items;
   final Set<V> initialSelectedValues;
@@ -1019,7 +1110,6 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
 }
 
 // =================== until here it was overflow
-
 
 // //from youtube one to one
 //
@@ -1110,9 +1200,7 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
 //  }
 //}
 
-
 //////////////// youtube that i change //////////////////////////
-
 
 //  Widget _mainContent(BuildContext context){
 //    return Column(
@@ -1140,8 +1228,6 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
 //      ],
 //    );
 //  }
-
-
 
 //  Widget _taskUncomlete(String task){
 //    return  Padding(

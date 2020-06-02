@@ -160,7 +160,7 @@ class _LoginState extends State<Login> {
       final response = await http.get(
         'https://bunkyapp.herokuapp.com/loginUser?mail=$mail', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 10));
+      },).timeout(const Duration(seconds: 20));
 
       if(response.statusCode == 200){
         print("200 OK");
