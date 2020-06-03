@@ -38,6 +38,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       bottomNavigationBar: BottomNavyBar(),
       body: Stack(
@@ -73,7 +74,9 @@ class _SettingsState extends State<Settings> {
                 margin: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 color: Colors.teal[400],
                 child: ListTile(
-                  onTap: (){},
+                  onTap: (){
+                    showRenameDialog();
+                  },
                   title: Text('${data['user'].name}', style: TextStyle(fontSize: 18.0),),
                   trailing: Icon(Icons.edit),
                 ),
@@ -197,6 +200,149 @@ class _SettingsState extends State<Settings> {
         ],
       ),
     );
+  }
+
+
+  void showRenameDialog(){
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    TextEditingController titleController = new TextEditingController();
+    TextEditingController valueController = new TextEditingController();
+    String newName;
+    bool _autoValidate = false;
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return StatefulBuilder(
+            builder: (context, setState){
+              return Center(
+                child: SingleChildScrollView(
+                  child: AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))
+                    ),
+                    backgroundColor: Colors.teal[100],
+                    content: Container(
+                      height: 200,
+                      width: 100,
+                      child: Form(
+                        autovalidate: _autoValidate,
+                        key:  formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text(
+                              'Rename',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 20
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10, right: 10),
+                              child: TextFormField(
+                                validator: (value){
+                                  if (value.isEmpty) {
+                                    return 'name is required';
+                                  }
+                                  if(value == data['user'].name){
+                                    return 'name already exist';
+                                  }
+                                  return null;
+                                },
+                                controller: titleController,
+                                decoration: InputDecoration(
+                                  hintText: 'New name',
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.black)
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                RaisedButton(
+                                  color: Colors.pink[800],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.circular(10.0),
+                                  ),
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15.0
+                                    ),
+                                  ),
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                RaisedButton(
+                                  color: Colors.pink[800],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.circular(10.0),
+                                  ),
+                                  child: Text(
+                                    "Add",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15.0
+                                    ),
+                                  ),
+                                  onPressed: (){
+                                    if(!formKey.currentState.validate()){
+                                      setState(() {
+                                        _autoValidate = true;
+                                      });
+                                      return;
+                                    }
+                                    formKey.currentState.save();
+                                    renameUser(titleController.text);
+                                    Navigator.pop(context);
+                                  },
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        }
+    );
+  }
+
+  Future<void> renameUser(String newName) async{
+    User user = data["user"];
+
+    final response = await http.put(
+        '$url/renameUser', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        }, body: jsonEncode({
+        'user': user,
+        'newName': newName,
+        }));
+    print(jsonDecode(response.body));
+    if(response.statusCode == 200){
+      if(response.body.isNotEmpty){
+        setState(() {
+          data['user'] = User.fromJson(jsonDecode(response.body));
+        });
+      }
+
+    } else {
+      showSnackBar('Error');
+      return -1;
+    }
   }
 
   Future<int> getApartmentCode() async{
