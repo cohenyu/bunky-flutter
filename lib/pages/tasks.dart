@@ -13,9 +13,6 @@ class Tasks extends StatefulWidget {
 }
 
 class _TasksState extends State<Tasks> {
-  bool all_day_finish = true;
-  bool all_week_finish = true;
-  bool all_month_finish = true;
   bool day_pressed_button = true;
   bool week_pressed_button = false;
   bool month_pressed_button = false;
@@ -622,19 +619,25 @@ class _TasksState extends State<Tasks> {
   Widget _button_icon(BuildContext context) {
     return Row(
       children: <Widget>[
+        SizedBox(width: 5.0,),
         Expanded(
           child: RaisedButton.icon(
-            color: all_day_finish == true ? Colors.teal : Colors.teal[100],
+            color: day_pressed_button == true ? Colors.teal : Colors.teal[300],
             icon: Icon(Icons.playlist_add_check),
             onPressed: () {
-              day_pressed_button = true;
-              week_pressed_button = false;
-              month_pressed_button = false;
-              print(day_pressed_button);
-              print(week_pressed_button);
-              print(month_pressed_button);
+//              day_pressed_button = true;
+//              week_pressed_button = false;
+//              month_pressed_button = false;
+//              print(day_pressed_button);
+//              print(week_pressed_button);
+//              print(month_pressed_button);
               _taskList = _dayTaskList;
-              setState(() {});
+
+              setState(() {
+                day_pressed_button = true;
+                week_pressed_button = false;
+                month_pressed_button = false;
+              });
             },
             label: Text(
               "Day",
@@ -644,19 +647,24 @@ class _TasksState extends State<Tasks> {
             ),
           ),
         ),
+        SizedBox(width: 5.0,),
         Expanded(
           child: RaisedButton.icon(
-            color: all_week_finish == true ? Colors.teal : Colors.teal[100],
+            color: week_pressed_button == true ? Colors.teal : Colors.teal[300],
             icon: Icon(Icons.view_week),
             onPressed: () {
-              day_pressed_button = false;
-              week_pressed_button = true;
-              month_pressed_button = false;
-              print(day_pressed_button);
-              print(week_pressed_button);
-              print(month_pressed_button);
+//              day_pressed_button = false;
+//              week_pressed_button = true;
+//              month_pressed_button = false;
+//              print(day_pressed_button);
+//              print(week_pressed_button);
+//              print(month_pressed_button);
               _taskList = _weekTaskList;
-              setState(() {});
+              setState(() {
+                day_pressed_button = false;
+                week_pressed_button = true;
+                month_pressed_button = false;
+              });
             },
             label: Text(
               "Week",
@@ -666,20 +674,25 @@ class _TasksState extends State<Tasks> {
             ),
           ),
         ),
+        SizedBox(width: 5.0,),
         Expanded(
           child: RaisedButton.icon(
-            color: all_month_finish == true ? Colors.teal : Colors.teal[100],
+            color: month_pressed_button == true ? Colors.teal : Colors.teal[300],
 //          color: Colors.amber[200],
             icon: Icon(Icons.today),
             onPressed: () {
-              day_pressed_button = false;
-              week_pressed_button = false;
-              month_pressed_button = true;
-              print(day_pressed_button);
-              print(week_pressed_button);
-              print(month_pressed_button);
+//              day_pressed_button = false;
+//              week_pressed_button = false;
+//              month_pressed_button = true;
+//              print(day_pressed_button);
+//              print(week_pressed_button);
+//              print(month_pressed_button);
               _taskList = _monthTaskList;
-              setState(() {});
+              setState(() {
+                day_pressed_button = false;
+                week_pressed_button = false;
+                month_pressed_button = true;
+              });
             },
             label: Text(
               "Month",
@@ -688,7 +701,8 @@ class _TasksState extends State<Tasks> {
               borderRadius: new BorderRadius.circular(10),
             ),
           ),
-        )
+        ),
+        SizedBox(width: 5.0,),
       ],
     );
   }
@@ -760,8 +774,6 @@ class _TasksState extends State<Tasks> {
                     color: Colors.teal,
                   ),
                   onPressed: () {
-                    //to move to compelete and change icon
-                    //to move to compelete and change icon
                     this._taskList[index].isFinish = true;
                     setState(() {});
                   },
@@ -796,7 +808,7 @@ class _TasksState extends State<Tasks> {
                 color: Colors.pink,
               ),
               onPressed: () {
-
+                  this._taskList.remove(_taskList[index]);
                 setState(() {
 
                 });
@@ -806,62 +818,10 @@ class _TasksState extends State<Tasks> {
         ),
       ),
     );
-
-//    return InkWell(
-//      onTap: (){
-//
-//        showDialog(
-//            context: context,
-//            builder: (context){
-//              return Dialog(
-//                child: Column(
-//                  children: <Widget>[
-//                    Text("Confirm Task",
-//                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0),
-//                    )
-//                  ],
-//                ),
-//              );
-//            }
-//        );
-//      },
-//      onLongPress: (){
-//
-//      },
-//      child: Padding(
-//        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-//        child: Row(
-//          children: <Widget>[
-////            IconButton(
-////              icon: Icon(Icons.radio_button_unchecked,
-////                color: Colors.teal,
-////              ),
-////              onPressed: () {
-////                //to move to compelete and change icon
-////                setState(() {
-////
-////                });
-////              },
-////            ),
-//            Icon(
-//              Icons.radio_button_unchecked,
-////            color:Theme.of(context).accentColor,
-//              color: Colors.teal,
-//              size: 20,
-//            ),
-//            SizedBox(
-//              width: 28,
-//            ),
-//            Text(task, style: TextStyle(fontSize: 20,),),
-//          ],
-//        ),
-//      ),
-//    );
   }
 
   Widget _taskComlete(String task, int index) {
     return Container(
-      //foregroundDecoration: BoxDecoration(color: Color(0x60FDFDFD)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0),
         child: Row(
@@ -876,41 +836,36 @@ class _TasksState extends State<Tasks> {
             Row(
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.radio_button_checked,
+                  icon: Icon(
+                    Icons.radio_button_checked,
                     color: Colors.teal,
                   ),
                   onPressed: () {
-                    //to move to compelete and change icon
                     this._taskList[index].isFinish = false;
-                    setState(() {
-
-                    });
+                    setState(() {});
                   },
                 ),
-              ],
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      task,
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black.withOpacity(0.5),
+                SizedBox(
+                  width: 15,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          task,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 10,
+                ),
+              ],
             ),
             IconButton(
               icon: Icon(
@@ -918,7 +873,7 @@ class _TasksState extends State<Tasks> {
                 color: Colors.pink,
               ),
               onPressed: () {
-
+                this._taskList.remove(_taskList[index]);
                 setState(() {
 
                 });
@@ -929,6 +884,71 @@ class _TasksState extends State<Tasks> {
       ),
     );
   }
+
+//  Widget _taskComlete(String task, int index) {
+//    return Container(
+//      //foregroundDecoration: BoxDecoration(color: Color(0x60FDFDFD)),
+//      child: Padding(
+//        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0),
+//        child: Row(
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//          children: <Widget>[
+//            Row(
+//              children: <Widget>[
+//                IconButton(
+//                  icon: Icon(Icons.radio_button_checked,
+//                    color: Colors.teal,
+//                  ),
+//                  onPressed: () {
+//                    //to move to compelete and change icon
+//                    this._taskList[index].isFinish = false;
+//                    setState(() {
+//
+//                    });
+//                  },
+//                ),
+//                SizedBox(
+//                  width: 15,
+//                ),
+//              ],
+//            ),
+//            Container(
+//              width: MediaQuery.of(context).size.width * 0.6,
+//              child: Row(
+//                mainAxisAlignment: MainAxisAlignment.center,
+//                children: <Widget>[
+//                  Expanded(
+//                    child: Text(
+//                      task,
+//                      style: TextStyle(
+//                        fontSize: 20,
+//                        color: Colors.black.withOpacity(0.5),
+//                      ),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//            ),
+//            SizedBox(
+//              width: 10,
+//            ),
+//            IconButton(
+//              icon: Icon(
+//                Icons.delete_outline,
+//                color: Colors.pink,
+//              ),
+//              onPressed: () {
+//                this._taskList.remove(_taskList[index]);
+//                setState(() {
+//
+//                });
+//              },
+//            ),
+//          ],
+//        ),
+//      ),
+//    );
+//  }
 
   void splitTasks(List<Task> _taskList) {
     print("split task");
