@@ -79,7 +79,7 @@ class _BalancingState extends State<Balancing> {
                 Padding(
                   padding: EdgeInsets.only(top: 20.0, right: 25.0, left: 25.0),
                   child: Container(
-                    height: MediaQuery.of(context).size.height - 200,
+                    height: MediaQuery.of(context).size.height / 1.5,
                     width: double.infinity,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -135,7 +135,7 @@ class _BalancingState extends State<Balancing> {
                                 ),
                                 SizedBox(height: 10.0,),
                                 Container(
-                                  height: MediaQuery.of(context).size.height - 350,
+                                  height: MediaQuery.of(context).size.height - 360,
                                   child: ListView.builder(
                                     padding: EdgeInsets.zero,
                                     scrollDirection: Axis.vertical,
@@ -171,7 +171,7 @@ class _BalancingState extends State<Balancing> {
                                 ),
                                 SizedBox(height: 10.0,),
                                 Container(
-                                  height: MediaQuery.of(context).size.height - 350,
+                                  height: MediaQuery.of(context).size.height - 360,
                                   child: ListView.builder(
                                     padding: EdgeInsets.zero,
                                     scrollDirection: Axis.vertical,
@@ -222,13 +222,18 @@ class _BalancingState extends State<Balancing> {
     setState(() {
       isLoading = true;
     });
-    final response = await http.post(
-        '$url/addRefund', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode(refund.toJson(),)).timeout(const Duration(seconds: 5));
+    try{
+      final response = await http.post(
+          '$url/addRefund', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode(refund.toJson(),)).timeout(const Duration(seconds: 5));
 
-    if(response.statusCode == 200){
-      print('200 OK - refund');
+      if(response.statusCode == 200){
+        print('200 OK - refund');
+      }
+
+    } catch (_){
+      showSnackBar('No Internet Connection');
     }
 
     setState(() {

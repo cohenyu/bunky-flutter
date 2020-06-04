@@ -168,7 +168,6 @@ class _ConnectApartmentState extends State<ConnectApartment> {
       }
 
     } catch (_){
-      print("hwllo");
       print('No Internet Connection');
       showSnackBar('No Internet Connection');
     }

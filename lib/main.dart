@@ -13,7 +13,7 @@ import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-// Yuval - 4.6 18:24
+// Yuval - 4.6 19:50
 //miriel 02/06 23:32
 
 void main() => runApp(MaterialApp(

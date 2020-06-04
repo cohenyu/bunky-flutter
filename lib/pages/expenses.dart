@@ -244,45 +244,83 @@ class _ExpensesState extends State<Expenses> {
 
   List<Widget> hideExpenses(){
     return [
-      Center(
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 100,),
-            Container(
-              height: 90,
-              width: 150,
-              child: Stack(
-                children: <Widget>[
-                  Positioned(
-                    child: Icon(
-                      Icons.star,
-                      size: 100.0,
-                      color: Colors.teal.withOpacity(0.2),
-                    ),
-                    left: 45,
+      Container(
+        height: MediaQuery.of(context).size.height/ 1.7,
+        child: Center(
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Icon(
+                    Icons.star,
+                    size: 100.0,
+                    color: Colors.teal.withOpacity(0.2),
                   ),
-                  Positioned(
-                    child: Icon(
-                      Icons.star_border,
-                      size: 40.0,
-                      color: Colors.teal.withOpacity(0.2),
-                    ),
-                    top: 40,
-                    left: 25,
-                  )
-                ],
+                ),
               ),
+              Positioned(
+                top: 75.0,
+                left: 10.0,
+                child: Icon(
+                  Icons.star_border,
+                  size: 40.0,
+                  color: Colors.teal.withOpacity(0.2),
+                ),
+              ),
+              Positioned(
+                top: 120.0,
+                child: Text(
+                  'no expenses',
+                style: TextStyle(
+                  fontSize: 27.0,
+                  color: Colors.black.withOpacity(0.4)
+                ),
             ),
-            Text(
-                'no expenses',
-              style: TextStyle(
-                fontSize: 40.0,
-                color: Colors.black.withOpacity(0.4)
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       )
+//      Center(
+//        child: Column(
+//          children: <Widget>[
+//            SizedBox(height: 100,),
+//            Container(
+//              height: MediaQuery.of(context).size.height / 2,
+//              width: 150,
+//              child: Stack(
+//                children: <Widget>[
+//                  Positioned(
+//                    child: Icon(
+//                      Icons.star,
+//                      size: 100.0,
+//                      color: Colors.teal.withOpacity(0.2),
+//                    ),
+//                    left: 45,
+//                  ),
+//                  Positioned(
+//                    child: Icon(
+//                      Icons.star_border,
+//                      size: 40.0,
+//                      color: Colors.teal.withOpacity(0.2),
+//                    ),
+//                    top: 40,
+//                    left: 25,
+//                  )
+//                ],
+//              ),
+//            ),
+//            Text(
+//                'no expenses',
+//              style: TextStyle(
+//                fontSize: 40.0,
+//                color: Colors.black.withOpacity(0.4)
+//              ),
+//            )
+//          ],
+//        ),
+//      )
        ,
     ];
   }
@@ -362,6 +400,40 @@ class _ExpensesState extends State<Expenses> {
             return Dismissible(
               key: Key('${expensesList[index].expanse.id}'),
               direction: DismissDirection.endToStart,
+              confirmDismiss: (DismissDirection direction) async {
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0))
+                      ),
+                      backgroundColor: Colors.teal[100],
+                      title: Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text("Confirm"),
+                      ),
+                      content: Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text("Are you sure you wish to delete this item?", style: TextStyle(fontSize: 18.0),),
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text("Delete", style: TextStyle(color: Colors.pink[700], fontSize: 17.0),)
+                        ),
+                        FlatButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: Text("Cancel", style: TextStyle(color: Colors.pink[700], fontSize: 17.0),),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
               onDismissed: (direction){
                 deleteExpanse(index);
                 setState(() {

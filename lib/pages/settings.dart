@@ -16,6 +16,10 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   Map data = {};
   Future<int> code;
+
+  Future<int> aptCode;
+  int finalCode;
+
   String url = 'https://bunkyapp.herokuapp.com';
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -26,7 +30,10 @@ class _SettingsState extends State<Settings> {
       print(MediaQuery.of(context).size.toString());
       data = ModalRoute.of(context).settings.arguments;
       setState(() {
-        code = getApartmentCode();
+        code = getApartmentCode().then((value){
+          finalCode = value;
+          return value;
+        });
       });
 
     });
@@ -122,7 +129,7 @@ class _SettingsState extends State<Settings> {
                               ),
                               onPressed: (){
                                 final RenderBox box = context.findRenderObject();
-                                Share.share('$code',
+                                Share.share('This is my apartment code! join me at Bunky app! \n$finalCode',
                                     subject: 'This is your apartment code! join me at Bunky app!',
                                     sharePositionOrigin:
                                     box.localToGlobal(Offset.zero) &

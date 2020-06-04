@@ -19,6 +19,7 @@ class _CreateApartmentState extends State<CreateApartment> {
   final String url = 'https://bunkyapp.herokuapp.com/loginUser';
   Future<int> aptCode;
   int finalCode;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _CreateApartmentState extends State<CreateApartment> {
     Logo logo = Logo(title: 'Signup');
     HttpService http = HttpService();
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.teal,
       body: Stack(
@@ -89,8 +91,8 @@ class _CreateApartmentState extends State<CreateApartment> {
                           ),
                           onPressed: (){
                             final RenderBox box = context.findRenderObject();
-                            Share.share('$finalCode',
-                                subject: 'This is your apartment code! join me at Bunky app!',
+                            Share.share('This is my apartment code! join me at Bunky app! \n$finalCode',
+                                subject: 'This is my apartment code! join me at Bunky app!',
                                 sharePositionOrigin:
                                 box.localToGlobal(Offset.zero) &
                                 box.size);
@@ -179,25 +181,48 @@ class _CreateApartmentState extends State<CreateApartment> {
   
 
   Future<int> getApartmentCode() async{
-    print("inside");
+
     User user = data["user"];
     print(user.name);
-//    print(data["user"]);
-    var response = await http.post('https://bunkyapp.herokuapp.com/newApt',headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode({
-      'user': user.toJson(),
-      'aptName': 'yuval&miriel',
-    }
-    ));
-    if(response.statusCode == 200){
-      int code = jsonDecode(response.body);
-      return code;
-    } else {
-      print('somthing went worng');
+    try{
+      var response = await http.post('https://bunkyapp.herokuapp.com/newApt',headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode({
+        'user': user.toJson(),
+        'aptName': 'yuval&miriel',
+      }
+      ));
+      if(response.statusCode == 200){
+        int code = jsonDecode(response.body);
+        return code;
+      } else {
+        print('ERROR');
+        return -1;
+      }
+
+    } catch (_){
+      print('No Internet Connection');
       return -1;
     }
 
+  }
+
+  void showSnackBar (String title){
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.pink[50],
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.pink
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 
 }
