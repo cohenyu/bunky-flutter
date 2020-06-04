@@ -38,6 +38,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   http: any
+  flutter_launcher_icons: "^0.7.5"
+
+flutter_icons:
+  android: true
+  image_path: 'assets/bunky_logo.png'
 
 
 # For information on the generic Dart part of this file, see the

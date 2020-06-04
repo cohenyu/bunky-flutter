@@ -7,10 +7,12 @@ class Logo{
 
   Widget getLogo(){
     return Container(
+      height: 230.0,
       child: Stack(
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
+          Positioned(
+            left: 15.0,
+            top: 110.0,
             child: Text(
               'Bunky',
               style: TextStyle(
@@ -19,8 +21,9 @@ class Logo{
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 187.0, 0.0, 0.0),
+          Positioned(
+            left: 20.0,
+            top: 190,
             child: Text(
               this.title,
               style: TextStyle(
@@ -29,47 +32,59 @@ class Logo{
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(227.0, 90.0, 0.0, 0.0),
-            child: Text(
-              '.',
-              style: TextStyle(
-                  fontSize: 120.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.yellow[300]
+          Positioned(
+            left: 227.0,
+            top: 90.0,
+            child: Container(
+              child: Text(
+                '.',
+                style: TextStyle(
+                    fontSize: 120.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.yellow[300]
+                ),
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(230.0, 90.0, 0.0, 0.0),
-            child: Text(
-              '.',
-              style: TextStyle(
-                  fontSize: 100.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.pink
+          Positioned(
+            left: 230.0,
+            top: 90.0,
+            child: Container(
+              child: Text(
+                '.',
+                style: TextStyle(
+                    fontSize: 100.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.pink
+                ),
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(247.0, 90.0, 0.0, 0.0),
-            child: Text(
-              '.',
-              style: TextStyle(
-                  fontSize: 120.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.yellow[300]
+          Positioned(
+            left: 247.0,
+            top: 90.0,
+            child: Container(
+              child: Text(
+                '.',
+                style: TextStyle(
+                    fontSize: 120.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.yellow[300]
+                ),
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(249.0, 90.0, 0.0, 0.0),
-            child: Text(
-              '.',
-              style: TextStyle(
-                  fontSize: 100.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal[600]
+          Positioned(
+            left: 249.0,
+            top: 90.0,
+            child: Container(
+              child: Text(
+                '.',
+                style: TextStyle(
+                    fontSize: 100.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal[600]
+                ),
               ),
             ),
           ),
