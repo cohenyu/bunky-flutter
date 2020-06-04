@@ -191,8 +191,6 @@ class _CreateApartmentState extends State<CreateApartment> {
     }
     ));
     if(response.statusCode == 200){
-      print('200 OK');
-      print('body: ${jsonDecode(response.body)}');
       int code = jsonDecode(response.body);
       return code;
     } else {

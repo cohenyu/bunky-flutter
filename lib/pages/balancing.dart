@@ -25,16 +25,10 @@ class _BalancingState extends State<Balancing> {
   Color primaryColor = Colors.teal;
   Map data = {};
   String url = 'https://bunkyapp.herokuapp.com';
-  List<ChargeCard> credit = [
-    ChargeCard('yuval', '100'),
-    ChargeCard('Or', '240'),
-    ChargeCard('Miriel', '240'),
-  ];
-  List<ChargeCard> debt = [
-    ChargeCard('yuval', '-96'),
-    ChargeCard('Miriel', '289')
-  ];
+  List<ChargeCard> credit = [];
+  List<ChargeCard> debt = [];
   bool isLoading = true;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -50,6 +44,7 @@ class _BalancingState extends State<Balancing> {
     }
     bool isBalanceExist  = debt.isNotEmpty || credit.isNotEmpty;
     return Scaffold(
+      key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Stack(
@@ -84,7 +79,7 @@ class _BalancingState extends State<Balancing> {
                 Padding(
                   padding: EdgeInsets.only(top: 20.0, right: 25.0, left: 25.0),
                   child: Container(
-                    height: 450,
+                    height: MediaQuery.of(context).size.height - 200,
                     width: double.infinity,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -97,7 +92,13 @@ class _BalancingState extends State<Balancing> {
                           )
                         ]
                     ),
-                    child: !isBalanceExist ?
+                    child: isLoading ? Center(
+                      child: SpinKitCircle(
+                        color: Colors.grey[600],
+                        size: 50.0,
+                      ),
+                    ) :
+                    !isBalanceExist ?
                     Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -113,12 +114,7 @@ class _BalancingState extends State<Balancing> {
                     ) :
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20.0),
-                      child: isLoading ? Center(
-                        child: SpinKitCircle(
-                          color: Colors.grey[600],
-                          size: 50.0,
-                        ),
-                      ) :Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Container(
@@ -138,8 +134,17 @@ class _BalancingState extends State<Balancing> {
                                   ),
                                 ),
                                 SizedBox(height: 10.0,),
-                                Column(
-                                  children: debt
+                                Container(
+                                  height: MediaQuery.of(context).size.height - 350,
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: debt.length,
+                                    itemBuilder: (context, int index){
+                                      return debt[index];
+                                    },
+                                  ),
                                 )
                               ],
                             ),
@@ -165,8 +170,17 @@ class _BalancingState extends State<Balancing> {
                                   ),
                                 ),
                                 SizedBox(height: 10.0,),
-                                Column(
-                                  children: credit,
+                                Container(
+                                  height: MediaQuery.of(context).size.height - 350,
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: credit.length,
+                                    itemBuilder: (context, int index){
+                                      return credit[index];
+                                    },
+                                  ),
                                 )
                               ],
                             ),
@@ -208,13 +222,11 @@ class _BalancingState extends State<Balancing> {
     setState(() {
       isLoading = true;
     });
-    print(refund.toJson());
     final response = await http.post(
         '$url/addRefund', headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     }, body: jsonEncode(refund.toJson(),)).timeout(const Duration(seconds: 5));
 
-    print(jsonDecode(response.body));
     if(response.statusCode == 200){
       print('200 OK - refund');
     }
@@ -224,28 +236,18 @@ class _BalancingState extends State<Balancing> {
     });
   }
 
-//  Future<void> getBalance()async{
-//    await Future.delayed(const Duration(seconds: 4), (){});
-//    setState(() {
-//      credit.removeLast();
-//      isLoading = false;
-//    });
-//  }
-
 
   Future<void> getBalance() async{
     User user = data['user'];
 
-//    try {
+    try {
     final response = await http.post(
         '$url/computeUserBalance', headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     }, body: jsonEncode(user.toJson())).timeout(const Duration(seconds: 5));
 
-    print(jsonDecode(response.body));
-    if(response.statusCode == 200){
-      print('200 OK');
-      if(response.body.isNotEmpty){
+    if(response.statusCode == 200) {
+      if (response.body.isNotEmpty) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         Map<String, dynamic> userDebt = jsonData['userDebt'];
         Map<String, dynamic> userCredit = jsonData['userCredit'];
@@ -253,11 +255,11 @@ class _BalancingState extends State<Balancing> {
         List<ChargeCard> tmpCredit = [];
         List<ChargeCard> tmpDebt = [];
 
-        for(var key in userDebt.keys){
+        for (var key in userDebt.keys) {
           tmpDebt.add(ChargeCard(key, userDebt[key].toString()));
         }
 
-        for(var key in userCredit.keys){
+        for (var key in userCredit.keys) {
           tmpCredit.add(ChargeCard(key, userCredit[key].toString()));
         }
         setState(() {
@@ -265,34 +267,33 @@ class _BalancingState extends State<Balancing> {
           debt = tmpDebt;
           isLoading = false;
         });
-
       }
     }
-//    Map<String, dynamic> jsonData = jsonDecode(response.body);
-//    print(jsonData);
-//    if(response.statusCode == 200){
-//      Map<String, double> tmpMap = {};
-//      for(var key in jsonData.keys){
-//        print(key);
-//        print(jsonData[key].runtimeType);
-//
-//        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
-//      }
-//
-//      setState(() {
-//        categoricalMap.clear();
-//        categoricalMap.addAll(tmpMap);
-//      });
-//
-//    } else {
-//      showSnackBar('Error');
-//    }
-//    } catch (_) {
-//      showSnackBar('No Internet Connection');
-//    }
+    } catch (_) {
+      showSnackBar('No Internet Connection');
+    }
     setState(() {
       isLoading = false;
     });
+  }
+
+  void showSnackBar (String title){
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      duration: Duration(seconds: 1),
+      backgroundColor: Colors.pink[50],
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.pink
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 
   void showRefundDialog(){

@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
       child: Scaffold(
         key: _scaffoldKey,
 //        resizeToAvoidBottomPadding: false,
-          resizeToAvoidBottomInset: true,
+          resizeToAvoidBottomInset: false,
         backgroundColor: Colors.teal,
         body: ModalProgressHUD(
           color: Colors.black,
@@ -53,7 +53,6 @@ class _LoginState extends State<Login> {
 //            crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     logo.getLogo(),
-                    SizedBox(height: 0,),
                     Container(
                       padding: EdgeInsets.only(top: 35.0, left: 30.0, right: 30.0),
                       child: Form(
@@ -160,15 +159,13 @@ class _LoginState extends State<Login> {
       final response = await http.get(
         'https://bunkyapp.herokuapp.com/loginUser?mail=$mail', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 20));
+      },).timeout(const Duration(seconds: 5));
 
       if(response.statusCode == 200){
         print("200 OK");
         if(response.body.isEmpty){
-          print('the user not found');
           showSnackBar('User Not Found');
         } else {
-          print(json.decode(response.body));
           var body = json.decode(response.body);
           User user =  User.fromJson(body['user']);
           bool haveApt = body['memberOfApt'];

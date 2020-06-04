@@ -28,7 +28,6 @@ class _DropDownNamesState extends State<DropDownNames> {
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
       validator: (value){
-        print(value);
         if (value == null) {
           return 'Select Roommate';
         }
@@ -59,7 +58,7 @@ class _DropDownNamesState extends State<DropDownNames> {
       },).timeout(const Duration(seconds: 6));
 
       if(response.statusCode == 200){
-        print("200 OK");
+
         if(response.body.isNotEmpty){
           List jsonData = jsonDecode(response.body);
           List<User> usersNames = [];

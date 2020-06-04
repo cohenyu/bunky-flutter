@@ -865,15 +865,14 @@ class _ExpensesState extends State<Expenses> {
     },).timeout(const Duration(seconds: 7));
 
     List jsonData = jsonDecode(response.body);
-    print(jsonData);
+
 //    jsonData = List.from(jsonData.reversed);
     if(response.statusCode == 200){
-      print('200 OK');
+
       if(response.body.isNotEmpty){
         expensesList.clear();
         for(var jsonItem in jsonData){
           Expense expense = Expense.fromJson(jsonItem);
-          print(expense.id);
           ExpenseItem item = ExpenseItem(expense);
           setState(() {
             expensesList.add(item);
@@ -1010,7 +1009,7 @@ class _ExpensesState extends State<Expenses> {
       List jsonData = jsonDecode(response.body);
 //      var reversedList = List.from(jsonData.reversed);
       if(response.statusCode == 200){
-        print('200 OK');
+
         if(response.body.isNotEmpty){
           for(var jsonItem in jsonData){
             ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));

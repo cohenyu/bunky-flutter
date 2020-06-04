@@ -157,8 +157,6 @@ class _ConnectApartmentState extends State<ConnectApartment> {
           print('AptCode not found');
           showSnackBar('Apartment Code Not Found');
         } else {
-          print("200 OK");
-          print(response.body);
           Navigator.pushReplacementNamed(context, '/home', arguments: {
             'user': data['user'],
             'index': 0,

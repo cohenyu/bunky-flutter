@@ -11,14 +11,26 @@ import 'package:flutter/material.dart';
 import 'package:bunky/pages/createApartment.dart';
 import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 // Yuval - 4.6 12:44
 //miriel 02/06 23:32
 
 void main() => runApp(MaterialApp(
+//  localizationsDelegates: [
+//    // ... app-specific localization delegate[s] here
+//    GlobalMaterialLocalizations.delegate,
+//    GlobalWidgetsLocalizations.delegate,
+//  ],
+//  supportedLocales: [
+//    const Locale('en', 'US'), // English
+//    const Locale('he'), // Hebrew
+//    const Locale('zh'), // Chinese
+//    // ... other locales the app supports
+//  ],
   initialRoute: '/login',
   routes: {
-    '/': (context) => Loading(),
+//    '/': (context) => Loading(),
     '/login': (context) => Login(),
     '/newApartment': (context) => NewApartment(),
     '/createApartment': (context) => CreateApartment(),

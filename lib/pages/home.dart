@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bunky/models/task.dart';
 import 'package:bunky/models/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,19 +27,31 @@ class _HomeState extends State<Home> {
   bool firstTime = true;
   int tasksNumber = 0;
   double userBalance = 0;
-  IconData homeIcon = Icons.notifications_none;
+  IconData homeIcon = Icons.bubble_chart;
   bool tasksLoading = true;
   bool balanceLoading = true;
-
-
-  List<Task> tasks = [
-    Task(frequency: 'everyday',performers: [], task_name: 'throw the garbage out'),
-  ];
 
   @override
   void initState() {
     super.initState();
   }
+
+//  DateTime backButtonPressesTime;
+//
+//  Future<bool> onWillPop() async{
+//    DateTime currentTime = DateTime.now();
+//    bool backButton = backButtonPressesTime == null || currentTime.difference(backButtonPressesTime) > Duration(seconds: 3);
+//    if (backButton){
+//      backButtonPressesTime = currentTime;
+//      Fluttertoast.showToast(
+//          msg: 'Double click to exit app',
+//        backgroundColor: Colors.black54,
+//        textColor: Colors.white
+//      );
+//      return false;
+//    }
+//    return true;
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,141 +68,69 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavyBar(),
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
       body: Stack(
-        children: <Widget>[
-          ClipPath(
-            clipper: CustomShapeClipper(),
-            child: Container(
-              height: 330.0,
-              decoration: BoxDecoration(color: primaryColor),
+          children: <Widget>[
+            ClipPath(
+              clipper: CustomShapeClipper(),
+              child: Container(
+                height: 330.0,
+                decoration: BoxDecoration(color: primaryColor),
+              ),
             ),
-          ),
-          Positioned(
-            right: 10.0,
-            top: 45,
-            child: Icon(
-              homeIcon,
-              size: 80.0,
-//              color: Colors.redAccent[100],
-              color: Colors.lime[300],
-            ),
-          ),
-          Positioned(
-            right: 12.0,
-            top: 47,
-            child: Icon(
-              homeIcon,
-              size: 80.0,
-//              color: Colors.redAccent[100],
-              color: Colors.redAccent[200],
-            ),
-          ),
-          Positioned(
-            right: 15.0,
-            top: 50,
-            child: Icon(
-              homeIcon,
-              size: 80.0,
-//              color: Colors.redAccent[100],
-              color: Colors.indigo,
-            ),
-          ),
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Stack(
-                  children: <Widget>[
-//                ClipPath(
-//                  clipper: CustomShapeClipper(),
-//                  child: Container(
-//                    height: 350.0,
-//                    decoration: BoxDecoration(color: primaryColor),
-//                  ),
-//                ),
-//                    Positioned(
-//                      right: 40.0,
-//                      top: 50.0,
-//                      child: Material(
-//                        borderRadius: BorderRadius.circular(100.0),
-//                        color: Colors.white,
-//                        child: Padding(
-//                          padding: const EdgeInsets.all(5.0),
-//                          child: Icon(
-//                            Icons.notifications_none,
-//                            color: Colors.teal[400],
-//                            size: 27.0,
-//                          ),
-//                        ),
-//                      ),
-//                    ),
-//                    Positioned(
-//                      right: 65.0,
-//                      top: 40.0,
-//                      child: Container(
-//                        decoration: BoxDecoration(
-//                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-//                          color: Colors.red,
-//                        ),
-//                        child: Padding(
-//                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-//                          child: Text(
-//                            '357',
-//                            style: TextStyle(
-//                                color: Colors.white
-//                            ),
-//                          ),
-//                        ),
-//                      ),
-//                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(height: 40.0,),
-                              Text(
-                                'Hey ${user.name},',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 30.0,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'Let\'s see your updates for today',
-                                    style: TextStyle(
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(height: 40.0,),
+                                Text(
+                                  'Hey ${user.name}',
+                                  style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 20.0
+                                      fontSize: 30.0,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Text(
+                                      'Let\'s see your updates for today',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20.0
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 20.0, right: 5.0, left: 5.0),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width-60,
-                                  height: 370.0,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.95),
-                                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          offset: Offset(0.0, 3.0),
-                                          blurRadius: 15.0,
-                                        )
-                                      ]
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
+                                  ],
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 30.0, right: 5.0, left: 5.0),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width-60,
+                                    height: 370.0,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.95),
+                                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.1),
+                                            offset: Offset(0.0, 3.0),
+                                            blurRadius: 15.0,
+                                          )
+                                        ]
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
 //                                      Padding(
 //                                        padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
 //                                        child: Row(
@@ -208,161 +148,154 @@ class _HomeState extends State<Home> {
 //                                        ),
 //                                      ),
 //                                      Divider(thickness: 1.0,),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Material(
-                                              color: Colors.deepOrangeAccent.withOpacity(0.2),
-                                              shape: CircleBorder(),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(13.0),
-                                                child: Icon(Icons.calendar_today, color: Colors.deepOrangeAccent, size: 25.0,),
-                                              ),
-                                            ),
-                                            SizedBox(width: 17.0,),
-                                            Expanded(
-                                              child: tasksLoading ? Text(
-                                                '---',
-                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23.0),
-                                              ) : new RichText(
-                                                text: new TextSpan(
-                                                  // Note: Styles for TextSpans must be explicitly defined.
-                                                  // Child text spans will inherit styles from parent
-                                                  style: new TextStyle(
-                                                    fontSize: 23.0,
-                                                    color: Colors.black.withOpacity(0.7),
-                                                  ),
-                                                  children: tasksNumber > 0 ? <TextSpan>[
-                                                    new TextSpan(text: 'You have'),
-                                                    new TextSpan(text: ' $tasksNumber tasks', style: new TextStyle(fontWeight: FontWeight.bold)),
-                                                    new TextSpan(text: ' to complete'),
-                                                  ]: <TextSpan>[
-                                                    new TextSpan(text: 'You dont have any tasks to complete!', style: new TextStyle(fontWeight: FontWeight.bold)),
-                                                  ],
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Material(
+                                                color: Colors.deepOrangeAccent.withOpacity(0.2),
+                                                shape: CircleBorder(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(13.0),
+                                                  child: Icon(Icons.calendar_today, color: Colors.deepOrangeAccent, size: 25.0,),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Divider(
-                                        thickness: 1,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 25.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Material(
-                                              color: Colors.deepOrangeAccent.withOpacity(0.2),
-                                              shape: CircleBorder(),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Icon(Icons.show_chart, color: Colors.deepOrangeAccent, size: 30.0,),
-                                              ),
-                                            ),
-                                            SizedBox(width: 17.0,),
-                                            Expanded(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(
-                                                    'Your balance:',
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
+                                              SizedBox(width: 17.0,),
+                                              Expanded(
+                                                child: tasksLoading ? Text(
+                                                  '---',
+                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23.0),
+                                                ) : new RichText(
+                                                  text: new TextSpan(
+                                                    // Note: Styles for TextSpans must be explicitly defined.
+                                                    // Child text spans will inherit styles from parent
+                                                    style: new TextStyle(
+                                                      fontSize: 23.0,
                                                       color: Colors.black.withOpacity(0.7),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 23,
                                                     ),
+                                                    children: tasksNumber > 0 ? <TextSpan>[
+                                                      new TextSpan(text: 'You have'),
+                                                      new TextSpan(text: ' $tasksNumber tasks', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo[300])),
+                                                      new TextSpan(text: ' to complete'),
+                                                    ]: <TextSpan>[
+                                                      new TextSpan(text: 'You dont have any tasks to complete!', style: new TextStyle(fontWeight: FontWeight.bold)),
+                                                    ],
                                                   ),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  balanceLoading ? Text(
-                                                    '---',
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                      color: Colors.black.withOpacity(0.7),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 23,
-                                                    ),
-                                                  ) : Text(
-                                                    userBalance <= 0 ? '$userBalance\$' : '+$userBalance\$',
-                                                    style: TextStyle(
-                                                        fontSize: 30,
-                                                        color: userBalance < 0 ? Colors.redAccent: Colors.lightGreen,
-                                                        fontWeight: FontWeight.bold
-                                                    ),
-                                                  )
-                                                ],
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                        Divider(
+                                          thickness: 1,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 25.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Material(
+                                                color: Colors.deepOrangeAccent.withOpacity(0.2),
+                                                shape: CircleBorder(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Icon(Icons.show_chart, color: Colors.deepOrangeAccent, size: 30.0,),
+                                                ),
+                                              ),
+                                              SizedBox(width: 17.0,),
+                                              Expanded(
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    Text(
+                                                      'Your balance:',
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        color: Colors.black.withOpacity(0.7),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 23,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    balanceLoading ? Text(
+                                                      '---',
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        color: Colors.black.withOpacity(0.7),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 23,
+                                                      ),
+                                                    ) : Text(
+                                                      userBalance <= 0 ? '$userBalance\$' : '+$userBalance\$',
+                                                      style: TextStyle(
+                                                          fontSize: 30,
+                                                          color: userBalance < 0 ? Colors.redAccent: Colors.lightGreen,
+                                                          fontWeight: FontWeight.bold
+                                                      ),
+                                                    )
+                                                  ],
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                recentExpanses.isEmpty || _load ? SizedBox.shrink() : Padding(
-//              padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 30.0),
-                  padding: EdgeInsets.only(left: 25.0, top: 10.0, bottom: 10.0, right: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        recentExpanses.isNotEmpty ? 'Recently expenses' : 'No expenses yet',
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.7),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: Icon(
-                          Icons.arrow_right,
-                          size: 30.0,
-                        ),
-                      )
                     ],
                   ),
-                ),
-//            _load ? Padding(
-//              padding: const EdgeInsets.only(top: 30.0),
-//              child: SpinKitThreeBounce(
-//                color: Colors.grey[600],
-//                size: 25.0,
-//              ),
-//            ) :
-//            ,
-                  recentExpanses.isEmpty || _load ? SizedBox.shrink() :Padding(
-                  padding: EdgeInsets.only(left: 25.0, bottom: 25.0, right: 10.0),
-                  child: Container(
-                    height: 140.0,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: recentExpanses.length,
-                      itemBuilder: (context, int index){
-                        return recentExpanses[index];
-                      },
+                  SizedBox(height: 10.0,),
+                  recentExpanses.isEmpty || _load ? SizedBox.shrink() : Padding(
+//              padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 30.0),
+                    padding: EdgeInsets.only(left: 25.0, top: 10.0, bottom: 10.0, right: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          recentExpanses.isNotEmpty ? 'Recently expenses' : 'No expenses yet',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.7),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2.0),
+                          child: Icon(
+                            Icons.arrow_right,
+                            size: 30.0,
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                )
-              ],
+                    recentExpanses.isEmpty || _load ? SizedBox.shrink() :Padding(
+                    padding: EdgeInsets.only(left: 25.0, bottom: 25.0, right: 10.0),
+                    child: Container(
+                      height: 140.0,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: recentExpanses.length,
+                        itemBuilder: (context, int index){
+                          return recentExpanses[index];
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
     );
   }
 
@@ -376,7 +309,6 @@ class _HomeState extends State<Home> {
     },).timeout(const Duration(seconds: 7));
 
     if(response.statusCode == 200){
-      print('200 OK');
       if(response.body.isNotEmpty){
           setState(() {
             userBalance = jsonDecode(response.body);
@@ -399,14 +331,11 @@ class _HomeState extends State<Home> {
       '$url/getMyDuties?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },).timeout(const Duration(seconds: 7));
-//    print(jsonDecode(response.body));
+
     if(response.statusCode == 200){
-      print('200 OK');
-      print('*************!!!!!!!!!!!!!!!!!!!!!!!!!!!11');
       if(response.body.isNotEmpty){
         List jsonData = jsonDecode(response.body);
         for(var jsonTask in jsonData){
-          print(jsonTask);
             if(jsonTask['shift']['executed'] == false){
               tmpTasksNumber ++;
             }
@@ -434,7 +363,6 @@ class _HomeState extends State<Home> {
     },).timeout(const Duration(seconds: 7));
 
     if(response.statusCode == 200){
-      print('200 OK');
       if(response.body.isNotEmpty){
         List jsonData = jsonDecode(response.body);
         for(var jsonItem in jsonData){

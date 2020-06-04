@@ -13,7 +13,7 @@ class ExpenseCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(right: 15),
       child: Container(
-        width: 140,
+        width: 160,
         decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.all(Radius.circular(25.0))

@@ -205,9 +205,7 @@ class _SettingsState extends State<Settings> {
 
   void showRenameDialog(){
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController titleController = new TextEditingController();
-    TextEditingController valueController = new TextEditingController();
-    String newName;
+    TextEditingController titleController = new TextEditingController(text: data['user'].name);
     bool _autoValidate = false;
 
     showDialog(
@@ -254,7 +252,6 @@ class _SettingsState extends State<Settings> {
                                 },
                                 controller: titleController,
                                 decoration: InputDecoration(
-                                  hintText: 'New name',
                                   enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.black)
                                   ),
@@ -331,7 +328,6 @@ class _SettingsState extends State<Settings> {
         'user': user,
         'newName': newName,
         }));
-    print(jsonDecode(response.body));
     if(response.statusCode == 200){
       if(response.body.isNotEmpty){
         setState(() {
