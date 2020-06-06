@@ -30,6 +30,7 @@ class _TasksState extends State<Tasks> {
 //  ];
 
   List<Task> _taskList = [];
+  List<Task> _allAppartmentTasks = [];
   List<Task> _dayTaskList = [];
   List<Task> _weekTaskList = [];
   List<Task> _monthTaskList = [];
@@ -463,6 +464,41 @@ class _TasksState extends State<Tasks> {
     ));
   }
 
+  // This function delete expense from the expenses list and sends http delete to the server
+  Future<void> updateTaskComletness(Task task) async{
+    //Task task = _allAppartmentTasks[index];
+    print("updateTaskComletness");
+
+    try{
+      final response = await http.put(
+          '$url/flipIsExecuted', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode(task.id,)).timeout(const Duration(seconds: 7));
+
+      print(jsonDecode(response.body));
+
+      if(response.statusCode == 200){
+        print("200 OK updateTaskComletness ");
+
+        if(response.body.isNotEmpty){
+//          todo refresh charts if the date is between the range
+          return;
+        } else {
+          showSnackBar('Error');
+        }
+      } else {
+        showSnackBar('Error');
+      }
+    }catch(_){
+      print('point 2');
+      showSnackBar('No Internet Connection');
+    }
+  }
+
+
+
+
+
   Future<void> sendAddTak(String frequency, List<User> performers,
       String task_name, bool isFinish) async {
     setState(() {});
@@ -571,6 +607,7 @@ class _TasksState extends State<Tasks> {
           listOfTaskFromServer.add(userTask);
         }
         print("listOfTaskFromServer");
+        _allAppartmentTasks=listOfTaskFromServer;
         splitTasks(listOfTaskFromServer);
       }
     } else {
@@ -775,6 +812,7 @@ class _TasksState extends State<Tasks> {
                   ),
                   onPressed: () {
                     this._taskList[index].isFinish = true;
+                    updateTaskComletness(_taskList[index]);
                     setState(() {});
                   },
                 ),
@@ -801,18 +839,6 @@ class _TasksState extends State<Tasks> {
             ),
             SizedBox(
               width: 10,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.delete_outline,
-                color: Colors.pink,
-              ),
-              onPressed: () {
-                  this._taskList.remove(_taskList[index]);
-                setState(() {
-
-                });
-              },
             ),
           ],
         ),
@@ -842,6 +868,7 @@ class _TasksState extends State<Tasks> {
                   ),
                   onPressed: () {
                     this._taskList[index].isFinish = false;
+                    updateTaskComletness(_taskList[index]);
                     setState(() {});
                   },
                 ),
@@ -866,18 +893,6 @@ class _TasksState extends State<Tasks> {
                   ),
                 ),
               ],
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.delete_outline,
-                color: Colors.pink,
-              ),
-              onPressed: () {
-                this._taskList.remove(_taskList[index]);
-                setState(() {
-
-                });
-              },
             ),
           ],
         ),
@@ -1037,6 +1052,10 @@ class _TasksState extends State<Tasks> {
 //  }
 //}
 
+
+
+
+
 // ================== coped from stakeoverflow
 
 class MultiSelectDialogItem<V> {
@@ -1128,6 +1147,36 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // =================== until here it was overflow
 

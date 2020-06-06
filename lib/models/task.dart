@@ -6,21 +6,24 @@ class Task{
   final List<User> performers;
   final String task_name;
   bool isFinish;
+  final int id;
 
 
-  Task({this.frequency,this.performers,this.task_name,this.isFinish});
+  Task({this.frequency,this.performers,this.task_name,this.isFinish,this.id});
 
+  //getting info from server
   factory Task.fromJson(Map<String, dynamic> json){
 
-    return Task(frequency: changeFrequencyNameToProgram(json['frequency']), performers: splitParticipantsFromJason(json['participants']), task_name: json['name'],isFinish: json['shift']['executed']);
+    return Task(frequency: changeFrequencyNameToProgram(json['frequency']), performers: splitParticipantsFromJason(json['participants']), task_name: json['name'],isFinish: json['shift']['executed'],id:json['dutyId']);
   }
-
+  //send info to server
   Map<String, dynamic> toJson() =>
       {
         'frequency':changeFrequencyNameToServer(frequency),
         'name': task_name,
 //        'isExcecuted': isFinish,
         'participants': performers,
+        'dutyId':id,
       };
 
 
