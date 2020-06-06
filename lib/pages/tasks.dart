@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bunky/models/task.dart';
 import 'package:bunky/models/user.dart';
+import 'package:bunky/widgets/task_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:bunky/widgets/drop_down_category_tasks.dart';
@@ -34,6 +35,7 @@ class _TasksState extends State<Tasks> {
   List<Task> _dayTaskList = [];
   List<Task> _weekTaskList = [];
   List<Task> _monthTaskList = [];
+  List<TaskItem> _aptTasks = [];
 
 //  List<Task>_taskList=[
 //    Task(frequency: 'every day',performers:[User('miriel','miriel@gmail.com',1),User('yuval','yuval@gmail.com',2)],task_name: 'claen the room',isFinish:false),
@@ -63,6 +65,7 @@ class _TasksState extends State<Tasks> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       data = ModalRoute.of(context).settings.arguments;
       getTaskList();
+      getAllDuties();
       setState(() {
         _taskList = _dayTaskList;
       });
@@ -80,6 +83,7 @@ class _TasksState extends State<Tasks> {
 //    data  = ModalRoute.of(context).settings.arguments;
     //_taskList=_dayTaskList;
     return Scaffold(
+      key: _scaffoldKey,
         bottomNavigationBar: BottomNavyBar(),
         body: Stack(
           children: <Widget>[
@@ -235,17 +239,11 @@ class _TasksState extends State<Tasks> {
 //                      ),
 //                    ),
 //                  ):
-                  Padding(
-                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 30),
-                    child: Text(
-                      'All Appartment Tasks:',
-                      style: TextStyle(
-                          color: Colors.black.withOpacity(0.7),
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold),
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _aptTasks.isNotEmpty ? showTasks() : hideTasks(),
                   ),
-                  SizedBox(height: 25.0),
+                  SizedBox(height: 30,),
 //                  Padding(
 //                    padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
 //                    child: Column(
@@ -276,6 +274,111 @@ class _TasksState extends State<Tasks> {
             ),
           ],
         ));
+  }
+
+  List<Widget> hideTasks(){
+    return [
+      Padding(
+        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 20),
+        child: Text(
+          'No tasks yet',
+          style: TextStyle(
+              color: Colors.black.withOpacity(0.7),
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> showTasks(){
+    return [
+      Padding(
+        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 30),
+        child: Text(
+          'All Appartment Tasks:',
+          style: TextStyle(
+              color: Colors.black.withOpacity(0.7),
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+      SizedBox(height: 15.0),
+      _aptTasks.isNotEmpty ? Padding(
+        padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
+        child: ListView.builder(
+          physics: PageScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: _aptTasks.length,
+          itemBuilder: (context, int index){
+            return Dismissible(
+              key: Key('${_aptTasks[index].task.id}'),
+              direction: DismissDirection.endToStart,
+              confirmDismiss: (DismissDirection direction) async {
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0))
+                      ),
+                      backgroundColor: Colors.teal[100],
+                      title: Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text("Confirm"),
+                      ),
+                      content: Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text("Are you sure you wish to delete this task?", style: TextStyle(fontSize: 18.0),),
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text("Delete", style: TextStyle(color: Colors.pink[700], fontSize: 17.0),)
+                        ),
+                        FlatButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: Text("Cancel", style: TextStyle(color: Colors.pink[700], fontSize: 17.0),),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              onDismissed: (direction){
+                deleteTaskRequest(index);
+                setState(() {
+                  _aptTasks.removeAt(index);
+                  showSnackBar('Task deleted');
+                });
+              },
+              background: Padding(
+                padding: const EdgeInsets.only(bottom: 18.0),
+                child: Container(
+                  color: Colors.redAccent,
+                  child: Center(
+                    child: ListTile(
+                      trailing: Icon(Icons.delete, color: Colors.white, size: 30.0,),
+                    ),
+                  ),
+                ),
+              ),
+              child: _aptTasks[index],
+            );
+          },
+        ),
+      ): SizedBox.shrink(),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 150.0),
+        child: Divider(
+          thickness: 4.0,
+        ),
+      ),
+    ];
   }
 
   void showAddDialog() {
@@ -398,6 +501,7 @@ class _TasksState extends State<Tasks> {
                           if (taskNameController.text != '') {
                             sendAddTak(frequency, this.participensInTask,
                                 taskNameController.text, false);
+
                             Navigator.pop(context);
                             //send to or
                           }
@@ -411,6 +515,75 @@ class _TasksState extends State<Tasks> {
           );
         });
   }
+
+
+  Future<void> deleteTaskRequest(int index) async{
+    Task task = _aptTasks[index].task;
+
+    try{
+      final response = await http.put(
+          '$url/removeDuty', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode(task.id,)).timeout(const Duration(seconds: 7));
+
+      if(response.statusCode == 200){
+        if(response.body.isNotEmpty){
+          print('***************** yes!!! deleted');
+          return;
+        } else {
+          showSnackBar('Error');
+        }
+      } else {
+        showSnackBar('Error');
+      }
+    }catch(_){
+      showSnackBar('No Internet Connection');
+    }
+
+//  In case of error we don't want to delete the task
+    setState(() {
+      _aptTasks.insert(index, TaskItem(task));
+    });
+  }
+
+  Future<void> getAllDuties() async{
+//    setState(() {
+//      isLoading = true;
+//    });
+    User user = data['user'];
+
+//    try{
+    final response = await http.get(
+      '$url/getAllAptDuties?userId=${user.userId}&name=${user.name}&mail=${user.mail}',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },).timeout(const Duration(seconds: 7));
+    List jsonData = jsonDecode(response.body);
+
+    List<TaskItem> tmpAptTasks = [];
+    if(response.statusCode == 200){
+      if(response.body.isNotEmpty){
+        for(var jsonItem in jsonData){
+          tmpAptTasks.add(TaskItem(Task.fromJson(jsonItem)));
+        }
+      }
+    } else {
+      print('ERROR');
+    }
+    setState(() {
+      _aptTasks = List.from(tmpAptTasks.reversed);
+    });
+//
+//    setState(() {
+//      isLoading = false;
+//    });
+//    }catch(_){
+//      print('point 1');
+//      showSnackBar('No Internet Connection');
+//    }
+  }
+
+
 
   //this function add tsk to each list by frequency
   void showAddTask(String frequency, List<User> performers, String task_name,
@@ -534,6 +707,7 @@ class _TasksState extends State<Tasks> {
         //showAddTask(frequency, performers, task_name, isFinish);
         setState(() {
           showAddTask(frequency, performers, task_name, isFinish);
+          _aptTasks.insert(0, TaskItem(task));
         });
       } else {
         // showSnackBar('Error');
