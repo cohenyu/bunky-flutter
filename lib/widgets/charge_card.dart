@@ -30,7 +30,7 @@ class ChargeCard extends StatelessWidget {
               ),
               SizedBox(height: 2.0,),
               Text(
-                value,
+                '$value\$',
                 style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold

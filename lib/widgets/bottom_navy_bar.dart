@@ -92,7 +92,10 @@ class _BottomNavyBarState extends State<BottomNavyBar> {
               setState(() {
                 index = itemIndex;
               });
-              Navigator.pushReplacementNamed(context, _pageOptions[index], arguments: {'index': index, 'user': data['user']});
+              Navigator.of(this.context)
+                  .pushNamedAndRemoveUntil(_pageOptions[index], (Route<dynamic> route) => false, arguments: {'index': index, 'user': data['user']});
+
+//              Navigator.pushReplacementNamed(context, _pageOptions[index], arguments: {'index': index, 'user': data['user']});
             },
             child: _buildItem(item, index==itemIndex),
           );

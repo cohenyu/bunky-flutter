@@ -37,8 +37,7 @@ class _CreateApartmentState extends State<CreateApartment> {
 
   @override
   Widget build(BuildContext context) {
-    Logo logo = Logo(title: 'Signup');
-    HttpService http = HttpService();
+    Logo logo = Logo(title: 'Sign up');
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
@@ -123,7 +122,8 @@ class _CreateApartmentState extends State<CreateApartment> {
                             borderRadius: new BorderRadius.circular(30),
                           ),
                           onPressed: (){
-                            Navigator.pushNamed(context, '/home', arguments: {
+                            Navigator.of(this.context)
+                                .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false, arguments: {
                               'user': data["user"],
                               'index': 0,
                             });
@@ -191,16 +191,19 @@ class _CreateApartmentState extends State<CreateApartment> {
         'user': user.toJson(),
         'aptName': 'yuval&miriel',
       }
-      ));
+      )).timeout(const Duration(seconds: 10));
+
       if(response.statusCode == 200){
         int code = jsonDecode(response.body);
         return code;
       } else {
         print('ERROR');
+        showSnackBar('Error');
         return -1;
       }
 
     } catch (_){
+      showSnackBar('No Internet Connection');
       print('No Internet Connection');
       return -1;
     }

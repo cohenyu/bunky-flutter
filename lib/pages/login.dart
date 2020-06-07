@@ -23,7 +23,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    Logo logo = Logo(title: "Signin");
+
+    Logo logo = Logo(title: "Sign in");
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -62,10 +63,10 @@ class _LoginState extends State<Login> {
                             children: <Widget>[
                               TextFormField(
                                 onSaved: (value){
-                                  this.mail = value.toLowerCase();
+                                  this.mail = value.toLowerCase().trim();
                                 },
                                 validator: (value){
-                                  if (EmailValidator.validate(value)){
+                                  if (EmailValidator.validate(value.trim())){
                                     return null;
                                   } else{
                                     return 'Mail is required';
@@ -102,7 +103,7 @@ class _LoginState extends State<Login> {
                                     ),
                                     InkWell(
                                       onTap: (){
-                                        Navigator.pushNamed(context, '/register');
+                                        Navigator.pushNamed(this.context, '/register');
                                       },
                                       child: Text(
                                         'Register',

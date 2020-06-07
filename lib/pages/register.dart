@@ -24,7 +24,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    Logo logo = Logo(title: "Signup");
+    Logo logo = Logo(title: "Sign up");
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -63,10 +63,10 @@ class _RegisterState extends State<Register> {
                             children: <Widget>[
                               TextFormField(
                                 onSaved: (value){
-                                  this.mail = value.toLowerCase();
+                                  this.mail = value.toLowerCase().trim();
                                 },
                                 validator: (value){
-                                  if (EmailValidator.validate(value)){
+                                  if (EmailValidator.validate(value.trim())){
                                     return null;
                                   } else{
                                     return 'Mail is required';
@@ -93,10 +93,10 @@ class _RegisterState extends State<Register> {
                                   LengthLimitingTextInputFormatter(15),
                                 ],
                                 onSaved: (value){
-                                  this.name = value;
+                                  this.name = value.trim();
                                 },
                                 validator: (value){
-                                  if (value.isEmpty) {
+                                  if (value.trim().isEmpty) {
                                     return 'Name is required';
                                   }
                                   return null;
@@ -200,7 +200,7 @@ class _RegisterState extends State<Register> {
           showSnackBar('Email Already Exists');
         } else {
           User user =  User.fromJson(json.decode(response.body));
-          Navigator.pushReplacementNamed(context, '/newApartment', arguments:
+          Navigator.pushNamed(this.context, '/newApartment', arguments:
           {
             'user': user,
           });

@@ -19,7 +19,7 @@ class _NewApartmentState extends State<NewApartment> {
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
-    Logo logo = Logo(title: "Signup");
+    Logo logo = Logo(title: "Sign up");
     return SafeArea(
       child: Scaffold(
 //        resizeToAvoidBottomPadding: false,
@@ -109,32 +109,6 @@ class _NewApartmentState extends State<NewApartment> {
       ),
     );
   }
-  
-//  Future<void> fetchUser() async {
-//    print(data['mail']);
-//    print(data['name']);
-//    final response = await http.post(
-//        'https://bunkyapp.herokuapp.com/createUser', headers: <String, String>{
-//      'Content-Type': 'application/json; charset=UTF-8',
-//    }, body: jsonEncode({
-//      'name': data['name'],
-//      'mail': data['mail'],
-//    }
-//    ));
-//
-//    if(response.statusCode == 200){
-//      print("200 OK");
-//      setState(() {
-//        print(json.decode(response.body));
-//        setState(() {
-//          user =  User.fromJson(json.decode(response.body));
-//        });
-//        print('${user.name}   ${user.mail}');
-//      });
-//    } else {
-//      print('somthing went worng');
-//    }
-//  }
 
 }
 

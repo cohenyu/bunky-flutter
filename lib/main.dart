@@ -14,8 +14,7 @@ import 'package:bunky/pages/register.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 // Yuval - 6.6 23:59
-// miriel 6/6 21:46
-//miriel 7/6 20:18
+// miriel 7/6 20:18
 
 void main() => runApp(MaterialApp(
 //  localizationsDelegates: [

@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
   IconData homeIcon = Icons.bubble_chart;
   bool tasksLoading = true;
   bool balanceLoading = true;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -65,6 +66,7 @@ class _HomeState extends State<Home> {
     }
     Color primaryColor = Colors.teal.withOpacity(0.5);
     return Scaffold(
+      key: _scaffoldKey,
       bottomNavigationBar: BottomNavyBar(),
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
       body: Stack(
@@ -303,20 +305,25 @@ class _HomeState extends State<Home> {
   Future<void> getUserBalance() async{
     User user = data['user'];
 
-    final response = await http.get(
-      '$url/getMyPersonalTotalBalance?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },).timeout(const Duration(seconds: 7));
+    try{
+      final response = await http.get(
+        '$url/getMyPersonalTotalBalance?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },).timeout(const Duration(seconds: 7));
 
-    if(response.statusCode == 200){
-      if(response.body.isNotEmpty){
+      if(response.statusCode == 200){
+        if(response.body.isNotEmpty){
           setState(() {
             userBalance = jsonDecode(response.body);
           });
+        }
+      } else {
+        showSnackBar('Error');
       }
-    } else {
-      print('ERROR - no user balance');
+    }catch (_){
+      showSnackBar('No Internet Connection');
     }
+
     setState(() {
       balanceLoading = false;
     });
@@ -327,24 +334,29 @@ class _HomeState extends State<Home> {
     int tmpTasksNumber = 0;
     User user = data['user'];
 
-    final response = await http.get(
-      '$url/getMyDuties?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },).timeout(const Duration(seconds: 7));
+    try{
+      final response = await http.get(
+        '$url/getMyDuties?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },).timeout(const Duration(seconds: 7));
 
-    if(response.statusCode == 200){
-      if(response.body.isNotEmpty){
-        List jsonData = jsonDecode(response.body);
-        for(var jsonTask in jsonData){
+      if(response.statusCode == 200){
+        if(response.body.isNotEmpty){
+          List jsonData = jsonDecode(response.body);
+          for(var jsonTask in jsonData){
             if(jsonTask['shift']['executed'] == false){
               tmpTasksNumber ++;
             }
-        }
+          }
 
+        }
+      } else {
+        showSnackBar('Error');
       }
-    } else {
-      print('ERROR');
+    }catch (_){
+      showSnackBar('No Internet Connection');
     }
+
     setState(() {
       tasksNumber = tmpTasksNumber;
       tasksLoading = false;
@@ -355,33 +367,56 @@ class _HomeState extends State<Home> {
 
     User user = data['user'];
     int limit = 7;
-    List<ExpenseCard> expenseCards = [];
 
-    final response = await http.get(
-      '$url/getAptExpensesWithLimit?userId=${user.userId}&name=${user.name}&mail=${user.mail}&limit=$limit', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },).timeout(const Duration(seconds: 7));
+    try{
+      final response = await http.get(
+        '$url/getAptExpensesWithLimit?userId=${user.userId}&name=${user.name}&mail=${user.mail}&limit=$limit', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },).timeout(const Duration(seconds: 7));
 
-    if(response.statusCode == 200){
-      if(response.body.isNotEmpty){
-        List jsonData = jsonDecode(response.body);
-        for(var jsonItem in jsonData){
-          ExpenseCard card = ExpenseCard(expense: Expense.fromJson(jsonItem),);
-          if(mounted){
-            setState(() {
-              _load = false;
-              recentExpanses.add(card);
-            });
+      if(response.statusCode == 200){
+        if(response.body.isNotEmpty){
+          List jsonData = jsonDecode(response.body);
+          for(var jsonItem in jsonData){
+            ExpenseCard card = ExpenseCard(expense: Expense.fromJson(jsonItem),);
+            if(mounted){
+              setState(() {
+                _load = false;
+                recentExpanses.add(card);
+              });
+            }
           }
-        }
 
+        }
+      } else {
+        print('no expenses yet');
+//        todo showSnackBar('No Internet Connection'); ?
       }
-    } else {
-      print('no expenses yet');
+    }catch (_){
+      showSnackBar('No Internet Connection');
     }
+
     setState(() {
       _load = false;
     });
+  }
+
+  void showSnackBar (String title){
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.pink[50],
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.pink
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }
 

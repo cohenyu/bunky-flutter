@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:share/share.dart';
 import 'package:bunky/models/user.dart';
 import 'package:flutter/material.dart';
@@ -193,8 +194,10 @@ class _SettingsState extends State<Settings> {
                       ),
                       color: Colors.grey[300],
                       onPressed: (){
-                        Navigator.pushReplacementNamed(context, '/login');
+                        Navigator.of(this.context)
+                            .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
                       },
+
                       child: Text(
                         "Log Out",
                       ),
@@ -248,7 +251,11 @@ class _SettingsState extends State<Settings> {
                             Padding(
                               padding: const EdgeInsets.only(left: 10, right: 10),
                               child: TextFormField(
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(15),
+                                ],
                                 validator: (value){
+                                  value = value.trim();
                                   if (value.isEmpty) {
                                     return 'name is required';
                                   }
@@ -306,7 +313,7 @@ class _SettingsState extends State<Settings> {
                                       return;
                                     }
                                     formKey.currentState.save();
-                                    renameUser(titleController.text);
+                                    renameUser(titleController.text.trim());
                                     Navigator.pop(context);
                                   },
                                 )
@@ -328,37 +335,46 @@ class _SettingsState extends State<Settings> {
   Future<void> renameUser(String newName) async{
     User user = data["user"];
 
-    final response = await http.put(
-        '$url/renameUser', headers: <String, String>{
+    try{
+      final response = await http.put(
+          '$url/renameUser', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        }, body: jsonEncode({
+      }, body: jsonEncode({
         'user': user,
         'newName': newName,
-        }));
-    if(response.statusCode == 200){
-      if(response.body.isNotEmpty){
-        setState(() {
-          data['user'] = User.fromJson(jsonDecode(response.body));
-        });
-      }
+      })).timeout(const Duration(seconds: 7));
 
-    } else {
-      showSnackBar('Error');
-      return -1;
+      if(response.statusCode == 200){
+        if(response.body.isNotEmpty){
+          setState(() {
+            data['user'] = User.fromJson(jsonDecode(response.body));
+          });
+        }
+      } else {
+        showSnackBar('Error');
+      }
+    }catch(_){
+      showSnackBar('No Internet Connection');
     }
   }
 
   Future<int> getApartmentCode() async{
     User user = data["user"];
-    var response = await http.get('$url/aptIdByUser?userId=${user.userId}&name=${user.name}&mail=${user.mail}',headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },);
 
-    if(response.statusCode == 200){
-      int code = jsonDecode(response.body);
-      return code;
-    } else {
-      showSnackBar('Error');
+    try{
+      var response = await http.get('$url/aptIdByUser?userId=${user.userId}&name=${user.name}&mail=${user.mail}',headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },).timeout(const Duration(seconds: 7));
+
+      if(response.statusCode == 200){
+        int code = jsonDecode(response.body);
+        return code;
+      } else {
+        showSnackBar('Error');
+        return -1;
+      }
+    }catch(_){
+      showSnackBar('No Internet Connection');
       return -1;
     }
   }

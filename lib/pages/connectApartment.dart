@@ -26,7 +26,7 @@ class _ConnectApartmentState extends State<ConnectApartment> {
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
-    Logo logo = Logo(title: 'Signup');
+    Logo logo = Logo(title: 'Sign up');
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
@@ -75,10 +75,10 @@ class _ConnectApartmentState extends State<ConnectApartment> {
                             TextFormField(
                               inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
                               onSaved: (value){
-                                this.code = int.parse(value);
+                                this.code = int.parse(value.trim());
                               },
                               validator: (value){
-                                if (value.isEmpty) {
+                                if (value.trim().isEmpty) {
                                   return 'Code is required';
                                 }
                                 return null;
@@ -157,8 +157,9 @@ class _ConnectApartmentState extends State<ConnectApartment> {
           print('AptCode not found');
           showSnackBar('Apartment Code Not Found');
         } else {
-          Navigator.pushReplacementNamed(context, '/home', arguments: {
-            'user': data['user'],
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false, arguments: {
+            'user': data["user"],
             'index': 0,
           });
         }

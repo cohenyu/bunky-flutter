@@ -72,15 +72,11 @@ class _ExpensesState extends State<Expenses> {
     return result;
   }
 
-  List<Widget> balances = [
-//    BalanceCard(title: 'Total Balance', map: totalMap, isPercentage: true,),
-//    BalanceCard(title: 'Categorical Balance', map: categoricalMap, isPercentage: true,),
-  ];
+  List<Widget> balances = [];
 
   @override
   void setState(fn) {
     if(mounted){
-
       super.setState(fn);
     }
   }
@@ -271,7 +267,7 @@ class _ExpensesState extends State<Expenses> {
               Positioned(
                 top: 120.0,
                 child: Text(
-                  'no expenses',
+                  'No expenses',
                 style: TextStyle(
                   fontSize: 27.0,
                   color: Colors.black.withOpacity(0.4)
@@ -282,45 +278,6 @@ class _ExpensesState extends State<Expenses> {
           ),
         ),
       )
-//      Center(
-//        child: Column(
-//          children: <Widget>[
-//            SizedBox(height: 100,),
-//            Container(
-//              height: MediaQuery.of(context).size.height / 2,
-//              width: 150,
-//              child: Stack(
-//                children: <Widget>[
-//                  Positioned(
-//                    child: Icon(
-//                      Icons.star,
-//                      size: 100.0,
-//                      color: Colors.teal.withOpacity(0.2),
-//                    ),
-//                    left: 45,
-//                  ),
-//                  Positioned(
-//                    child: Icon(
-//                      Icons.star_border,
-//                      size: 40.0,
-//                      color: Colors.teal.withOpacity(0.2),
-//                    ),
-//                    top: 40,
-//                    left: 25,
-//                  )
-//                ],
-//              ),
-//            ),
-//            Text(
-//                'no expenses',
-//              style: TextStyle(
-//                fontSize: 40.0,
-//                color: Colors.black.withOpacity(0.4)
-//              ),
-//            )
-//          ],
-//        ),
-//      )
        ,
     ];
   }
@@ -715,6 +672,7 @@ class _ExpensesState extends State<Expenses> {
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             child: TextFormField(
                               validator: (value){
+                                value = value.trim();
                                 double amount;
                                 try{
                                   amount = double.parse(value);
@@ -741,14 +699,14 @@ class _ExpensesState extends State<Expenses> {
                               ),
                             ),
                           ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                SizedBox(width: 20.0,),
-                              ],
-                            ),
-                          ),
+//                          Container(
+//                            child: Row(
+//                              mainAxisAlignment: MainAxisAlignment.center,
+//                              children: <Widget>[
+//                                SizedBox(width: 20.0,),
+//                              ],
+//                            ),
+//                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
@@ -795,7 +753,7 @@ class _ExpensesState extends State<Expenses> {
                                   formKey.currentState.save();
                                   print("im here");
                                   DateTime dateTimeExpense = DateTime.now();
-                                  addExpanse(category, categoryId,  titleController.text, double.parse(valueController.text), dateTimeExpense);
+                                  addExpanse(category, categoryId,  titleController.text.trim(), double.parse(valueController.text.trim()), dateTimeExpense);
                                   Navigator.pop(context);
                                 },
                               )
@@ -817,8 +775,6 @@ class _ExpensesState extends State<Expenses> {
   Future<void> updateChartExpenses(DateTime from, DateTime to) async{
     getChart(Chart2.user, from, to);
     getChart(Chart2.category, from, to);
-//    sumExpensePerCategory();
-//    sumExpensePerUser(Chart.month, DateTime.now().subtract(Duration(days: 30)));
   }
 
   Future<void> sumExpensePerCategory() async{
@@ -826,100 +782,98 @@ class _ExpensesState extends State<Expenses> {
     User user = data['user'];
     String date = DateTime.now().subtract(Duration(days: 30)).toString().split(' ')[0];
 
-//    try {
-    final response = await http.post(
-        '$url/computeSumExpensesPerCat', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode({
-      'user': user,
-      'date': date,
-    }
-    )).timeout(const Duration(seconds: 7));
-    Map<String, dynamic> jsonData = jsonDecode(response.body);
-    if(response.statusCode == 200){
-      Map<String, double> tmpMap = {};
-      bool haveExpenses = false;
-      for(var key in jsonData.keys){
-        if(jsonData[key] != 0){
-          haveExpenses = true;
+    try {
+      final response = await http.post(
+          '$url/computeSumExpensesPerCat', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode({
+        'user': user,
+        'date': date,
+      }
+      )).timeout(const Duration(seconds: 7));
+
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      if(response.statusCode == 200){
+        Map<String, double> tmpMap = {};
+        bool haveExpenses = false;
+        for(var key in jsonData.keys){
+          if(jsonData[key] != 0){
+            haveExpenses = true;
+          }
+          tmpMap.putIfAbsent(key, ()=> jsonData[key]);
         }
-        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
-      }
 
-      if(haveExpenses){
-        setState(() {
-          categoricalMap.clear();
-          categoricalMap.addAll(tmpMap);
-        });
-      }
+        if(haveExpenses){
+          setState(() {
+            categoricalMap.clear();
+            categoricalMap.addAll(tmpMap);
+          });
+        }
 
-    } else {
-      showSnackBar('Error');
+      } else {
+        showSnackBar('Error');
+      }
+    } catch (_) {
+      showSnackBar('No Internet Connection');
     }
     setState(() {
       categoryLoading = false;
     });
-//    } catch (_) {
-//      showSnackBar('No Internet Connection');
-//    }
   }
 
   Future<void> sumExpensePerUser(Chart kind, DateTime dateTime) async{
     print('get sum per user');
     User user = data['user'];
     String date = dateTime.toString().split(' ')[0];
-//    String date = DateTime.now().subtract(Duration(days: 30)).toString().split(' ')[0];
 
-    final response = await http.post(
-        '$url/computeSumExpenses', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode({
-      'user': user,
-      'date': date,
-    }
-    )).timeout(const Duration(seconds: 7));
-    Map<String, dynamic> jsonData = jsonDecode(response.body);
-
-    if(response.statusCode == 200){
-      Map<String, double> tmpMap = {};
-      bool haveExpenses = false;
-      for(var key in jsonData.keys){
-        if(jsonData[key] != 0){
-          haveExpenses = true;
-        }
-        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+    try{
+      final response = await http.post(
+          '$url/computeSumExpenses', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode({
+        'user': user,
+        'date': date,
       }
+      )).timeout(const Duration(seconds: 7));
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
 
-      if(haveExpenses){
-        if(kind == Chart.month){
-          setState(() {
-            totalMap.clear();
-            totalMap.addAll(tmpMap);
-          });
-        } else {
-          setState(() {
-            dateMap.clear();
-            dateMap.addAll(tmpMap);
-          });
+      if(response.statusCode == 200){
+        Map<String, double> tmpMap = {};
+        bool haveExpenses = false;
+        for(var key in jsonData.keys){
+          if(jsonData[key] != 0){
+            haveExpenses = true;
+          }
+          tmpMap.putIfAbsent(key, ()=> jsonData[key]);
         }
-      }
 
-    } else {
-      showSnackBar('Error');
+        if(haveExpenses){
+          if(kind == Chart.month){
+            setState(() {
+              totalMap.clear();
+              totalMap.addAll(tmpMap);
+            });
+          } else {
+            setState(() {
+              dateMap.clear();
+              dateMap.addAll(tmpMap);
+            });
+          }
+        }
+
+      } else {
+        showSnackBar('Error');
+      }
+    }catch(_){
+      showSnackBar('No Internet Connection');
     }
+
     setState(() {
       totalLoading = false;
     });
 
-//    try {
-
-//    } catch (_) {
-//      showSnackBar('No Internet Connection');
-//    }
   }
 
-
-//  **********************************************************************************************
   // This function returns expenses of the apartment from date x to date y
   Future<void> getExpensesByDate(DateTime dateTimeFrom, DateTime dateTimeTo) async{
     setState(() {
@@ -929,40 +883,38 @@ class _ExpensesState extends State<Expenses> {
     String fromDate = dateTimeFrom.toString().split(' ')[0];
     String toDate = dateTimeTo.toString().split(' ')[0];
 
-//    try{
-    final response = await http.get(
-      '$url/getAptExpensesBetweenDates?userId=${user.userId}&name=${user.name}&mail=${user.mail}&fromDate=$fromDate&toDate=$toDate',
-      headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },).timeout(const Duration(seconds: 7));
+    try{
+      final response = await http.get(
+        '$url/getAptExpensesBetweenDates?userId=${user.userId}&name=${user.name}&mail=${user.mail}&fromDate=$fromDate&toDate=$toDate',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },).timeout(const Duration(seconds: 7));
 
-    List jsonData = jsonDecode(response.body);
+      List jsonData = jsonDecode(response.body);
 
-//    jsonData = List.from(jsonData.reversed);
-    if(response.statusCode == 200){
+      if(response.statusCode == 200){
 
-      if(response.body.isNotEmpty){
-        expensesList.clear();
-        for(var jsonItem in jsonData){
-          Expense expense = Expense.fromJson(jsonItem);
-          ExpenseItem item = ExpenseItem(expense);
-          setState(() {
-            expensesList.add(item);
-          });
+        if(response.body.isNotEmpty){
+          expensesList.clear();
+          for(var jsonItem in jsonData){
+            Expense expense = Expense.fromJson(jsonItem);
+            ExpenseItem item = ExpenseItem(expense);
+            setState(() {
+              expensesList.add(item);
+            });
+          }
+
         }
-
+      } else {
+        print('no expenses yet');
       }
-    } else {
-      print('no expenses yet');
+    }catch(_){
+      showSnackBar('No Internet Connection');
     }
 
     setState(() {
       isLoading = false;
     });
-//    }catch(_){
-//      print('point 1');
-//      showSnackBar('No Internet Connection');
-//    }
   }
 
   Future<void>  getChart (Chart2 kind, DateTime dateTimeFrom, DateTime dateTimeTo) async{
@@ -979,44 +931,49 @@ class _ExpensesState extends State<Expenses> {
     String dateFrom = dateTimeFrom.toString().split(' ')[0];
     String dateTo = dateTimeTo.toString().split(' ')[0];
 
-    final response = await http.post(
-        '$url/$path', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode({
-      'user': user,
-      'fromDate': dateFrom,
-      'toDate': dateTo,
-    }
-    )).timeout(const Duration(seconds: 7));
-    Map<String, dynamic> jsonData = jsonDecode(response.body);
-
-    if(response.statusCode == 200){
-      Map<String, double> tmpMap = {};
-      bool haveExpenses = false;
-      for(var key in jsonData.keys){
-        if(jsonData[key] != 0){
-          haveExpenses = true;
-        }
-        tmpMap.putIfAbsent(key, ()=> jsonData[key]);
+    try {
+      final response = await http.post(
+          '$url/$path', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode({
+        'user': user,
+        'fromDate': dateFrom,
+        'toDate': dateTo,
       }
+      )).timeout(const Duration(seconds: 7));
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
 
-      if(haveExpenses){
-        if(kind == Chart2.user){
-          setState(() {
-            totalMap.clear();
-            totalMap.addAll(tmpMap);
-          });
-        } else {
-          setState(() {
-            categoricalMap.clear();
-            categoricalMap.addAll(tmpMap);
-          });
+      if(response.statusCode == 200){
+        Map<String, double> tmpMap = {};
+        bool haveExpenses = false;
+        for(var key in jsonData.keys){
+          if(jsonData[key] != 0){
+            haveExpenses = true;
+          }
+          tmpMap.putIfAbsent(key, ()=> jsonData[key]);
         }
-      }
 
-    } else {
-      showSnackBar('Error');
+        if(haveExpenses){
+          if(kind == Chart2.user){
+            setState(() {
+              totalMap.clear();
+              totalMap.addAll(tmpMap);
+            });
+          } else {
+            setState(() {
+              categoricalMap.clear();
+              categoricalMap.addAll(tmpMap);
+            });
+          }
+        }
+
+      } else {
+        showSnackBar('Error');
+      }
+    } catch (_) {
+      showSnackBar('No Internet Connection');
     }
+
     setState(() {
       if(kind == Chart2.user){
         categoryLoading = false;
@@ -1024,15 +981,8 @@ class _ExpensesState extends State<Expenses> {
         totalLoading = false;
       }
     });
-
-//    try {
-
-//    } catch (_) {
-//      showSnackBar('No Internet Connection');
-//    }
   }
 
-//  **********************************************************************************************
 
 
 // This function delete expense from the expenses list and sends http delete to the server
@@ -1056,7 +1006,6 @@ class _ExpensesState extends State<Expenses> {
         showSnackBar('Error');
       }
     }catch(_){
-      print('point 2');
       showSnackBar('No Internet Connection');
     }
 
@@ -1072,14 +1021,13 @@ class _ExpensesState extends State<Expenses> {
     int limit = 20;
     List<ExpenseItem> expenseItems = [];
 
-//    try{
+    try{
       final response = await http.get(
           '$url/getAptExpensesWithLimit?userId=${user.userId}&name=${user.name}&mail=${user.mail}&limit=$limit', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },).timeout(const Duration(seconds: 7));
 
       List jsonData = jsonDecode(response.body);
-//      var reversedList = List.from(jsonData.reversed);
       if(response.statusCode == 200){
 
         if(response.body.isNotEmpty){
@@ -1093,16 +1041,15 @@ class _ExpensesState extends State<Expenses> {
 
         }
       } else {
-        print('no expenses yet');
+        print('No expenses yet');
       }
+    }catch(_){
+      showSnackBar('No Internet Connection');
+    }
 
-      setState(() {
-        isLoading = false;
-      });
-//    }catch(_){
-//      print('point 1');
-//      showSnackBar('No Internet Connection');
-//    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
 
@@ -1137,10 +1084,8 @@ class _ExpensesState extends State<Expenses> {
         });
       } else {
         showSnackBar('Error');
-        print('somthing went worng');
       }
     } catch (_){
-      print('point 3');
       showSnackBar('No Internet Connection');
     }
     setState(() {

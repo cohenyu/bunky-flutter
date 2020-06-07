@@ -230,6 +230,8 @@ class _BalancingState extends State<Balancing> {
 
       if(response.statusCode == 200){
         print('200 OK - refund');
+      } else{
+        showSnackBar('Error');
       }
 
     } catch (_){
@@ -246,34 +248,36 @@ class _BalancingState extends State<Balancing> {
     User user = data['user'];
 
     try {
-    final response = await http.post(
-        '$url/computeUserBalance', headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    }, body: jsonEncode(user.toJson())).timeout(const Duration(seconds: 5));
+      final response = await http.post(
+          '$url/computeUserBalance', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: jsonEncode(user.toJson())).timeout(const Duration(seconds: 5));
 
-    if(response.statusCode == 200) {
-      if (response.body.isNotEmpty) {
-        Map<String, dynamic> jsonData = jsonDecode(response.body);
-        Map<String, dynamic> userDebt = jsonData['userDebt'];
-        Map<String, dynamic> userCredit = jsonData['userCredit'];
+      if(response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          Map<String, dynamic> jsonData = jsonDecode(response.body);
+          Map<String, dynamic> userDebt = jsonData['userDebt'];
+          Map<String, dynamic> userCredit = jsonData['userCredit'];
 
-        List<ChargeCard> tmpCredit = [];
-        List<ChargeCard> tmpDebt = [];
+          List<ChargeCard> tmpCredit = [];
+          List<ChargeCard> tmpDebt = [];
 
-        for (var key in userDebt.keys) {
-          tmpDebt.add(ChargeCard(key, userDebt[key].toString()));
+          for (var key in userDebt.keys) {
+            tmpDebt.add(ChargeCard(key, userDebt[key].toString()));
+          }
+
+          for (var key in userCredit.keys) {
+            tmpCredit.add(ChargeCard(key, userCredit[key].toString()));
+          }
+          setState(() {
+            credit = tmpCredit;
+            debt = tmpDebt;
+            isLoading = false;
+          });
         }
-
-        for (var key in userCredit.keys) {
-          tmpCredit.add(ChargeCard(key, userCredit[key].toString()));
-        }
-        setState(() {
-          credit = tmpCredit;
-          debt = tmpDebt;
-          isLoading = false;
-        });
+      } else{
+        showSnackBar('Error');
       }
-    }
     } catch (_) {
       showSnackBar('No Internet Connection');
     }
@@ -346,6 +350,7 @@ class _BalancingState extends State<Balancing> {
                                 padding: const EdgeInsets.symmetric(horizontal: 2),
                                 child: TextFormField(
                                   validator: (value){
+                                    value = value.trim();
                                     double amount;
                                     try{
                                       amount = double.parse(value);
@@ -413,7 +418,7 @@ class _BalancingState extends State<Balancing> {
                                       }
                                       formKey.currentState.save();
                                       String refundDate = DateTime.now().toString().split(' ')[0];
-                                      Refund refund = Refund(user: data['user'], receiver: selectedUser, amount: double.parse(valueController.text),  date: refundDate);
+                                      Refund refund = Refund(user: data['user'], receiver: selectedUser, amount: double.parse(valueController.text.trim()),  date: refundDate);
                                       postRefund(refund);
                                       Navigator.pop(context);
                                     },
