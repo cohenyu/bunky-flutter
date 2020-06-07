@@ -7,14 +7,15 @@ class Task{
   final String task_name;
   bool isFinish;
   final int id;
+  User nextUserTask;
 
 
-  Task({this.frequency,this.performers,this.task_name,this.isFinish,this.id});
+  Task({this.frequency,this.performers,this.task_name,this.isFinish,this.id,this.nextUserTask});
 
   //getting info from server
   factory Task.fromJson(Map<String, dynamic> json){
 
-    return Task(frequency: changeFrequencyNameToProgram(json['frequency']), performers: splitParticipantsFromJason(json['participants']), task_name: json['name'],isFinish: json['shift']['executed'],id:json['dutyId']);
+    return Task(frequency: changeFrequencyNameToProgram(json['frequency']), performers: splitParticipantsFromJason(json['participants']), task_name: json['name'],isFinish: json['shift']['executed'],id:json['dutyId'],nextUserTask:User.fromJson(json['shift']['executor']));
   }
   //send info to server
   Map<String, dynamic> toJson() =>
@@ -63,3 +64,10 @@ List<User> splitParticipantsFromJason(List<dynamic> jasonList){
   }
 return usersNames;
 }
+//User getNextUserFromJason(var jasonList){
+//  User nextUsersNames;
+//  for(var jsonUser in jasonList){
+//    nextUsersNames = User.fromJson(jsonUser);
+//  }
+//  return nextUsersNames;
+//}

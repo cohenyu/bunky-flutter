@@ -23,6 +23,8 @@ class _TasksState extends State<Tasks> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String url = 'https://bunkyapp.herokuapp.com';
   bool start = true;
+  bool choosePartisipansIsPressed=false;
+
 
 //  List<TasksItem> tasksList = [
 //    TasksItem('every week','yuval','wash'),
@@ -428,14 +430,29 @@ class _TasksState extends State<Tasks> {
 //                                hintText: "press to choose partisipans"
 //                            ),
 //                          ),
-                              Text(
-                            "press to choose partisipans",
+                          choosePartisipansIsPressed? Text(
+                            "yehuda,ninet,shiri",
                             style: TextStyle(
                                 color: Colors.black45,
                                 //fontWeight: FontWeight.bold,
                                 fontSize: 18.0),
-                          ),
-                          onPressed: () => _showMultiSelect(context),
+                          ):
+                              Text(
+                              "press to choose partisipans",
+                              style: TextStyle(
+                            color: Colors.black45,
+                            //fontWeight: FontWeight.bold,
+                            fontSize: 18.0),
+                              ),
+                         // onPressed: () => _showMultiSelect(context),
+                          onPressed: (){
+                            _showMultiSelect(context);
+                            //choosePartisipansIsPressed=true;
+                            setState(() {
+                              //isPressed=true;
+                              choosePartisipansIsPressed=true;
+                            });
+                          },
                         ),
                       ),
 //                      child: TextField(
@@ -546,6 +563,7 @@ class _TasksState extends State<Tasks> {
     });
   }
 
+
   Future<void> getAllDuties() async{
 //    setState(() {
 //      isLoading = true;
@@ -559,6 +577,8 @@ class _TasksState extends State<Tasks> {
         'Content-Type': 'application/json; charset=UTF-8',
       },).timeout(const Duration(seconds: 7));
     List jsonData = jsonDecode(response.body);
+    print("all apprtment duties");
+    print(jsonDecode(response.body));
 
     List<TaskItem> tmpAptTasks = [];
     if(response.statusCode == 200){
@@ -637,7 +657,7 @@ class _TasksState extends State<Tasks> {
     ));
   }
 
-  // This function delete expense from the expenses list and sends http delete to the server
+  // This function update the comppletness of task in the server
   Future<void> updateTaskComletness(Task task) async{
     //Task task = _allAppartmentTasks[index];
     print("updateTaskComletness");
@@ -646,7 +666,7 @@ class _TasksState extends State<Tasks> {
       final response = await http.put(
           '$url/flipIsExecuted', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      }, body: jsonEncode(task.id,)).timeout(const Duration(seconds: 7));
+      }, body: jsonEncode(task)).timeout(const Duration(seconds: 7));
 
       print(jsonDecode(response.body));
 
@@ -667,9 +687,6 @@ class _TasksState extends State<Tasks> {
       showSnackBar('No Internet Connection');
     }
   }
-
-
-
 
 
   Future<void> sendAddTak(String frequency, List<User> performers,
@@ -790,41 +807,6 @@ class _TasksState extends State<Tasks> {
 //    } catch (_){
 //      print('No Internet Connection');
 //    }
-  }
-
-  //the multi roomatie option
-  void _showMultiSelect(BuildContext context) async {
-    final List<MultiSelectDialogItem<int>> items = [];
-    for (var i = 0; i < usersList.length; i++) {
-      items.add(MultiSelectDialogItem(i, usersList[i].name));
-    }
-
-//     final items = <MultiSelectDialogItem<int>>[
-//       MultiSelectDialogItem(1, 'Yuval'),
-//       MultiSelectDialogItem(2, 'Miriel'),
-//       MultiSelectDialogItem(3, 'OR'),
-//       MultiSelectDialogItem(4, 'Eyme'),
-//     ];
-
-    final selectedValues = await showDialog<Set<int>>(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelectDialog(
-          items: items,
-//          initialSelectedValues: [1,2].toSet(),
-        );
-      },
-    );
-    //print the name of the participans by the tapping order.
-    participensInTask.clear();
-    for (var i = 0; i < selectedValues.length; i++) {
-      print("user list");
-      print(usersList[i].name);
-      participensInTask.add(usersList[i]);
-      print("user partisipent list");
-      print(participensInTask[i].name);
-    }
-    print(selectedValues);
   }
 
   Widget _button_icon(BuildContext context) {
@@ -1060,6 +1042,7 @@ class _TasksState extends State<Tasks> {
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.black.withOpacity(0.5),
+                            decoration: TextDecoration.lineThrough,
                           ),
                         ),
                       ),
@@ -1159,7 +1142,41 @@ class _TasksState extends State<Tasks> {
       }
     }
   }
-}
+
+
+  //the multi roomatie option
+  void _showMultiSelect(BuildContext context) async {
+    final List<MultiSelectDialogItem<int>> items = [];
+    for (var i = 0; i < usersList.length; i++) {
+      items.add(MultiSelectDialogItem(i, usersList[i].name));
+    }
+
+    final selectedValues = await showDialog<Set<int>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelectDialog(
+          items: items,
+//          initialSelectedValues: [1,2].toSet(),
+        );
+      },
+    );
+    //print the name of the participans by the tapping order.
+    participensInTask.clear();
+    for (var i = 0; i < selectedValues.length; i++) {
+      print("user list");
+      print(usersList[i].name);
+      participensInTask.add(usersList[i]);
+      print("user partisipent list");
+      print(participensInTask[i].name);
+    }
+    print(selectedValues);
+  }
+
+//  Widget partisipence (BuildContext context){
+//    return MaterialApp()  }
+//
+
+}//end class
 
 
 //class TasksItem extends StatelessWidget {

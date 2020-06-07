@@ -55,7 +55,8 @@ class TaskItem extends StatelessWidget {
                     ),
                     SizedBox(height: 10.0,),
                     Text(
-                        'Next: yuval cohen',
+                      //"Next:Yuval",
+                      "Next: "+this.task.nextUserTask.name,
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.pink.withOpacity(0.7)
