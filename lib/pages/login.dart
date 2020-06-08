@@ -20,10 +20,10 @@ class _LoginState extends State<Login> {
   bool _autoValidate = false;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  String url = 'https://bunkyapp.herokuapp.com';
 
   @override
   Widget build(BuildContext context) {
-
     Logo logo = Logo(title: "Sign in");
     return SafeArea(
       child: Scaffold(
@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                        'new in Bunky?',
+                                        'New in Bunky?',
                                       style: TextStyle(
                                         color: Colors.grey
                                       ),
@@ -158,9 +158,10 @@ class _LoginState extends State<Login> {
   Future<void> submit() async {
     try{
       final response = await http.get(
-        'https://bunkyapp.herokuapp.com/loginUser?mail=$mail', headers: <String, String>{
+        '$url/loginUser?mail=$mail', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 5));
+      }).timeout(const Duration(seconds: 10));
+
 
       if(response.statusCode == 200){
         print("200 OK");
@@ -176,7 +177,7 @@ class _LoginState extends State<Login> {
               'index': 0,
             });
           } else {
-            Navigator.pushReplacementNamed(context, '/newApartment', arguments:
+            Navigator.pushNamed(context, '/newApartment', arguments:
             {
               'user': user,
             });

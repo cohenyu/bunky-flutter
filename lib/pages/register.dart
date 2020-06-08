@@ -201,7 +201,7 @@ class _RegisterState extends State<Register> {
           showSnackBar('Email Already Exists');
         } else {
           User user =  User.fromJson(json.decode(response.body));
-          Navigator.pushNamed(this.context, '/newApartment', arguments:
+          Navigator.pushReplacementNamed(this.context, '/newApartment', arguments:
           {
             'user': user,
           });

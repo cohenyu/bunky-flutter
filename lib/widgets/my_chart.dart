@@ -45,7 +45,7 @@ class _MyChartState extends State<MyChart> {
       initialAngle: 0,
       chartValueStyle: defaultChartValueStyle.copyWith(
           color: Colors.blueGrey[900].withOpacity(0.9),
-          fontSize: 15.0,
+          fontSize: 12.0,
       ),
       chartType: ChartType.disc,
     );

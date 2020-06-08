@@ -104,7 +104,7 @@ class _CreateApartmentState extends State<CreateApartment> {
                           label: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Text(
-                              'share',
+                              'Share',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 17,
@@ -135,7 +135,7 @@ class _CreateApartmentState extends State<CreateApartment> {
                           label: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Text(
-                              "let's go",
+                              "Let's go",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 17,
@@ -157,7 +157,7 @@ class _CreateApartmentState extends State<CreateApartment> {
                       ),
                       const Padding(
                         padding: EdgeInsets.only(top: 16),
-                        child: Text('Awaiting for apartment code...',
+                        child: Text('loading...',
                         style: TextStyle(
                           fontSize: 20.0
                         ),),
@@ -189,7 +189,7 @@ class _CreateApartmentState extends State<CreateApartment> {
         'Content-Type': 'application/json; charset=UTF-8',
       }, body: jsonEncode({
         'user': user.toJson(),
-        'aptName': 'yuval&miriel',
+        'aptName': '',
       }
       )).timeout(const Duration(seconds: 10));
 

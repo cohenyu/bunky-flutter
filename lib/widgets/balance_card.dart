@@ -105,75 +105,7 @@ class _BalanceCardState extends State<BalanceCard> {
               child: MyChart(data: this.widget.map, isPercentage: widget.isPercentage,),
             )
         ),
-//        Center(
-//          child: Padding(
-//            padding: const EdgeInsets.only(top: 15.0, left: 5),
-//            child: MyChart(data: this.widget.map, isPercentage: widget.isPercentage,),
-//          ),
-//        )
       ],
     );
   }
-
-
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Padding(
-//      padding: EdgeInsets.symmetric(horizontal: 15.0),
-//      child: Container(
-////        height: 30.0,
-//        width: 350.0,
-//        decoration: BoxDecoration(
-//            color: Colors.amber[200],
-//            borderRadius: BorderRadius.all(Radius.circular(20)),
-//            boxShadow: [
-//              BoxShadow(
-//                  color: Colors.black.withOpacity(0.1),
-//                  offset: Offset(0.0, 0.3),
-//                  blurRadius: 15.0
-//              )
-//            ]
-//        ),
-//        child: Padding(
-//          padding: EdgeInsets.only(top: 10.0),
-//          child: Column(
-//            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//            crossAxisAlignment: CrossAxisAlignment.center,
-//            children: <Widget>[
-//              Text(
-//                this.widget.title,
-//                style: TextStyle(
-//                    color: Colors.white,
-//                    fontSize: 20.0,
-//                    fontWeight: FontWeight.bold
-//                ),
-//              ),
-//              SizedBox(height: 10.0,),
-////              Padding(
-////                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-////                child: Column(
-////                  crossAxisAlignment: CrossAxisAlignment.center,
-////                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-////                  mainAxisSize: MainAxisSize.min,
-////                  children: <Widget>[
-////                    Text(
-////                      this.widget.title,
-////                      style: TextStyle(
-////                          color: Colors.white,
-////                          fontSize: 20.0,
-////                          fontWeight: FontWeight.bold
-////                      ),
-////                    ),
-////                  ],
-////                ),
-////              ),
-//              widget.map.isNotEmpty ? MyChart(data: this.widget.map, isPercentage: widget.isPercentage,) :
-//              Text('vfdvdf'),
-//            ],
-//          ),
-//        ),
-//      ),
-//    );
-//  }
 }

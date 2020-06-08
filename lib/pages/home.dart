@@ -178,10 +178,10 @@ class _HomeState extends State<Home> {
                                                     ),
                                                     children: tasksNumber > 0 ? <TextSpan>[
                                                       new TextSpan(text: 'You have'),
-                                                      new TextSpan(text: ' $tasksNumber tasks', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo[300])),
+                                                      new TextSpan(text: ' $tasksNumber duties', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo[300])),
                                                       new TextSpan(text: ' to complete'),
                                                     ]: <TextSpan>[
-                                                      new TextSpan(text: 'You dont have any tasks to complete!', style: new TextStyle(fontWeight: FontWeight.bold)),
+                                                      new TextSpan(text: 'You don\'t have any duties to complete!', style: new TextStyle(fontWeight: FontWeight.bold)),
                                                     ],
                                                   ),
                                                 ),

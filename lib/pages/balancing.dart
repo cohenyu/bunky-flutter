@@ -106,7 +106,7 @@ class _BalancingState extends State<Balancing> {
                             Icon(Icons.mood, size: 45, color: Colors.grey,),
                             SizedBox(height: 8.0,),
                             Text(
-                                "Wer'e  all balanced out!",
+                                "We're  all balanced out!",
                               style: TextStyle(fontSize: 20.0, color: Colors.grey),
                             )
                           ],
@@ -370,7 +370,7 @@ class _BalancingState extends State<Balancing> {
                                   keyboardType: TextInputType.number,
                                   controller: valueController,
                                   decoration: InputDecoration(
-                                    hintText: 'Value',
+                                    hintText: 'Amount',
                                     enabledBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(color: Colors.black)
                                     ),

@@ -14,7 +14,7 @@ class _BottomNavyBarState extends State<BottomNavyBar> {
   final _pageOptions = [
     '/home',
     '/expenses',
-    '/tasks',
+    '/duties',
     '/settings'
   ];
 
@@ -23,7 +23,7 @@ class _BottomNavyBarState extends State<BottomNavyBar> {
   List<NavigationItem> items = [
     NavigationItem(icon: Icon(Icons.home), title:Text('Home'), color: Colors.white),
     NavigationItem(icon: Icon(Icons.attach_money), title:Text('Expenses'), color: Colors.white),
-    NavigationItem(icon: Icon(Icons.today), title:Text('Tasks'), color: Colors.white),
+    NavigationItem(icon: Icon(Icons.today), title:Text('Duties'), color: Colors.white),
     NavigationItem(icon: Icon(Icons.settings), title:Text('Settings'), color: Colors.white),
   ];
 
@@ -89,11 +89,19 @@ class _BottomNavyBarState extends State<BottomNavyBar> {
           var itemIndex = items.indexOf(item);
           return GestureDetector(
             onTap: (){
+              var oldIndex = index;
               setState(() {
                 index = itemIndex;
               });
-              Navigator.of(this.context)
-                  .pushNamedAndRemoveUntil(_pageOptions[index], (Route<dynamic> route) => false, arguments: {'index': index, 'user': data['user']});
+              print(_pageOptions[oldIndex]);
+              print(_pageOptions[index]);
+              if(_pageOptions[oldIndex] == '/home'){
+                Navigator.of(this.context).pushNamed(_pageOptions[index], arguments: {'index': index, 'user': data['user']});
+              } else {
+                Navigator.of(this.context).pushReplacementNamed(_pageOptions[index], arguments: {'index': index, 'user': data['user']});
+              }
+
+//                  .pushNamedAndRemoveUntil(_pageOptions[index], (Route<dynamic> route) => false, arguments: {'index': index, 'user': data['user']});
 
 //              Navigator.pushReplacementNamed(context, _pageOptions[index], arguments: {'index': index, 'user': data['user']});
             },

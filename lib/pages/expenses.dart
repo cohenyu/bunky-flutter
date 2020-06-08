@@ -52,7 +52,7 @@ class _ExpensesState extends State<Expenses> {
     'Supermarket' : 1,
     'Water Bill' : 2,
     'Electric Bill': 3,
-    'Rates': 4,
+    'municipal rate': 4,
     'Building Committee' : 5,
     'Internet' : 6,
     'Other': 7
@@ -94,7 +94,6 @@ class _ExpensesState extends State<Expenses> {
     categoricalMap = {};
     dateMap = {};
     fromDate = DateTime.now().subtract(Duration(days: DateTime.now().day - 1));
-    print(fromDate);
     toDate = DateTime.now();
     scrollController = ScrollController();
     fab = FloatingActionButton(
@@ -598,6 +597,13 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+  void resetDates(){
+    setState(() {
+      fromDate = DateTime.now().subtract(Duration(days: DateTime.now().day - 1));
+      toDate = DateTime.now();
+    });
+  }
+
   void addDateChart(DateTime date, String title, bool isPercentage){
     selectedDate = date;
     setState(() {
@@ -661,7 +667,7 @@ class _ExpensesState extends State<Expenses> {
                           Padding(
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             child: TextFormField(
-                              inputFormatters: [new WhitelistingTextInputFormatter(RegExp('[a-zA-Z0-9 .,"\'!?@#\$%^&*()+=[]_-:`~;]+')),],
+                              inputFormatters: [new WhitelistingTextInputFormatter(RegExp('[a-zA-Z0-9 ."\'()-_=+;,!?@#%^&*\$/<>|]+')),],
                               controller: titleController,
                               decoration: InputDecoration(
                                   hintText: 'Title',
@@ -696,7 +702,7 @@ class _ExpensesState extends State<Expenses> {
                               keyboardType: TextInputType.number,
                               controller: valueController,
                               decoration: InputDecoration(
-                                hintText: 'Value',
+                                hintText: 'Amount',
                                 enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.black)
                                 ),
@@ -997,10 +1003,10 @@ class _ExpensesState extends State<Expenses> {
           '$url/removeExpense', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       }, body: jsonEncode(expense.id,)).timeout(const Duration(seconds: 7));
-
+      print(expense.date);
       if(response.statusCode == 200){
         if(response.body.isNotEmpty){
-//          todo refresh charts if the date is between the range
+          updateChartExpenses(fromDate, toDate);
           return;
         } else {
           showSnackBar('Error');
@@ -1082,6 +1088,7 @@ class _ExpensesState extends State<Expenses> {
         ExpenseItem newItem = ExpenseItem(expense);
         setState(() {
           expensesList.insert(0, newItem);
+          resetDates();
           updateChartExpenses(fromDate, toDate);
         });
       } else {

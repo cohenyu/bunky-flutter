@@ -13,11 +13,13 @@ class NewApartment extends StatefulWidget {
 
 
 class _NewApartmentState extends State<NewApartment> {
-
+  bool haveApt = false;
   Map data = {};
 
   @override
   Widget build(BuildContext context) {
+    print(haveApt);
+//    todo
     data = ModalRoute.of(context).settings.arguments;
     Logo logo = Logo(title: "Sign up");
     return SafeArea(
@@ -49,8 +51,10 @@ class _NewApartmentState extends State<NewApartment> {
                           child: RaisedButton.icon(
                             color: Colors.teal,
                             onPressed: (){
-                              Navigator.pushReplacementNamed(context,'/createApartment', arguments: {
+                              Navigator.pushNamed(context,'/createApartment', arguments: {
                                 'user': data['user'],
+                              }).then((value){
+                                haveApt = true;
                               });
                             },
                             icon: Icon(
@@ -58,7 +62,7 @@ class _NewApartmentState extends State<NewApartment> {
                               color: Colors.white,
                             ),
                             label: Text(
-                              'Let\'s create new apartment!',
+                              'Let\'s create a new apartment!',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 17,
@@ -80,7 +84,7 @@ class _NewApartmentState extends State<NewApartment> {
                               borderRadius: new BorderRadius.circular(30),
                             ),
                             onPressed: (){
-                              Navigator.pushReplacementNamed(context, '/connectApartment', arguments: {
+                              Navigator.pushNamed(context, '/connectApartment', arguments: {
                                 'user': data['user'],
                               });
                             },
@@ -89,7 +93,7 @@ class _NewApartmentState extends State<NewApartment> {
                               color: Colors.white,
                             ),
                             label: Text(
-                              'Already have the code',
+                              'Already have a code',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 17,

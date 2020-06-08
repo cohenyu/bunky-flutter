@@ -30,12 +30,12 @@ class _DropDownNamesState extends State<DropDownNames> {
     return DropdownButtonFormField(
       validator: (value){
         if (value == null) {
-          return 'Select Roommate';
+          return 'Select a bunky';
         }
         return null;
       },
       value: selected,
-      hint: Text('Select Roommate'),
+      hint: Text('Select a bunky'),
       items: _dropdownValues.map((value) => DropdownMenuItem(
         child: Text(value.name,),
         value: value,
@@ -56,7 +56,7 @@ class _DropDownNamesState extends State<DropDownNames> {
       final response = await http.get(
           'https://bunkyapp.herokuapp.com/allUsersOfAptByUser?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 0));
+      },).timeout(const Duration(seconds: 5));
 
       if(response.statusCode == 200){
 
