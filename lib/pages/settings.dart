@@ -253,6 +253,7 @@ class _SettingsState extends State<Settings> {
                               child: TextFormField(
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(15),
+                                  WhitelistingTextInputFormatter(RegExp('[a-zA-Z0-9 -_`\']')),
                                 ],
                                 validator: (value){
                                   value = value.trim();
@@ -349,6 +350,8 @@ class _SettingsState extends State<Settings> {
           setState(() {
             data['user'] = User.fromJson(jsonDecode(response.body));
           });
+        } else {
+          showSnackBar('Error');
         }
       } else {
         showSnackBar('Error');
@@ -367,8 +370,13 @@ class _SettingsState extends State<Settings> {
       },).timeout(const Duration(seconds: 7));
 
       if(response.statusCode == 200){
-        int code = jsonDecode(response.body);
-        return code;
+        if(response.body.isNotEmpty){
+          int code = jsonDecode(response.body);
+          return code;
+        } else {
+          showSnackBar('Error');
+          return -1;
+        }
       } else {
         showSnackBar('Error');
         return -1;

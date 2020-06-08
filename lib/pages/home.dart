@@ -386,11 +386,9 @@ class _HomeState extends State<Home> {
               });
             }
           }
-
         }
       } else {
-        print('no expenses yet');
-//        todo showSnackBar('No Internet Connection'); ?
+        showSnackBar('Error');
       }
     }catch (_){
       showSnackBar('No Internet Connection');

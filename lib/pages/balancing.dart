@@ -233,7 +233,6 @@ class _BalancingState extends State<Balancing> {
       } else{
         showSnackBar('Error');
       }
-
     } catch (_){
       showSnackBar('No Internet Connection');
     }
@@ -274,6 +273,8 @@ class _BalancingState extends State<Balancing> {
             debt = tmpDebt;
             isLoading = false;
           });
+        } else {
+          showSnackBar('Error');
         }
       } else{
         showSnackBar('Error');
@@ -344,11 +345,12 @@ class _BalancingState extends State<Balancing> {
                               ),
                               Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 2),
-                                  child: DropDownNames(callback: (val) => setState(()=> selectedUser = val), user: data['user'],)
+                                  child: DropDownNames(callback: (val) => setState(()=> selectedUser = val), user: data['user'], scaffoldKey: _scaffoldKey,)
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 2),
                                 child: TextFormField(
+                                  inputFormatters: [new WhitelistingTextInputFormatter(RegExp('[0-9.]+')),],
                                   validator: (value){
                                     value = value.trim();
                                     double amount;

@@ -8,9 +8,10 @@ class BalanceCard extends StatefulWidget {
   final String title;
   final Map<String, double> map;
   final bool isPercentage;
+  final double width;
 
 
-  BalanceCard({this.title, this.map, this.isPercentage});
+  BalanceCard({this.title, this.map, this.isPercentage, this.width});
 
   @override
   _BalanceCardState createState() => _BalanceCardState();
@@ -32,9 +33,9 @@ class _BalanceCardState extends State<BalanceCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: 5.0),
       child: Container(
-        width: 360.0,
+        width: widget.width,
         decoration: BoxDecoration(
 //            color: Colors.lime[300],
             color: Colors.amber[200],

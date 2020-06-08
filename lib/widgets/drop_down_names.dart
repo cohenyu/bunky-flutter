@@ -7,7 +7,8 @@ import 'package:http/http.dart' as http;
 class DropDownNames extends StatefulWidget {
   final Function callback;
   User user;
-  DropDownNames({this.callback, this.user});
+  final scaffoldKey;
+  DropDownNames({this.callback, this.user, this.scaffoldKey});
 
   @override
   _DropDownNamesState createState() => _DropDownNamesState();
@@ -55,7 +56,7 @@ class _DropDownNamesState extends State<DropDownNames> {
       final response = await http.get(
           'https://bunkyapp.herokuapp.com/allUsersOfAptByUser?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 6));
+      },).timeout(const Duration(seconds: 0));
 
       if(response.statusCode == 200){
 
@@ -71,12 +72,33 @@ class _DropDownNamesState extends State<DropDownNames> {
           setState(() {
             _dropdownValues = usersNames;
           });
+        } else{
+          showSnackBar('Error');
         }
       } else {
-        print('Error');
+        showSnackBar('Error');
       }
     } catch (_){
-      print('No Internet Connection');
+      showSnackBar('No Internet Connection');
     }
+  }
+
+  void showSnackBar (String title){
+    widget.scaffoldKey.currentState.showSnackBar(SnackBar(
+      duration: Duration(seconds: 1),
+      backgroundColor: Colors.pink[50],
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.pink
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }

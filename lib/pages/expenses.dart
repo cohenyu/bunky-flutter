@@ -96,8 +96,6 @@ class _ExpensesState extends State<Expenses> {
     fromDate = DateTime.now().subtract(Duration(days: DateTime.now().day - 1));
     print(fromDate);
     toDate = DateTime.now();
-    balances.add(BalanceCard(title: 'Total Expenses', map: totalMap, isPercentage: false,));
-    balances.add(BalanceCard(title: 'Categorical Expenses', map: categoricalMap, isPercentage: false,));
     scrollController = ScrollController();
     fab = FloatingActionButton(
       backgroundColor: Colors.teal[300].withOpacity(0.9),
@@ -135,7 +133,10 @@ class _ExpensesState extends State<Expenses> {
     WidgetsBinding.instance.addPostFrameCallback((_){
       print(MediaQuery.of(context).size.toString());
       data = ModalRoute.of(context).settings.arguments;
+      double width = MediaQuery.of(context).size.width;
       setState(() {
+        balances.add(BalanceCard(title: 'By Name', map: totalMap, isPercentage: false, width: width,));
+        balances.add(BalanceCard(title: 'By Category', map: categoricalMap, isPercentage: false, width: width,));
         getExpensesByDate(fromDate, toDate);
         updateChartExpenses(fromDate, toDate);
       });
@@ -296,6 +297,7 @@ class _ExpensesState extends State<Expenses> {
     return [
       (!totalLoading && !categoryLoading) ? CarouselSlider(
         options: CarouselOptions(
+            autoPlayInterval: Duration(seconds: 3),
             aspectRatio: 2.0,
             height: 320.0,
             autoPlay: true,
@@ -659,6 +661,7 @@ class _ExpensesState extends State<Expenses> {
                           Padding(
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             child: TextFormField(
+                              inputFormatters: [new WhitelistingTextInputFormatter(RegExp('[a-zA-Z0-9 .,"\'!?@#\$%^&*()+=[]_-:`~;]+')),],
                               controller: titleController,
                               decoration: InputDecoration(
                                   hintText: 'Title',
@@ -671,6 +674,7 @@ class _ExpensesState extends State<Expenses> {
                           Padding(
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             child: TextFormField(
+                              inputFormatters: [new WhitelistingTextInputFormatter(RegExp('[0-9.]+')),],
                               validator: (value){
                                 value = value.trim();
                                 double amount;
@@ -822,7 +826,6 @@ class _ExpensesState extends State<Expenses> {
   }
 
   Future<void> sumExpensePerUser(Chart kind, DateTime dateTime) async{
-    print('get sum per user');
     User user = data['user'];
     String date = dateTime.toString().split(' ')[0];
 
@@ -906,7 +909,7 @@ class _ExpensesState extends State<Expenses> {
 
         }
       } else {
-        print('no expenses yet');
+        showSnackBar('Error');
       }
     }catch(_){
       showSnackBar('No Internet Connection');
@@ -1041,7 +1044,7 @@ class _ExpensesState extends State<Expenses> {
 
         }
       } else {
-        print('No expenses yet');
+        showSnackBar('Error');
       }
     }catch(_){
       showSnackBar('No Internet Connection');
@@ -1075,7 +1078,6 @@ class _ExpensesState extends State<Expenses> {
       )).timeout(const Duration(seconds: 10));
 
       if(response.statusCode == 200){
-        print("200 OK Expenses");
         Expense expense = Expense.fromJson(jsonDecode(response.body));
         ExpenseItem newItem = ExpenseItem(expense);
         setState(() {

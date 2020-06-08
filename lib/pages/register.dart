@@ -91,6 +91,7 @@ class _RegisterState extends State<Register> {
                               TextFormField(
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(15),
+                                  WhitelistingTextInputFormatter(RegExp('[a-zA-Z0-9 -_`\']')),
                                 ],
                                 onSaved: (value){
                                   this.name = value.trim();
