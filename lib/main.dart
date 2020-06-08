@@ -13,21 +13,10 @@ import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-// Yuval - 7/6 23:30
+// Yuval - 8/6 13:43
 // miriel 7/6 20:18
 
 void main() => runApp(MaterialApp(
-//  localizationsDelegates: [
-//    // ... app-specific localization delegate[s] here
-//    GlobalMaterialLocalizations.delegate,
-//    GlobalWidgetsLocalizations.delegate,
-//  ],
-//  supportedLocales: [
-//    const Locale('en', 'US'), // English
-//    const Locale('he'), // Hebrew
-//    const Locale('zh'), // Chinese
-//    // ... other locales the app supports
-//  ],
   initialRoute: '/login',
   routes: {
 //    '/': (context) => Loading(),
