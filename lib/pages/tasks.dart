@@ -18,13 +18,15 @@ class _TasksState extends State<Tasks> {
   bool week_pressed_button = false;
   bool month_pressed_button = false;
   List<User> usersList = [];
+  List<User> usersInApprtment = [];
+  List<User> usersInApprtmentToDelete = [];
+
   List<User> participensInTask = [];
   Map data = {};
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String url = 'https://bunkyapp.herokuapp.com';
   bool start = true;
-  bool choosePartisipansIsPressed=false;
-
+  bool choosePartisipansIsPressed = false;
 
 //  List<TasksItem> tasksList = [
 //    TasksItem('every week','yuval','wash'),
@@ -85,7 +87,7 @@ class _TasksState extends State<Tasks> {
 //    data  = ModalRoute.of(context).settings.arguments;
     //_taskList=_dayTaskList;
     return Scaffold(
-      key: _scaffoldKey,
+        key: _scaffoldKey,
         bottomNavigationBar: BottomNavyBar(),
         body: Stack(
           children: <Widget>[
@@ -101,20 +103,12 @@ class _TasksState extends State<Tasks> {
                         EdgeInsets.symmetric(horizontal: 25.5, vertical: 30.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(
-                          Icons.insert_chart,
-                          color: Colors.black.withOpacity(0.7),
-                          size: 30.0,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
                         Text(
                           'Tasks',
                           style: TextStyle(
-                              color: Colors.black.withOpacity(0.7),
+                              color: Colors.black.withOpacity(0.3),
                               fontWeight: FontWeight.bold,
-                              fontSize: 32.0),
+                              fontSize: 35.0),
                         ),
                       ],
                     ),
@@ -173,7 +167,8 @@ class _TasksState extends State<Tasks> {
                               itemCount: _taskList.length,
                               itemBuilder: (context, index) {
                                 return _taskList[index].isFinish
-                                    ? _taskComlete(_taskList[index].task_name, index)
+                                    ? _taskComlete(
+                                        _taskList[index].task_name, index)
                                     : _taskUncomlete(
                                         _taskList[index].task_name, index);
                               },
@@ -245,7 +240,9 @@ class _TasksState extends State<Tasks> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: _aptTasks.isNotEmpty ? showTasks() : hideTasks(),
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(
+                    height: 30,
+                  ),
 //                  Padding(
 //                    padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
 //                    child: Column(
@@ -278,7 +275,7 @@ class _TasksState extends State<Tasks> {
         ));
   }
 
-  List<Widget> hideTasks(){
+  List<Widget> hideTasks() {
     return [
       Padding(
         padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 20),
@@ -293,7 +290,7 @@ class _TasksState extends State<Tasks> {
     ];
   }
 
-  List<Widget> showTasks(){
+  List<Widget> showTasks() {
     return [
       Padding(
         padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 30),
@@ -306,74 +303,94 @@ class _TasksState extends State<Tasks> {
         ),
       ),
       SizedBox(height: 15.0),
-      _aptTasks.isNotEmpty ? Padding(
-        padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
-        child: ListView.builder(
-          physics: PageScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: _aptTasks.length,
-          itemBuilder: (context, int index){
-            return Dismissible(
-              key: Key('${_aptTasks[index].task.id}'),
-              direction: DismissDirection.endToStart,
-              confirmDismiss: (DismissDirection direction) async {
-                return await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0))
-                      ),
-                      backgroundColor: Colors.teal[100],
-                      title: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: Text("Confirm"),
-                      ),
-                      content: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: Text("Are you sure you wish to delete this task?", style: TextStyle(fontSize: 18.0),),
-                      ),
-                      actions: <Widget>[
-                        FlatButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: Text("Delete", style: TextStyle(color: Colors.pink[700], fontSize: 17.0),)
-                        ),
-                        FlatButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 20.0),
-                            child: Text("Cancel", style: TextStyle(color: Colors.pink[700], fontSize: 17.0),),
+      _aptTasks.isNotEmpty
+          ? Padding(
+              padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
+              child: ListView.builder(
+                physics: PageScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: _aptTasks.length,
+                itemBuilder: (context, int index) {
+                  return Dismissible(
+                    key: Key('${_aptTasks[index].task.id}'),
+                    direction: DismissDirection.endToStart,
+                    confirmDismiss: (DismissDirection direction) async {
+                      return await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.0))),
+                            backgroundColor: Colors.teal[100],
+                            title: Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Text("Confirm"),
+                            ),
+                            content: Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Text(
+                                "Are you sure you wish to delete this task?",
+                                style: TextStyle(fontSize: 18.0),
+                              ),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                        color: Colors.pink[700],
+                                        fontSize: 17.0),
+                                  )),
+                              FlatButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 20.0),
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        color: Colors.pink[700],
+                                        fontSize: 17.0),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    onDismissed: (direction) {
+                      deleteTaskRequest(index);
+                      setState(() {
+                        _aptTasks.removeAt(index);
+                        showSnackBar('Task deleted');
+                      });
+                    },
+                    background: Padding(
+                      padding: const EdgeInsets.only(bottom: 18.0),
+                      child: Container(
+                        color: Colors.redAccent,
+                        child: Center(
+                          child: ListTile(
+                            trailing: Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 30.0,
+                            ),
                           ),
                         ),
-                      ],
-                    );
-                  },
-                );
-              },
-              onDismissed: (direction){
-                deleteTaskRequest(index);
-                setState(() {
-                  _aptTasks.removeAt(index);
-                  showSnackBar('Task deleted');
-                });
-              },
-              background: Padding(
-                padding: const EdgeInsets.only(bottom: 18.0),
-                child: Container(
-                  color: Colors.redAccent,
-                  child: Center(
-                    child: ListTile(
-                      trailing: Icon(Icons.delete, color: Colors.white, size: 30.0,),
+                      ),
                     ),
-                  ),
-                ),
+                    child: _aptTasks[index],
+                  );
+                },
               ),
-              child: _aptTasks[index],
-            );
-          },
-        ),
-      ): SizedBox.shrink(),
+            )
+          : SizedBox.shrink(),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 150.0),
         child: Divider(
@@ -381,6 +398,92 @@ class _TasksState extends State<Tasks> {
         ),
       ),
     ];
+  }
+
+
+  void ShowUsersDialog(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return Container(
+          height: 100,
+          width: 100,
+          child: ReorderableListView(
+            header: Text(
+              'Participans',
+              style: TextStyle(decoration: TextDecoration.lineThrough),
+            ),
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                User user = usersList[oldIndex];
+                usersList.removeAt(oldIndex);
+                usersList.insert(newIndex, user);
+              });
+            },
+            children: <Widget>[
+              for (final u in usersList)
+                Dismissible(
+                  background: Container(
+                    color: Colors.redAccent,
+                  ),
+                  onDismissed: (direction) {
+                    setState(() {
+                      usersList.removeAt(usersList.indexOf(u));
+                    });
+                  },
+                  key: ValueKey(u),
+                  child: ListTile(
+                    key: ValueKey(u),
+                    title: Text('item #$u'),
+                    leading: Text('${usersList.indexOf(u)}'),
+                    trailing: Icon(Icons.list),
+                  ),
+                ),
+            ],
+          ),
+        );
+      });
+  }
+
+  Widget _showParticipans() {
+    print("here");
+    return Container(
+      height: 400,
+      width: 200,
+      child: ReorderableListView(
+        header: Text(
+          'Participans',
+          style: TextStyle(decoration: TextDecoration.lineThrough),
+        ),
+        onReorder: (oldIndex, newIndex) {
+          setState(() {
+            User user = usersInApprtment[oldIndex];
+            usersInApprtment.removeAt(oldIndex);
+            usersInApprtment.insert(newIndex, user);
+          });
+        },
+        children: <Widget>[
+          for (final u in usersInApprtment)
+            Dismissible(
+              background: Container(
+                color: Colors.redAccent,
+              ),
+              onDismissed: (direction) {
+                setState(() {
+                  usersInApprtment.removeAt(usersInApprtment.indexOf(u));
+                });
+              },
+              key: ValueKey(u),
+              child: ListTile(
+                key: ValueKey(u),
+                title: Text('item #$u'),
+                leading: Text('${usersInApprtment.indexOf(u)}'),
+                trailing: Icon(Icons.list),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   void showAddDialog() {
@@ -395,7 +498,7 @@ class _TasksState extends State<Tasks> {
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.teal[100],
             content: Container(
-              height: 250,
+              height: 1000,
               width: 500,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -415,11 +518,48 @@ class _TasksState extends State<Tasks> {
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    padding: EdgeInsets.symmetric(),
+//                    padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Container(
+                        height: 400,
+                        width: 500,
+//                        child: ReorderableListView(
+//                          header: Text(
+//                            'Participans',
+//                            style: TextStyle(),
+//                          ),
+//                          onReorder: (oldIndex, newIndex) {
+//                            setState(() {
+//                              User user = usersInApprtment[oldIndex];
+//                              usersInApprtment.removeAt(oldIndex);
+//                              usersInApprtment.insert(newIndex, user);
+//                            });
+//                          },
+//                          children: <Widget>[
+//                            for (final u in usersInApprtment)
+//                              Dismissible(
+//                                background: Container(
+//                                  color: Colors.redAccent,
+//                                ),
+//                                onDismissed: (direction) {
+//                                  setState(() {
+//                                    usersInApprtment.removeAt(usersInApprtment.indexOf(u));
+//                                  });
+//                                },
+//                                key: ValueKey(u),
+//                                child: ListTile(
+//                                  key: ValueKey(u),
+//                                  title: Text('item #$u'),
+//                                  leading: Text('${usersInApprtment.indexOf(u)}'),
+//                                  trailing: Icon(Icons.list),
+//                                ),
+//                              ),
+//                          ],
+//                        ),
+
                       child: SizedBox(
                         width: 500,
-                        height: 40,
+                        height: 2000,
                         child: RaisedButton(
                           //color:Colors.teal[100],
                           color: Colors.teal.withOpacity(0.2),
@@ -430,27 +570,23 @@ class _TasksState extends State<Tasks> {
 //                                hintText: "press to choose partisipans"
 //                            ),
 //                          ),
-                          choosePartisipansIsPressed? Text(
-                            "yehuda,ninet,shiri",
+                          Text(
+                            "press to choose partisipans",
                             style: TextStyle(
                                 color: Colors.black45,
                                 //fontWeight: FontWeight.bold,
                                 fontSize: 18.0),
-                          ):
-                              Text(
-                              "press to choose partisipans",
-                              style: TextStyle(
-                            color: Colors.black45,
-                            //fontWeight: FontWeight.bold,
-                            fontSize: 18.0),
-                              ),
-                         // onPressed: () => _showMultiSelect(context),
-                          onPressed: (){
-                            _showMultiSelect(context);
+                          ),
+                          // onPressed: () => _showMultiSelect(context),
+                          onPressed: () {
+
+
+                            //ShowUsersDialog();
+                            //_showMultiSelect(context);
                             //choosePartisipansIsPressed=true;
                             setState(() {
-                              //isPressed=true;
-                              choosePartisipansIsPressed=true;
+                              //_showParticipans();
+
                             });
                           },
                         ),
@@ -464,6 +600,7 @@ class _TasksState extends State<Tasks> {
 //                            )
 //                        ),
 //                      ),
+
                     ),
                   ),
                   SizedBox(
@@ -475,7 +612,7 @@ class _TasksState extends State<Tasks> {
                     });
                   }),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    padding: const EdgeInsets.symmetric(),
                     child: Container(
                       child: TextField(
                         controller: taskNameController,
@@ -492,38 +629,38 @@ class _TasksState extends State<Tasks> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      RaisedButton(
-                        color: Colors.pink[800],
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      RaisedButton(
-                        color: Colors.pink[800],
-                        child: Text(
-                          "Add",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0),
-                        ),
-                        onPressed: () {
-                          if (taskNameController.text != '') {
-                            sendAddTak(frequency, this.participensInTask,
-                                taskNameController.text, false);
-
-                            Navigator.pop(context);
-                            //send to or
-                          }
-                        },
-                      )
+//                      RaisedButton(
+//                        color: Colors.pink[800],
+//                        child: Text(
+//                          "Cancel",
+//                          style: TextStyle(
+//                              color: Colors.white,
+//                              fontWeight: FontWeight.bold,
+//                              fontSize: 15.0),
+//                        ),
+//                        onPressed: () {
+//                          Navigator.pop(context);
+//                        },
+//                      ),
+//                      RaisedButton(
+//                        color: Colors.pink[800],
+//                        child: Text(
+//                          "Add",
+//                          style: TextStyle(
+//                              color: Colors.white,
+//                              fontWeight: FontWeight.bold,
+//                              fontSize: 15.0),
+//                        ),
+//                        onPressed: () {
+//                          if (taskNameController.text != '') {
+//                            sendAddTak(frequency, this.participensInTask,
+//                                taskNameController.text, false);
+//
+//                            Navigator.pop(context);
+//                            //send to or
+//                          }
+//                        },
+//                      ),
                     ],
                   )
                 ],
@@ -533,18 +670,22 @@ class _TasksState extends State<Tasks> {
         });
   }
 
-
-  Future<void> deleteTaskRequest(int index) async{
+  Future<void> deleteTaskRequest(int index) async {
     Task task = _aptTasks[index].task;
 
-    try{
-      final response = await http.put(
-          '$url/removeDuty', headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      }, body: jsonEncode(task.id,)).timeout(const Duration(seconds: 7));
+    try {
+      final response = await http
+          .put('$url/removeDuty',
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(
+                task.id,
+              ))
+          .timeout(const Duration(seconds: 7));
 
-      if(response.statusCode == 200){
-        if(response.body.isNotEmpty){
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
           print('***************** yes!!! deleted');
           return;
         } else {
@@ -553,7 +694,7 @@ class _TasksState extends State<Tasks> {
       } else {
         showSnackBar('Error');
       }
-    }catch(_){
+    } catch (_) {
       showSnackBar('No Internet Connection');
     }
 
@@ -563,8 +704,7 @@ class _TasksState extends State<Tasks> {
     });
   }
 
-
-  Future<void> getAllDuties() async{
+  Future<void> getAllDuties() async {
 //    setState(() {
 //      isLoading = true;
 //    });
@@ -575,15 +715,16 @@ class _TasksState extends State<Tasks> {
       '$url/getAllAptDuties?userId=${user.userId}&name=${user.name}&mail=${user.mail}',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 7));
+      },
+    ).timeout(const Duration(seconds: 7));
     List jsonData = jsonDecode(response.body);
     print("all apprtment duties");
     print(jsonDecode(response.body));
 
     List<TaskItem> tmpAptTasks = [];
-    if(response.statusCode == 200){
-      if(response.body.isNotEmpty){
-        for(var jsonItem in jsonData){
+    if (response.statusCode == 200) {
+      if (response.body.isNotEmpty) {
+        for (var jsonItem in jsonData) {
           tmpAptTasks.add(TaskItem(Task.fromJson(jsonItem)));
         }
       }
@@ -602,8 +743,6 @@ class _TasksState extends State<Tasks> {
 //      showSnackBar('No Internet Connection');
 //    }
   }
-
-
 
   //this function add tsk to each list by frequency
   void showAddTask(String frequency, List<User> performers, String task_name,
@@ -658,22 +797,25 @@ class _TasksState extends State<Tasks> {
   }
 
   // This function update the comppletness of task in the server
-  Future<void> updateTaskComletness(Task task) async{
+  Future<void> updateTaskComletness(Task task) async {
     //Task task = _allAppartmentTasks[index];
     print("updateTaskComletness");
 
-    try{
-      final response = await http.put(
-          '$url/flipIsExecuted', headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      }, body: jsonEncode(task)).timeout(const Duration(seconds: 7));
+    try {
+      final response = await http
+          .put('$url/flipIsExecuted',
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(task))
+          .timeout(const Duration(seconds: 7));
 
       print(jsonDecode(response.body));
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         print("200 OK updateTaskComletness ");
 
-        if(response.body.isNotEmpty){
+        if (response.body.isNotEmpty) {
 //          todo refresh charts if the date is between the range
           return;
         } else {
@@ -682,12 +824,11 @@ class _TasksState extends State<Tasks> {
       } else {
         showSnackBar('Error');
       }
-    }catch(_){
+    } catch (_) {
       print('point 2');
       showSnackBar('No Internet Connection');
     }
   }
-
 
   Future<void> sendAddTak(String frequency, List<User> performers,
       String task_name, bool isFinish) async {
@@ -759,6 +900,7 @@ class _TasksState extends State<Tasks> {
           }
           setState(() {
             usersList = usersNames;
+            usersInApprtment=usersNames;
           });
         }
       } else {
@@ -798,7 +940,7 @@ class _TasksState extends State<Tasks> {
           listOfTaskFromServer.add(userTask);
         }
         print("listOfTaskFromServer");
-        _allAppartmentTasks=listOfTaskFromServer;
+        _allAppartmentTasks = listOfTaskFromServer;
         splitTasks(listOfTaskFromServer);
       }
     } else {
@@ -812,7 +954,9 @@ class _TasksState extends State<Tasks> {
   Widget _button_icon(BuildContext context) {
     return Row(
       children: <Widget>[
-        SizedBox(width: 5.0,),
+        SizedBox(
+          width: 5.0,
+        ),
         Expanded(
           child: RaisedButton.icon(
             color: day_pressed_button == true ? Colors.teal : Colors.teal[300],
@@ -840,7 +984,9 @@ class _TasksState extends State<Tasks> {
             ),
           ),
         ),
-        SizedBox(width: 5.0,),
+        SizedBox(
+          width: 5.0,
+        ),
         Expanded(
           child: RaisedButton.icon(
             color: week_pressed_button == true ? Colors.teal : Colors.teal[300],
@@ -867,10 +1013,13 @@ class _TasksState extends State<Tasks> {
             ),
           ),
         ),
-        SizedBox(width: 5.0,),
+        SizedBox(
+          width: 5.0,
+        ),
         Expanded(
           child: RaisedButton.icon(
-            color: month_pressed_button == true ? Colors.teal : Colors.teal[300],
+            color:
+                month_pressed_button == true ? Colors.teal : Colors.teal[300],
 //          color: Colors.amber[200],
             icon: Icon(Icons.today),
             onPressed: () {
@@ -895,7 +1044,9 @@ class _TasksState extends State<Tasks> {
             ),
           ),
         ),
-        SizedBox(width: 5.0,),
+        SizedBox(
+          width: 5.0,
+        ),
       ],
     );
   }
@@ -976,20 +1127,20 @@ class _TasksState extends State<Tasks> {
                   width: 15,
                 ),
                 Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                              child: Text(
-                                task,
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                            ),
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          task,
+                          style: TextStyle(
+                            fontSize: 20,
                           ),
-                        ],
-                    ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1176,8 +1327,7 @@ class _TasksState extends State<Tasks> {
 //    return MaterialApp()  }
 //
 
-}//end class
-
+} //end class
 
 //class TasksItem extends StatelessWidget {
 //  final Task task;
@@ -1242,10 +1392,6 @@ class _TasksState extends State<Tasks> {
 //    );
 //  }
 //}
-
-
-
-
 
 // ================== coped from stakeoverflow
 
@@ -1338,36 +1484,6 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // =================== until here it was overflow
 
