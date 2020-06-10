@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bunky/models/user.dart';
 import 'package:bunky/pages/http_service.dart';
+import 'package:bunky/widgets/drop_down_currency.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'logo.dart';
@@ -54,11 +55,14 @@ class _CreateApartmentState extends State<CreateApartment> {
           ListView(
             children: <Widget>[
               logo.getLogo(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 100.0),
+                child: DropDownCurrency(user: data['user'], callback: (){print('currency');},),
+              ),
               FutureBuilder<int>(
                 future: aptCode,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot){
                   List<Widget> children;
-
                   if(snapshot.hasData){
                     children = <Widget>[
                       Center(
