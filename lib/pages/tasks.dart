@@ -138,7 +138,7 @@ class _TasksState extends State<Tasks> {
                             padding: const EdgeInsets.fromLTRB(0, 0, 100, 0),
                             child: day_pressed_button
                                 ? Text(
-                              "Your duties for this day:",
+                              "Your duties for today:",
                               style: TextStyle(
                                 fontSize: 20.0,
                               ),
@@ -492,7 +492,7 @@ class _TasksState extends State<Tasks> {
       Padding(
         padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 20),
         child: Text(
-          'No tasks yet',
+          'No duties yet',
           style: TextStyle(
               color: Colors.black.withOpacity(0.7),
               fontSize: 20.0,
@@ -507,7 +507,7 @@ class _TasksState extends State<Tasks> {
       Padding(
         padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 30),
         child: Text(
-          'All Appartment Tasks:',
+          'All appartment duties:',
           style: TextStyle(
               color: Colors.black.withOpacity(0.7),
               fontSize: 20.0,
@@ -543,7 +543,7 @@ class _TasksState extends State<Tasks> {
                       content: Padding(
                         padding: const EdgeInsets.only(left: 20.0),
                         child: Text(
-                          "Are you sure you wish to delete this task?",
+                          "Are you sure you wish to delete this duty?",
                           style: TextStyle(fontSize: 18.0),
                         ),
                       ),
@@ -579,7 +579,7 @@ class _TasksState extends State<Tasks> {
                 deleteTaskRequest(index);
                 setState(() {
                   _aptTasks.removeAt(index);
-                  showSnackBar('Task deleted');
+                  showSnackBar('Duty deleted');
                 });
               },
               background: Padding(
@@ -622,7 +622,7 @@ class _TasksState extends State<Tasks> {
             width: 100,
             child: ReorderableListView(
               header: Text(
-                'Participans',
+                'Participants',
                 style: TextStyle(decoration: TextDecoration.lineThrough),
               ),
               onReorder: (oldIndex, newIndex) {
@@ -664,7 +664,7 @@ class _TasksState extends State<Tasks> {
       width: 200,
       child: ReorderableListView(
         header: Text(
-          'Participans',
+          'Participants',
           style: TextStyle(decoration: TextDecoration.lineThrough),
         ),
         onReorder: (oldIndex, newIndex) {
@@ -720,7 +720,7 @@ class _TasksState extends State<Tasks> {
                     height: 10,
                   ),
                   Text(
-                    'Add new Task',
+                    'Add new duty',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -779,7 +779,7 @@ class _TasksState extends State<Tasks> {
 //                            ),
 //                          ),
                         Text(
-                          "Press to choose partisipans",
+                          "Press to choose participants",
                           style: TextStyle(
                               color: Colors.black45,
                               //fontWeight: FontWeight.bold,
@@ -821,7 +821,7 @@ class _TasksState extends State<Tasks> {
                       child: TextField(
                         controller: taskNameController,
                         decoration: InputDecoration(
-                            hintText: 'task name',
+                            hintText: 'title',
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black))),
                       ),
@@ -1767,7 +1767,7 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Choose your Bankys by order of execution:',style: TextStyle(color: Colors.pink.withOpacity(0.7),fontSize: 19.0,height: 1.0),),
+      title: Text('Choose your bunkys by order of execution:',style: TextStyle(color: Colors.pink.withOpacity(0.7),fontSize: 19.0,height: 1.0),),
       contentPadding: EdgeInsets.only(top: 12.0),
       content: SingleChildScrollView(
         child: ListTileTheme(
