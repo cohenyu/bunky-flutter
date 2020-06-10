@@ -227,5 +227,4 @@ class _CreateApartmentState extends State<CreateApartment> {
       ),
     ));
   }
-
 }

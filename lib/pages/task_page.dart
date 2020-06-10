@@ -135,10 +135,10 @@
 // void splitTasks(List<Task>_taskList,_dayTaskList,_weekTaskList,_monthTaskList){
 //
 //    for (var i=0; i<_taskList.length;i++){
-//      if(_taskList[i].frequency=="evey day"){
+//      if(_taskList[i].frequency=="daily"){
 //        _dayTaskList.add(_taskList[i]);
 //      }
-//      else if(_taskList[i].frequency=="evey week"){
+//      else if(_taskList[i].frequency=="weekly"){
 //        _weekTaskList.add(_taskList[i]);
 //      }
 //      else{

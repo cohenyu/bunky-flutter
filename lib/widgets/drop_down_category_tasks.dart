@@ -13,9 +13,9 @@ class _MyDropDownState extends State<MyDropDown> {
   String selected;
   //why only 3 ???
   final List<String> _dropdownValues = [
-    "evey day",
-    "evey week",
-    "evey month"
+    "daily",
+    "weekly",
+    "monthly"
   ];
 
 
@@ -25,7 +25,7 @@ class _MyDropDownState extends State<MyDropDown> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: DropdownButton(
         value: selected,
-        hint: Text('select Task frequency'),
+        hint: Text('Select duty frequency'),
         items: _dropdownValues.map((value) => DropdownMenuItem(
           child: Text(value),
           value: value,

@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'package:bunky/models/task.dart';
 import 'package:bunky/models/user.dart';
@@ -75,7 +76,6 @@ class _TasksState extends State<Tasks> {
       });
     });
   }
-
   @override
   Widget build(BuildContext context) {
 //    data  = ModalRoute.of(context).settings.arguments;
@@ -100,11 +100,11 @@ class _TasksState extends State<Tasks> {
                   ),
                   Padding(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 25.5, vertical: 30.0),
+                    EdgeInsets.symmetric(horizontal: 25.5, vertical: 30.0),
                     child: Row(
                       children: <Widget>[
                         Text(
-                          'Tasks',
+                          'Duties',
                           style: TextStyle(
                               color: Colors.black.withOpacity(0.3),
                               fontWeight: FontWeight.bold,
@@ -115,9 +115,9 @@ class _TasksState extends State<Tasks> {
                   ),
                   _button_icon(context),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.0),
+                    padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                     child: Container(
-                      width: double.infinity,
+                      width: 390.0,
                       height: 400.0,
                       decoration: BoxDecoration(
                         color: Colors.amber[200],
@@ -135,27 +135,27 @@ class _TasksState extends State<Tasks> {
                             height: 20,
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(1, 0, 170, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 100, 0),
                             child: day_pressed_button
                                 ? Text(
-                                    "your Task for Today:",
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                    ),
-                                  )
+                              "Your duties for this day:",
+                              style: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                            )
                                 : week_pressed_button
-                                    ? Text(
-                                        "your Task for Week:",
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                        ),
-                                      )
-                                    : Text(
-                                        "your Task for Month:",
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                        ),
-                                      ),
+                                ? Text(
+                              "Your duties for this week:",
+                              style: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                            )
+                                : Text(
+                              "Your duties for this month:",
+                              style: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                            ),
                           ),
                           SizedBox(
                             height: 10.0,
@@ -168,9 +168,9 @@ class _TasksState extends State<Tasks> {
                               itemBuilder: (context, index) {
                                 return _taskList[index].isFinish
                                     ? _taskComlete(
-                                        _taskList[index].task_name, index)
+                                    _taskList[index].task_name, index)
                                     : _taskUncomlete(
-                                        _taskList[index].task_name, index);
+                                    _taskList[index].task_name, index);
                               },
                             ),
                           ),
@@ -261,12 +261,24 @@ class _TasksState extends State<Tasks> {
                 alignment: Alignment.bottomRight,
                 child: FloatingActionButton(
                   child: Icon(Icons.add),
-                  onPressed: () {
+                  onPressed: (){
                     setState(() {
                       showAddDialog();
                       getUsers();
                     });
                   },
+//                  onPressed: () {
+//                    setState(() {
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(builder: (context) => AddTaskPage(callback: (frequency, performers, task_name, isFinish){
+//                          setState(() {
+//                            sendAddTak(frequency, performers, task_name, isFinish);
+//                          });
+//                        },user: data['user'],)),
+//                      );
+//                    });
+//                  },
                   backgroundColor: Colors.pink.withOpacity(0.9),
                 ),
               ),
@@ -274,6 +286,206 @@ class _TasksState extends State<Tasks> {
           ],
         ));
   }
+
+//git 08/06
+//  @override
+//  Widget build(BuildContext context) {
+////    data  = ModalRoute.of(context).settings.arguments;
+////    if(start==true) {
+////      getTaskList();
+////      start=false;
+////    }
+//    // splitTasks(_taskList, _dayTaskList, _weekTaskList, _monthTaskList);
+////    data  = ModalRoute.of(context).settings.arguments;
+//    //_taskList=_dayTaskList;
+//    return Scaffold(
+//        key: _scaffoldKey,
+//        bottomNavigationBar: BottomNavyBar(),
+//        body: Stack(
+//          children: <Widget>[
+//            SingleChildScrollView(
+//              child: Column(
+//                crossAxisAlignment: CrossAxisAlignment.start,
+//                children: <Widget>[
+//                  SizedBox(
+//                    height: 25,
+//                  ),
+//                  Padding(
+//                    padding:
+//                    EdgeInsets.symmetric(horizontal: 25.5, vertical: 30.0),
+//                    child: Row(
+//                      children: <Widget>[
+//                        Text(
+//                          'Tasks',
+//                          style: TextStyle(
+//                              color: Colors.black.withOpacity(0.3),
+//                              fontWeight: FontWeight.bold,
+//                              fontSize: 35.0),
+//                        ),
+//                      ],
+//                    ),
+//                  ),
+//                  _button_icon(context),
+//                  Padding(
+//                    padding: EdgeInsets.symmetric(horizontal: 5.0),
+//                    child: Container(
+//                      width: double.infinity,
+//                      height: 400.0,
+//                      decoration: BoxDecoration(
+//                        color: Colors.amber[200],
+//                        borderRadius: BorderRadius.all(Radius.circular(20)),
+//                        boxShadow: [
+//                          BoxShadow(
+//                              color: Colors.black.withOpacity(0.1),
+//                              offset: Offset(0.0, 0.3),
+//                              blurRadius: 15.0),
+//                        ],
+//                      ),
+//                      child: Column(
+//                        children: <Widget>[
+//                          SizedBox(
+//                            height: 20,
+//                          ),
+//                          Padding(
+//                            padding: const EdgeInsets.fromLTRB(1, 0, 170, 0),
+//                            child: day_pressed_button
+//                                ? Text(
+//                              "your Task for Today:",
+//                              style: TextStyle(
+//                                fontSize: 20.0,
+//                              ),
+//                            )
+//                                : week_pressed_button
+//                                ? Text(
+//                              "your Task for Week:",
+//                              style: TextStyle(
+//                                fontSize: 20.0,
+//                              ),
+//                            )
+//                                : Text(
+//                              "your Task for Month:",
+//                              style: TextStyle(
+//                                fontSize: 20.0,
+//                              ),
+//                            ),
+//                          ),
+//                          SizedBox(
+//                            height: 10.0,
+//                          ),
+//                          //youtube
+//                          Expanded(
+//                            child: ListView.builder(
+//                              padding: const EdgeInsets.all(0),
+//                              itemCount: _taskList.length,
+//                              itemBuilder: (context, index) {
+//                                return _taskList[index].isFinish
+//                                    ? _taskComlete(
+//                                    _taskList[index].task_name, index)
+//                                    : _taskUncomlete(
+//                                    _taskList[index].task_name, index);
+//                              },
+//                            ),
+//                          ),
+//
+////                          Expanded(child: TaskPage()),
+//                        ],
+//                      ),
+////                      child: Column(
+////                        children: <Widget>[
+////                          Padding(
+////                            padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0),
+////                            child: Row(
+////                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+////                              children: <Widget>[
+////                                Column(
+////                                  crossAxisAlignment: CrossAxisAlignment.start,
+////                                  mainAxisSize: MainAxisSize.min,
+////                                  children: <Widget>[
+////                                    //defult home task that need to be in every week
+////                                    Text(
+////                                      'Tasks for this week:',
+////                                      style: TextStyle(
+////                                          color: Colors.black,
+////                                          fontSize: 22.0,
+////                                          fontWeight: FontWeight.bold
+////                                      ),
+////                                    ),
+////                                    SizedBox(height: 15.0,),
+////                                    Text(
+////                                      'Wash dishes\n' 'Clean the home\n''Take off garbage\n',
+////                                      style: TextStyle(
+////                                          color: Colors.black,
+////                                          fontSize: 18.0
+////                                      ),
+////                                    )
+////                                  ],
+////                                ),
+//////                                IconButton(
+//////                                  icon: Icon(
+//////                                    Icons.today,
+//////                                  ),
+//////                                  onPressed: (){
+//////
+//////                                  },
+//////                                  color: Colors.white,
+//////                                  iconSize: 30.0,
+//////                                )
+////                              ],
+////                            ),
+////                          )
+////                        ],
+////                      ),
+//                    ),
+//                  ),
+////                  _tasksList.isEmpty ? Padding(
+////                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top:30),
+////                    child: Text(
+////                      'No Tasks yet',
+////                      style: TextStyle(
+////                          color: Colors.black.withOpacity(0.7),
+////                          fontSize: 20.0,
+////                          fontWeight: FontWeight.bold
+////                      ),
+////                    ),
+////                  ):
+//                  Column(
+//                    crossAxisAlignment: CrossAxisAlignment.start,
+//                    children: _aptTasks.isNotEmpty ? showTasks() : hideTasks(),
+//                  ),
+//                  SizedBox(
+//                    height: 30,
+//                  ),
+////                  Padding(
+////                    padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
+////                    child: Column(
+////                      children: tasksList,
+////                    ),
+////                  ),
+//                  SizedBox(
+//                    height: 70,
+//                  )
+//                ],
+//              ),
+//            ),
+//            Padding(
+//              padding: const EdgeInsets.all(10.0),
+//              child: Align(
+//                alignment: Alignment.bottomRight,
+//                child: FloatingActionButton(
+//                  child: Icon(Icons.add),
+//                  onPressed: () {
+//                    setState(() {
+//                      showAddDialog();
+//                      getUsers();
+//                    });
+//                  },
+//                  backgroundColor: Colors.pink.withOpacity(0.9),
+//                ),
+//              ),
+//            ),
+//          ],
+//        ));
+//  }
 
   List<Widget> hideTasks() {
     return [
@@ -305,91 +517,91 @@ class _TasksState extends State<Tasks> {
       SizedBox(height: 15.0),
       _aptTasks.isNotEmpty
           ? Padding(
-              padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
-              child: ListView.builder(
-                physics: PageScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: _aptTasks.length,
-                itemBuilder: (context, int index) {
-                  return Dismissible(
-                    key: Key('${_aptTasks[index].task.id}'),
-                    direction: DismissDirection.endToStart,
-                    confirmDismiss: (DismissDirection direction) async {
-                      return await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0))),
-                            backgroundColor: Colors.teal[100],
-                            title: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Text("Confirm"),
-                            ),
-                            content: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Text(
-                                "Are you sure you wish to delete this task?",
-                                style: TextStyle(fontSize: 18.0),
-                              ),
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(true),
-                                  child: Text(
-                                    "Delete",
-                                    style: TextStyle(
-                                        color: Colors.pink[700],
-                                        fontSize: 17.0),
-                                  )),
-                              FlatButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 20.0),
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                        color: Colors.pink[700],
-                                        fontSize: 17.0),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    onDismissed: (direction) {
-                      deleteTaskRequest(index);
-                      setState(() {
-                        _aptTasks.removeAt(index);
-                        showSnackBar('Task deleted');
-                      });
-                    },
-                    background: Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
-                      child: Container(
-                        color: Colors.redAccent,
-                        child: Center(
-                          child: ListTile(
-                            trailing: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                              size: 30.0,
+        padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
+        child: ListView.builder(
+          physics: PageScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: _aptTasks.length,
+          itemBuilder: (context, int index) {
+            return Dismissible(
+              key: Key('${_aptTasks[index].task.id}'),
+              direction: DismissDirection.endToStart,
+              confirmDismiss: (DismissDirection direction) async {
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(20.0))),
+                      backgroundColor: Colors.teal[100],
+                      title: Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text("Confirm"),
+                      ),
+                      content: Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text(
+                          "Are you sure you wish to delete this task?",
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                            onPressed: () =>
+                                Navigator.of(context).pop(true),
+                            child: Text(
+                              "Delete",
+                              style: TextStyle(
+                                  color: Colors.pink[700],
+                                  fontSize: 17.0),
+                            )),
+                        FlatButton(
+                          onPressed: () =>
+                              Navigator.of(context).pop(false),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                  color: Colors.pink[700],
+                                  fontSize: 17.0),
                             ),
                           ),
                         ),
+                      ],
+                    );
+                  },
+                );
+              },
+              onDismissed: (direction) {
+                deleteTaskRequest(index);
+                setState(() {
+                  _aptTasks.removeAt(index);
+                  showSnackBar('Task deleted');
+                });
+              },
+              background: Padding(
+                padding: const EdgeInsets.only(bottom: 18.0),
+                child: Container(
+                  color: Colors.redAccent,
+                  child: Center(
+                    child: ListTile(
+                      trailing: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                        size: 30.0,
                       ),
                     ),
-                    child: _aptTasks[index],
-                  );
-                },
+                  ),
+                ),
               ),
-            )
+              child: _aptTasks[index],
+            );
+          },
+        ),
+      )
           : SizedBox.shrink(),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 150.0),
@@ -403,46 +615,46 @@ class _TasksState extends State<Tasks> {
 
   void ShowUsersDialog(){
     showDialog(
-      context: context,
-      builder: (BuildContext context){
-        return Container(
-          height: 100,
-          width: 100,
-          child: ReorderableListView(
-            header: Text(
-              'Participans',
-              style: TextStyle(decoration: TextDecoration.lineThrough),
-            ),
-            onReorder: (oldIndex, newIndex) {
-              setState(() {
-                User user = usersList[oldIndex];
-                usersList.removeAt(oldIndex);
-                usersList.insert(newIndex, user);
-              });
-            },
-            children: <Widget>[
-              for (final u in usersList)
-                Dismissible(
-                  background: Container(
-                    color: Colors.redAccent,
-                  ),
-                  onDismissed: (direction) {
-                    setState(() {
-                      usersList.removeAt(usersList.indexOf(u));
-                    });
-                  },
-                  key: ValueKey(u),
-                  child: ListTile(
+        context: context,
+        builder: (BuildContext context){
+          return Container(
+            height: 100,
+            width: 100,
+            child: ReorderableListView(
+              header: Text(
+                'Participans',
+                style: TextStyle(decoration: TextDecoration.lineThrough),
+              ),
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  User user = usersList[oldIndex];
+                  usersList.removeAt(oldIndex);
+                  usersList.insert(newIndex, user);
+                });
+              },
+              children: <Widget>[
+                for (final u in usersList)
+                  Dismissible(
+                    background: Container(
+                      color: Colors.redAccent,
+                    ),
+                    onDismissed: (direction) {
+                      setState(() {
+                        usersList.removeAt(usersList.indexOf(u));
+                      });
+                    },
                     key: ValueKey(u),
-                    title: Text('item #$u'),
-                    leading: Text('${usersList.indexOf(u)}'),
-                    trailing: Icon(Icons.list),
+                    child: ListTile(
+                      key: ValueKey(u),
+                      title: Text('item #$u'),
+                      leading: Text('${usersList.indexOf(u)}'),
+                      trailing: Icon(Icons.list),
+                    ),
                   ),
-                ),
-            ],
-          ),
-        );
-      });
+              ],
+            ),
+          );
+        });
   }
 
   Widget _showParticipans() {
@@ -498,8 +710,8 @@ class _TasksState extends State<Tasks> {
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.teal[100],
             content: Container(
-              height: 1000,
-              width: 500,
+              height: 300,
+              width: 400,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -521,8 +733,8 @@ class _TasksState extends State<Tasks> {
                     padding: EdgeInsets.symmetric(),
 //                    padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Container(
-                        height: 400,
-                        width: 500,
+                      height: 50,
+                      width: 400,
 //                        child: ReorderableListView(
 //                          header: Text(
 //                            'Participans',
@@ -556,40 +768,32 @@ class _TasksState extends State<Tasks> {
 //                              ),
 //                          ],
 //                        ),
-
-                      child: SizedBox(
-                        width: 500,
-                        height: 2000,
-                        child: RaisedButton(
-                          //color:Colors.teal[100],
-                          color: Colors.teal.withOpacity(0.2),
-                          child:
+                      child: RaisedButton(
+                        //color:Colors.teal[100],
+                        color: Colors.teal.withOpacity(0.2),
+                        child:
 //                          TextField(
 //                            decoration: InputDecoration(
 //                                border: InputBorder.none,
 //                                hintText: "press to choose partisipans"
 //                            ),
 //                          ),
-                          Text(
-                            "press to choose partisipans",
-                            style: TextStyle(
-                                color: Colors.black45,
-                                //fontWeight: FontWeight.bold,
-                                fontSize: 18.0),
-                          ),
-                          // onPressed: () => _showMultiSelect(context),
-                          onPressed: () {
-
-
-                            //ShowUsersDialog();
-                            //_showMultiSelect(context);
-                            //choosePartisipansIsPressed=true;
-                            setState(() {
-                              //_showParticipans();
-
-                            });
-                          },
+                        Text(
+                          "Press to choose partisipans",
+                          style: TextStyle(
+                              color: Colors.black45,
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 18.0),
                         ),
+                        // onPressed: () => _showMultiSelect(context),
+                        onPressed: () {
+                          //ShowUsersDialog();
+                          _showMultiSelect(context);
+                          //choosePartisipansIsPressed=true;
+                          setState(() {
+                            //_showParticipans();
+                          });
+                        },
                       ),
 //                      child: TextField(
 //                        controller: frequencyController,
@@ -629,38 +833,37 @@ class _TasksState extends State<Tasks> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-//                      RaisedButton(
-//                        color: Colors.pink[800],
-//                        child: Text(
-//                          "Cancel",
-//                          style: TextStyle(
-//                              color: Colors.white,
-//                              fontWeight: FontWeight.bold,
-//                              fontSize: 15.0),
-//                        ),
-//                        onPressed: () {
-//                          Navigator.pop(context);
-//                        },
-//                      ),
-//                      RaisedButton(
-//                        color: Colors.pink[800],
-//                        child: Text(
-//                          "Add",
-//                          style: TextStyle(
-//                              color: Colors.white,
-//                              fontWeight: FontWeight.bold,
-//                              fontSize: 15.0),
-//                        ),
-//                        onPressed: () {
-//                          if (taskNameController.text != '') {
-//                            sendAddTak(frequency, this.participensInTask,
-//                                taskNameController.text, false);
-//
-//                            Navigator.pop(context);
-//                            //send to or
-//                          }
-//                        },
-//                      ),
+                      RaisedButton(
+                        color: Colors.pink[800],
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.0),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      RaisedButton(
+                        color: Colors.pink[800],
+                        child: Text(
+                          "Add",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.0),
+                        ),
+                        onPressed: () {
+                          if (taskNameController.text != '') {
+                            sendAddTak(frequency, this.participensInTask,
+                                taskNameController.text, false);
+                            Navigator.pop(context);
+                            //send to or
+                          }
+                        },
+                      ),
                     ],
                   )
                 ],
@@ -676,12 +879,12 @@ class _TasksState extends State<Tasks> {
     try {
       final response = await http
           .put('$url/removeDuty',
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-              body: jsonEncode(
-                task.id,
-              ))
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(
+            task.id,
+          ))
           .timeout(const Duration(seconds: 7));
 
       if (response.statusCode == 200) {
@@ -746,36 +949,43 @@ class _TasksState extends State<Tasks> {
 
   //this function add tsk to each list by frequency
   void showAddTask(String frequency, List<User> performers, String task_name,
-      bool isFinish) {
+      bool isFinish,int id) {
 //    http post
     setState(() {
       //_taskList.add(Task(frequency:frequency,performer:performer,task_name:task_name,isFinish:isFinish));
-      if (frequency == "evey day") {
+      if (frequency == "daily") {
         print("add to day");
         _dayTaskList.add(Task(
             frequency: frequency,
             performers: performers,
             task_name: task_name,
-            isFinish: isFinish));
-      } else if (frequency == "evey week") {
+            isFinish: isFinish,
+            id:id
+        ));
+      } else if (frequency == "weekly") {
         print("add to week");
         _weekTaskList.add(Task(
             frequency: frequency,
             performers: performers,
             task_name: task_name,
-            isFinish: isFinish));
+            isFinish: isFinish,
+            id:id
+        ));
       } else {
         print("add to month");
         _monthTaskList.add(Task(
             frequency: frequency,
             performers: performers,
             task_name: task_name,
-            isFinish: isFinish));
+            isFinish: isFinish,
+            id:id
+        ));
       }
       print(task_name);
       print(frequency);
       print(isFinish);
       print(performers);
+      print(id);
     });
     //(frequency =="evey month")
   }
@@ -802,12 +1012,11 @@ class _TasksState extends State<Tasks> {
     print("updateTaskComletness");
 
     try {
-      final response = await http
-          .put('$url/flipIsExecuted',
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-              body: jsonEncode(task))
+      final response = await http.put('$url/flipIsExecuted',
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(task))
           .timeout(const Duration(seconds: 7));
 
       print(jsonDecode(response.body));
@@ -842,15 +1051,15 @@ class _TasksState extends State<Tasks> {
       }
       final response = await http
           .post('$url/addDuty',
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-              body: jsonEncode({
-                'name': task_name,
-                'participants': performers,
-                'frequency': changeFrequencyNameToServer(frequency),
-                'isExecuted': isFinish,
-              }))
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({
+            'name': task_name,
+            'participants': performers,
+            'frequency': changeFrequencyNameToServer(frequency),
+            'isExecuted': isFinish,
+          }))
           .timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
         print("200 OK Task");
@@ -862,9 +1071,10 @@ class _TasksState extends State<Tasks> {
         print(task.frequency);
         print(task.isFinish);
         print(task.performers);
+
         //showAddTask(frequency, performers, task_name, isFinish);
         setState(() {
-          showAddTask(frequency, performers, task_name, isFinish);
+          showAddTask(frequency, performers, task_name, isFinish,task.id);
           _aptTasks.insert(0, TaskItem(task));
         });
       } else {
@@ -937,7 +1147,9 @@ class _TasksState extends State<Tasks> {
 
         for (var jsonTask in jsonData) {
           Task userTask = Task.fromJson(jsonTask);
-          listOfTaskFromServer.add(userTask);
+          setState(() {
+            listOfTaskFromServer.add(userTask);
+          });
         }
         print("listOfTaskFromServer");
         _allAppartmentTasks = listOfTaskFromServer;
@@ -955,7 +1167,7 @@ class _TasksState extends State<Tasks> {
     return Row(
       children: <Widget>[
         SizedBox(
-          width: 5.0,
+          width: 20.0,
         ),
         Expanded(
           child: RaisedButton.icon(
@@ -1019,7 +1231,7 @@ class _TasksState extends State<Tasks> {
         Expanded(
           child: RaisedButton.icon(
             color:
-                month_pressed_button == true ? Colors.teal : Colors.teal[300],
+            month_pressed_button == true ? Colors.teal : Colors.teal[300],
 //          color: Colors.amber[200],
             icon: Icon(Icons.today),
             onPressed: () {
@@ -1045,11 +1257,115 @@ class _TasksState extends State<Tasks> {
           ),
         ),
         SizedBox(
-          width: 5.0,
+          width: 20.0,
         ),
       ],
     );
   }
+
+
+
+
+//git 08/06
+//  Widget _button_icon(BuildContext context) {
+//    return Row(
+//      children: <Widget>[
+//        SizedBox(
+//          width: 5.0,
+//        ),
+//        Expanded(
+//          child: RaisedButton.icon(
+//            color: day_pressed_button == true ? Colors.teal : Colors.teal[300],
+//            icon: Icon(Icons.playlist_add_check),
+//            onPressed: () {
+////              day_pressed_button = true;
+////              week_pressed_button = false;
+////              month_pressed_button = false;
+////              print(day_pressed_button);
+////              print(week_pressed_button);
+////              print(month_pressed_button);
+//              _taskList = _dayTaskList;
+//
+//              setState(() {
+//                day_pressed_button = true;
+//                week_pressed_button = false;
+//                month_pressed_button = false;
+//              });
+//            },
+//            label: Text(
+//              "Day",
+//            ),
+//            shape: RoundedRectangleBorder(
+//              borderRadius: new BorderRadius.circular(10),
+//            ),
+//          ),
+//        ),
+//        SizedBox(
+//          width: 5.0,
+//        ),
+//        Expanded(
+//          child: RaisedButton.icon(
+//            color: week_pressed_button == true ? Colors.teal : Colors.teal[300],
+//            icon: Icon(Icons.view_week),
+//            onPressed: () {
+////              day_pressed_button = false;
+////              week_pressed_button = true;
+////              month_pressed_button = false;
+////              print(day_pressed_button);
+////              print(week_pressed_button);
+////              print(month_pressed_button);
+//              _taskList = _weekTaskList;
+//              setState(() {
+//                day_pressed_button = false;
+//                week_pressed_button = true;
+//                month_pressed_button = false;
+//              });
+//            },
+//            label: Text(
+//              "Week",
+//            ),
+//            shape: RoundedRectangleBorder(
+//              borderRadius: new BorderRadius.circular(10),
+//            ),
+//          ),
+//        ),
+//        SizedBox(
+//          width: 5.0,
+//        ),
+//        Expanded(
+//          child: RaisedButton.icon(
+//            color:
+//            month_pressed_button == true ? Colors.teal : Colors.teal[300],
+////          color: Colors.amber[200],
+//            icon: Icon(Icons.today),
+//            onPressed: () {
+////              day_pressed_button = false;
+////              week_pressed_button = false;
+////              month_pressed_button = true;
+////              print(day_pressed_button);
+////              print(week_pressed_button);
+////              print(month_pressed_button);
+//              _taskList = _monthTaskList;
+//              setState(() {
+//                day_pressed_button = false;
+//                week_pressed_button = false;
+//                month_pressed_button = true;
+//              });
+//            },
+//            label: Text(
+//              "Month",
+//            ),
+//            shape: RoundedRectangleBorder(
+//              borderRadius: new BorderRadius.circular(10),
+//            ),
+//          ),
+//        ),
+//        SizedBox(
+//          width: 5.0,
+//        ),
+//      ],
+//    );
+//  }
 
   Widget _button(BuildContext context) {
     return Row(
@@ -1278,11 +1594,11 @@ class _TasksState extends State<Tasks> {
 
     for (var i = 0; i < _taskList.length; i++) {
       print(_taskList[i].frequency);
-      if (_taskList[i].frequency == "evey day") {
+      if (_taskList[i].frequency == "daily") {
         setState(() {
           _dayTaskList.add(_taskList[i]);
         });
-      } else if (_taskList[i].frequency == "evey week") {
+      } else if (_taskList[i].frequency == "weekly") {
         setState(() {
           _weekTaskList.add(_taskList[i]);
         });
@@ -1300,6 +1616,9 @@ class _TasksState extends State<Tasks> {
     final List<MultiSelectDialogItem<int>> items = [];
     for (var i = 0; i < usersList.length; i++) {
       items.add(MultiSelectDialogItem(i, usersList[i].name));
+      print("MultiSelectDialogItem");
+      print(i);
+      print(usersList[i].name);
     }
 
     final selectedValues = await showDialog<Set<int>>(
@@ -1313,12 +1632,16 @@ class _TasksState extends State<Tasks> {
     );
     //print the name of the participans by the tapping order.
     participensInTask.clear();
-    for (var i = 0; i < selectedValues.length; i++) {
+    for (var i = 0; i < usersList.length; i++) {
       print("user list");
-      print(usersList[i].name);
-      participensInTask.add(usersList[i]);
-      print("user partisipent list");
-      print(participensInTask[i].name);
+      if(selectedValues.contains(i)){
+        print(usersList[i].name);
+        participensInTask.add(usersList[i]);
+      }
+//      print(usersList[if(selectedValues.contains(i)){}]);
+//      participensInTask.add(usersList[i]);
+//      print("user partisipent list");
+//      print(participensInTask[i].name);
     }
     print(selectedValues);
   }
@@ -1444,7 +1767,7 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Select task partisipance'),
+      title: Text('Choose your Bankys by order of execution:',style: TextStyle(color: Colors.pink.withOpacity(0.7),fontSize: 19.0,height: 1.0),),
       contentPadding: EdgeInsets.only(top: 12.0),
       content: SingleChildScrollView(
         child: ListTileTheme(
@@ -1577,7 +1900,6 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
 //}
 
 //////////////// youtube that i change //////////////////////////
-
 //  Widget _mainContent(BuildContext context){
 //    return Column(
 //      crossAxisAlignment: CrossAxisAlignment.start,
