@@ -2,6 +2,7 @@ class User {
   final String name;
   final String mail;
   final int userId;
+  String currency;
 
   User(this.name, this.mail, this.userId);
 
@@ -15,4 +16,8 @@ class User {
         'mail': mail,
         'userId' : userId
       };
+
+  void setCurrency(String currency){
+    this.currency = currency;
+  }
 }

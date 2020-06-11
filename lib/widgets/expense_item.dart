@@ -4,8 +4,9 @@ import 'package:bunky/models/expanse.dart';
 
 class ExpenseItem extends StatelessWidget {
   final Expense expanse;
+  final String currency;
 
-  ExpenseItem(this.expanse);
+  ExpenseItem({this.expanse, this.currency});
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +68,10 @@ class ExpenseItem extends StatelessWidget {
                               ),
                               SizedBox(width: 2,),
                               Text(
-                                 '\$',
+                                 currency,
                                   style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 17.0,
+                                      fontSize: 20.0,
                                       fontWeight: FontWeight.bold
                                   )
                               ),

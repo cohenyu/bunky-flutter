@@ -299,7 +299,7 @@ class _SettingsState extends State<Settings> {
                                     borderRadius: new BorderRadius.circular(10.0),
                                   ),
                                   child: Text(
-                                    "Add",
+                                    "OK",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -348,7 +348,9 @@ class _SettingsState extends State<Settings> {
       if(response.statusCode == 200){
         if(response.body.isNotEmpty){
           setState(() {
-            data['user'] = User.fromJson(jsonDecode(response.body));
+            User newUser = User.fromJson(jsonDecode(response.body));
+            newUser.setCurrency(user.currency);
+            data['user'] = newUser;
           });
         } else {
           showSnackBar('Error');

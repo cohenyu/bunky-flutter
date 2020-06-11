@@ -51,7 +51,7 @@ class _NewApartmentState extends State<NewApartment> {
                           child: RaisedButton.icon(
                             color: Colors.teal,
                             onPressed: (){
-                              Navigator.pushNamed(context,'/createApartment', arguments: {
+                              Navigator.pushNamed(context,'/aptSettings', arguments: {
                                 'user': data['user'],
                               }).then((value){
                                 haveApt = true;

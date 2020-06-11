@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class ExpenseCard extends StatelessWidget {
   Expense expense;
+  String currency;
   final Color color = Colors.amber[300].withOpacity(0.8);
-  ExpenseCard({this.expense});
+  ExpenseCard({this.expense, this.currency});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,8 @@ class ExpenseCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  Icon(Icons.attach_money, size: 25.0, color: Colors.white,)
+                  Text(this.currency, style: TextStyle(fontSize: 25.0, color: Colors.white),)
+//                  Icon(Icons.attach_money, size: 25.0, color: Colors.white,)
                 ],
               ),
               Padding(

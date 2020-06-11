@@ -96,7 +96,7 @@ class _HomeState extends State<Home> {
                               children: <Widget>[
                                 SizedBox(height: 40.0,),
                                 Text(
-                                  'Hey ${user.name}',
+                                  'Hey ${user.name},',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 30.0,
@@ -230,7 +230,7 @@ class _HomeState extends State<Home> {
                                                         fontSize: 23,
                                                       ),
                                                     ) : Text(
-                                                      userBalance <= 0 ? '$userBalance\$' : '+$userBalance\$',
+                                                      userBalance <= 0 ? '$userBalance${user.currency}' : '+$userBalance${user.currency}',
                                                       style: TextStyle(
                                                           fontSize: 30,
                                                           color: userBalance < 0 ? Colors.redAccent: Colors.lightGreen,
@@ -378,7 +378,7 @@ class _HomeState extends State<Home> {
         if(response.body.isNotEmpty){
           List jsonData = jsonDecode(response.body);
           for(var jsonItem in jsonData){
-            ExpenseCard card = ExpenseCard(expense: Expense.fromJson(jsonItem),);
+            ExpenseCard card = ExpenseCard(expense: Expense.fromJson(jsonItem), currency: '${user.currency}',);
             if(mounted){
               setState(() {
                 _load = false;

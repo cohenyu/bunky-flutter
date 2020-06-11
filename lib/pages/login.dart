@@ -130,9 +130,6 @@ class _LoginState extends State<Login> {
                                     _loading = true;
                                   });
                                   submit();
-//                                Navigator.pushReplacementNamed(context, '/newApartment', arguments: {
-//                                  'mail': mail,
-//                                });
                                 },
                                 backgroundColor: Colors.yellow[300],
                                 elevation: 3,
@@ -172,10 +169,7 @@ class _LoginState extends State<Login> {
           User user =  User.fromJson(body['user']);
           bool haveApt = body['memberOfApt'];
           if(haveApt){
-            Navigator.pushReplacementNamed(context, '/home', arguments: {
-              'user': user,
-              'index': 0,
-            });
+            getCurrency(user);
           } else {
             Navigator.pushNamed(context, '/newApartment', arguments:
             {
@@ -196,6 +190,39 @@ class _LoginState extends State<Login> {
       _loading = false;
     });
   }
+
+  Future<void> getCurrency(User user) async {
+    try{
+      final response = await http.get(
+        '$url/aptCurrency?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },).timeout(const Duration(seconds: 7));
+
+
+      if(response.statusCode == 200){
+        print("200 OK");
+        if(response.body.isEmpty){
+          showSnackBar('Error');
+        } else {
+          var currencyJson = json.decode(utf8.decode(response.bodyBytes));
+          print(currencyJson);
+          user.setCurrency(currencyJson);
+          Navigator.pushReplacementNamed(context, '/home', arguments: {
+            'user': user,
+            'index': 0,
+          });
+        }
+      } else {
+        print('error');
+        showSnackBar('Error');
+      }
+    } catch (_) {
+      print('No Internet Connection');
+      showSnackBar('No Internet Connection');
+    }
+  }
+
+
 
   void showSnackBar (String title){
     _scaffoldKey.currentState.showSnackBar(SnackBar(

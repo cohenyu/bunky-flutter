@@ -1,3 +1,4 @@
+import 'package:bunky/pages/apt_settings.dart';
 import 'package:bunky/pages/balancing.dart';
 import 'package:bunky/pages/connectApartment.dart';
 import 'package:bunky/pages/home.dart';
@@ -31,5 +32,6 @@ void main() => runApp(MaterialApp(
     '/balancing': (context) => Balancing(),
     '/register': (context) => Register(),
     '/notifications': (context) => Notifications(),
+    '/aptSettings': (context) => AptSettings(),
   },
 ));

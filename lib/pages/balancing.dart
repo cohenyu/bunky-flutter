@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bunky/models/refund.dart';
 import 'package:bunky/models/user.dart';
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bunky/widgets/my_shape_clipper.dart';
@@ -29,6 +30,9 @@ class _BalancingState extends State<Balancing> {
   List<ChargeCard> debt = [];
   bool isLoading = true;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _rectControllerDebt = ScrollController();
+  final ScrollController _rectControllerCredit= ScrollController();
+
 
   @override
   void initState() {
@@ -136,14 +140,18 @@ class _BalancingState extends State<Balancing> {
                                 SizedBox(height: 10.0,),
                                 Container(
                                   height: MediaQuery.of(context).size.height - 360,
-                                  child: ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    itemCount: debt.length,
-                                    itemBuilder: (context, int index){
-                                      return debt[index];
-                                    },
+                                  child: Scrollbar(
+                                    controller: _rectControllerDebt,
+                                    child: ListView.builder(
+                                      controller: _rectControllerDebt,
+                                      padding: EdgeInsets.zero,
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      itemCount: debt.length,
+                                      itemBuilder: (context, int index){
+                                        return debt[index];
+                                      },
+                                    ),
                                   ),
                                 )
                               ],
@@ -172,14 +180,18 @@ class _BalancingState extends State<Balancing> {
                                 SizedBox(height: 10.0,),
                                 Container(
                                   height: MediaQuery.of(context).size.height - 360,
-                                  child: ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    itemCount: credit.length,
-                                    itemBuilder: (context, int index){
-                                      return credit[index];
-                                    },
+                                  child: Scrollbar(
+                                    controller: _rectControllerCredit,
+                                    child: ListView.builder(
+                                      controller: _rectControllerCredit,
+                                      padding: EdgeInsets.zero,
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      itemCount: credit.length,
+                                      itemBuilder: (context, int index){
+                                        return credit[index];
+                                      },
+                                    ),
                                   ),
                                 )
                               ],
@@ -262,11 +274,11 @@ class _BalancingState extends State<Balancing> {
           List<ChargeCard> tmpDebt = [];
 
           for (var key in userDebt.keys) {
-            tmpDebt.add(ChargeCard(key, userDebt[key].toString()));
+            tmpDebt.add(ChargeCard(key, userDebt[key].toString(), user.currency));
           }
 
           for (var key in userCredit.keys) {
-            tmpCredit.add(ChargeCard(key, userCredit[key].toString()));
+            tmpCredit.add(ChargeCard(key, userCredit[key].toString(), user.currency));
           }
           setState(() {
             credit = tmpCredit;

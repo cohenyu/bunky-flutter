@@ -34,9 +34,9 @@ class _ExpensesState extends State<Expenses> {
   bool categoryLoading = true;
   bool removeDateChart = false;
   bool reversing = false;
+  bool dateChanged = false;
 
   DateTime selectedDate;
-
   DateTime fromDate;
   DateTime toDate;
 
@@ -44,6 +44,8 @@ class _ExpensesState extends State<Expenses> {
   FloatingActionButton fabAdd;
   List<ExpenseItem> expensesList = [];
   String url = 'https://bunkyapp.herokuapp.com';
+
+  User user;
 
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -132,6 +134,7 @@ class _ExpensesState extends State<Expenses> {
     WidgetsBinding.instance.addPostFrameCallback((_){
       print(MediaQuery.of(context).size.toString());
       data = ModalRoute.of(context).settings.arguments;
+      user = data['user'];
       double width = MediaQuery.of(context).size.width;
       setState(() {
         balances.add(BalanceCard(title: 'By Name', map: totalMap, isPercentage: false, width: width,));
@@ -393,7 +396,7 @@ class _ExpensesState extends State<Expenses> {
                 );
               },
               onDismissed: (direction){
-                deleteExpanse(index);
+                deleteExpense(index);
                 setState(() {
                   expensesList.removeAt(index);
                   showSnackBar('Expense deleted');
@@ -574,6 +577,7 @@ class _ExpensesState extends State<Expenses> {
                                   ),
                                 ),
                                 onPressed: (){
+                                  dateChanged = true;
                                   setState(() {
                                     fromDate = tmpFrom;
                                     toDate = tmpTo;
@@ -599,6 +603,7 @@ class _ExpensesState extends State<Expenses> {
 
   void resetDates(){
     setState(() {
+      dateChanged = false;
       fromDate = DateTime.now().subtract(Duration(days: DateTime.now().day - 1));
       toDate = DateTime.now();
     });
@@ -763,7 +768,7 @@ class _ExpensesState extends State<Expenses> {
                                   formKey.currentState.save();
                                   print("im here");
                                   DateTime dateTimeExpense = DateTime.now();
-                                  addExpanse(category, categoryId,  titleController.text.trim(), double.parse(valueController.text.trim()), dateTimeExpense);
+                                  addExpense(category, categoryId,  titleController.text.trim(), double.parse(valueController.text.trim()), dateTimeExpense);
                                   Navigator.pop(context);
                                 },
                               )
@@ -902,16 +907,19 @@ class _ExpensesState extends State<Expenses> {
       List jsonData = jsonDecode(response.body);
 
       if(response.statusCode == 200){
-
         if(response.body.isNotEmpty){
           expensesList.clear();
           for(var jsonItem in jsonData){
             Expense expense = Expense.fromJson(jsonItem);
-            ExpenseItem item = ExpenseItem(expense);
+            ExpenseItem item = ExpenseItem(expanse: expense, currency: user.currency);
             setState(() {
               expensesList.add(item);
             });
           }
+          setState(() {
+            isLoading = false;
+          });
+          return;
 
         }
       } else {
@@ -995,7 +1003,7 @@ class _ExpensesState extends State<Expenses> {
 
 
 // This function delete expense from the expenses list and sends http delete to the server
-  Future<void> deleteExpanse(int index) async{
+  Future<void> deleteExpense(int index) async{
     Expense expense = expensesList[index].expanse;
 
     try{
@@ -1020,50 +1028,13 @@ class _ExpensesState extends State<Expenses> {
 
 //  In case of error we don't want to delete the expense
     setState(() {
-      expensesList.add(ExpenseItem(expense));
-    });
-  }
-
-// This function returns n expenses of the apartment
-  Future<void> getExpenses() async{
-    User user = data['user'];
-    int limit = 20;
-    List<ExpenseItem> expenseItems = [];
-
-    try{
-      final response = await http.get(
-          '$url/getAptExpensesWithLimit?userId=${user.userId}&name=${user.name}&mail=${user.mail}&limit=$limit', headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },).timeout(const Duration(seconds: 7));
-
-      List jsonData = jsonDecode(response.body);
-      if(response.statusCode == 200){
-
-        if(response.body.isNotEmpty){
-          for(var jsonItem in jsonData){
-            ExpenseItem item = ExpenseItem(Expense.fromJson(jsonItem));
-            setState(() {
-              expensesList.add(item);
-            });
-            expenseItems.add(item);
-          }
-
-        }
-      } else {
-        showSnackBar('Error');
-      }
-    }catch(_){
-      showSnackBar('No Internet Connection');
-    }
-
-    setState(() {
-      isLoading = false;
+      expensesList.add(ExpenseItem(expanse: expense, currency: user.currency,));
     });
   }
 
 
 //  this function adds expense to the expenses list
-  Future<void> addExpanse(String category,int categoryId, String title, double value, DateTime date) async{
+  Future<void> addExpense(String category,int categoryId, String title, double value, DateTime date) async{
     setState(() {
       categoryLoading = true;
       totalLoading = true;
@@ -1085,21 +1056,34 @@ class _ExpensesState extends State<Expenses> {
 
       if(response.statusCode == 200){
         Expense expense = Expense.fromJson(jsonDecode(response.body));
-        ExpenseItem newItem = ExpenseItem(expense);
+        ExpenseItem newItem = ExpenseItem(expanse: expense, currency: user.currency,);
         setState(() {
-          expensesList.insert(0, newItem);
-          resetDates();
+          if(dateChanged){
+            print('date changed');
+            resetDates();
+            getExpensesByDate(fromDate, toDate);
+          } else{
+            print('date not changed');
+            expensesList.insert(0, newItem);
+            setState(() {
+              isLoading = false;
+            });
+          }
           updateChartExpenses(fromDate, toDate);
+          return;
         });
       } else {
         showSnackBar('Error');
+        setState(() {
+          isLoading = false;
+        });
       }
     } catch (_){
       showSnackBar('No Internet Connection');
+      setState(() {
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   void showSnackBar (String title){

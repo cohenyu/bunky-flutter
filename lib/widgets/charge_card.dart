@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class ChargeCard extends StatelessWidget {
   final String name;
   final String value;
+  final String currency;
 
-  ChargeCard(this.name, this.value);
+  ChargeCard(this.name, this.value, this.currency);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class ChargeCard extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(30.0)),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -30,7 +31,7 @@ class ChargeCard extends StatelessWidget {
               ),
               SizedBox(height: 2.0,),
               Text(
-                '$value \$',
+                '$value $currency',
                 style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold

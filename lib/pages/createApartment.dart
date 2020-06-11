@@ -55,10 +55,6 @@ class _CreateApartmentState extends State<CreateApartment> {
           ListView(
             children: <Widget>[
               logo.getLogo(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 100.0),
-                child: DropDownCurrency(user: data['user'], callback: (){print('currency');},),
-              ),
               FutureBuilder<int>(
                 future: aptCode,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot){
@@ -185,7 +181,7 @@ class _CreateApartmentState extends State<CreateApartment> {
   
 
   Future<int> getApartmentCode() async{
-
+    String currency = data['currency'];
     User user = data["user"];
     print(user.name);
     try{
@@ -194,6 +190,7 @@ class _CreateApartmentState extends State<CreateApartment> {
       }, body: jsonEncode({
         'user': user.toJson(),
         'aptName': '',
+        'currency': currency
       }
       )).timeout(const Duration(seconds: 10));
 
