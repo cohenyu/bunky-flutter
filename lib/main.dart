@@ -2,7 +2,6 @@ import 'package:bunky/pages/apt_settings.dart';
 import 'package:bunky/pages/balancing.dart';
 import 'package:bunky/pages/connectApartment.dart';
 import 'package:bunky/pages/home.dart';
-import 'package:bunky/pages/loading.dart';
 import 'package:bunky/pages/login.dart';
 import 'package:bunky/pages/newApartment.dart';
 import 'package:bunky/pages/notifications.dart';
@@ -12,9 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:bunky/pages/createApartment.dart';
 import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
-// Yuval - 8/6 23:59
+// Yuval - 11/6 18:00
 // miriel 8/6 21:08
 
 void main() => runApp(MaterialApp(
