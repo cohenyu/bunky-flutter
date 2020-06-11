@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:bunky/widgets/drop_down_category_tasks.dart';
 import 'package:bunky/widgets/bottom_navy_bar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 
 class Tasks extends StatefulWidget {
@@ -21,7 +22,7 @@ class _TasksState extends State<Tasks> {
   List<User> usersList = [];
   List<User> usersInApprtment = [];
   List<User> usersInApprtmentToDelete = [];
-
+  bool isLoading = true;
   List<User> participensInTask = [];
   Map data = {};
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -66,7 +67,6 @@ class _TasksState extends State<Tasks> {
 //    getTaskList();
 //    splitTasks(_taskList,_dayTaskList,_weekTaskList,_monthTaskList);
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       data = ModalRoute.of(context).settings.arguments;
       getTaskList();
@@ -118,7 +118,7 @@ class _TasksState extends State<Tasks> {
                     padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                     child: Container(
                       width: 390.0,
-                      height: 400.0,
+                      height: 380.0,
                       decoration: BoxDecoration(
                         color: Colors.amber[200],
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -136,42 +136,39 @@ class _TasksState extends State<Tasks> {
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 100, 0),
-                            child: day_pressed_button
-                                ? Text(
-                              "Your duties for today:",
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 20.0),
+                                      child: Text(
+                                        day_pressed_button ? "Your duties for today:" : week_pressed_button ? "Your duties for this week:" : "Your duties for this month:",
                               style: TextStyle(
-                                fontSize: 20.0,
+                                      fontSize: 20.0,
                               ),
-                            )
-                                : week_pressed_button
-                                ? Text(
-                              "Your duties for this week:",
-                              style: TextStyle(
-                                fontSize: 20.0,
-                              ),
-                            )
-                                : Text(
-                              "Your duties for this month:",
-                              style: TextStyle(
-                                fontSize: 20.0,
-                              ),
+                              textAlign: TextAlign.left,
                             ),
+                                    ),
+                                  ],
+                                )
                           ),
                           SizedBox(
                             height: 10.0,
                           ),
                           //youtube
                           Expanded(
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(0),
-                              itemCount: _taskList.length,
-                              itemBuilder: (context, index) {
-                                return _taskList[index].isFinish
-                                    ? _taskComlete(
-                                    _taskList[index].task_name, index)
-                                    : _taskUncomlete(
-                                    _taskList[index].task_name, index);
-                              },
+                            child: Scrollbar(
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(0),
+                                itemCount: _taskList.length,
+                                itemBuilder: (context, index) {
+                                  return _taskList[index].isFinish
+                                      ? _taskComlete(
+                                      _taskList[index].task_name, index)
+                                      : _taskUncomlete(
+                                      _taskList[index].task_name, index);
+                                },
+                              ),
                             ),
                           ),
 
@@ -236,12 +233,9 @@ class _TasksState extends State<Tasks> {
 //                      ),
 //                    ),
 //                  ):
-                  Column(
+                  isLoading ? SizedBox.shrink() : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: _aptTasks.isNotEmpty ? showTasks() : hideTasks(),
-                  ),
-                  SizedBox(
-                    height: 30,
                   ),
 //                  Padding(
 //                    padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
@@ -507,14 +501,13 @@ class _TasksState extends State<Tasks> {
       Padding(
         padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 30),
         child: Text(
-          'All appartment duties:',
+          'All apartment duties:',
           style: TextStyle(
               color: Colors.black.withOpacity(0.7),
               fontSize: 20.0,
               fontWeight: FontWeight.bold),
         ),
       ),
-      SizedBox(height: 15.0),
       _aptTasks.isNotEmpty
           ? Padding(
         padding: EdgeInsets.only(left: 25.5, right: 25.0, bottom: 10),
@@ -730,7 +723,7 @@ class _TasksState extends State<Tasks> {
                     height: 10,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(),
+                    padding: EdgeInsets.symmetric(horizontal: 5),
 //                    padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Container(
                       height: 50,
@@ -816,7 +809,7 @@ class _TasksState extends State<Tasks> {
                     });
                   }),
                   Padding(
-                    padding: const EdgeInsets.symmetric(),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Container(
                       child: TextField(
                         controller: taskNameController,
@@ -856,9 +849,12 @@ class _TasksState extends State<Tasks> {
                               fontSize: 15.0),
                         ),
                         onPressed: () {
+                          String tmpTitle  = taskNameController.text.trim();
+                          String firstLetter = tmpTitle[0].toUpperCase();
+                          tmpTitle = firstLetter + tmpTitle.substring(1);
+
                           if (taskNameController.text != '') {
-                            sendAddTak(frequency, this.participensInTask,
-                                taskNameController.text, false);
+                            sendAddTak(frequency, this.participensInTask, tmpTitle, false);
                             Navigator.pop(context);
                             //send to or
                           }
@@ -908,9 +904,9 @@ class _TasksState extends State<Tasks> {
   }
 
   Future<void> getAllDuties() async {
-//    setState(() {
-//      isLoading = true;
-//    });
+    setState(() {
+      isLoading = true;
+    });
     User user = data['user'];
 
 //    try{
@@ -937,10 +933,10 @@ class _TasksState extends State<Tasks> {
     setState(() {
       _aptTasks = List.from(tmpAptTasks.reversed);
     });
-//
-//    setState(() {
-//      isLoading = false;
-//    });
+
+    setState(() {
+      isLoading = false;
+    });
 //    }catch(_){
 //      print('point 1');
 //      showSnackBar('No Internet Connection');
@@ -1416,7 +1412,7 @@ class _TasksState extends State<Tasks> {
   Widget _taskUncomlete(String task, int index) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -1472,7 +1468,7 @@ class _TasksState extends State<Tasks> {
   Widget _taskComlete(String task, int index) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[

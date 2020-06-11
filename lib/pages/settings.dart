@@ -314,7 +314,10 @@ class _SettingsState extends State<Settings> {
                                       return;
                                     }
                                     formKey.currentState.save();
-                                    renameUser(titleController.text.trim());
+                                    String tmpName  = titleController.text.trim();
+                                    String firstLetter = tmpName[0].toUpperCase();
+                                    tmpName = firstLetter + tmpName.substring(1);
+                                    renameUser(tmpName);
                                     Navigator.pop(context);
                                   },
                                 )

@@ -94,7 +94,9 @@ class _RegisterState extends State<Register> {
                                   WhitelistingTextInputFormatter(RegExp('[a-zA-Z0-9 -_`\']')),
                                 ],
                                 onSaved: (value){
-                                  this.name = value.trim();
+                                  String tmp  = value.trim();
+                                  String firstLetter = tmp[0].toUpperCase();
+                                  this.name = firstLetter + tmp.substring(1);
                                 },
                                 validator: (value){
                                   if (value.trim().isEmpty) {

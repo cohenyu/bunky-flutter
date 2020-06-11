@@ -181,7 +181,6 @@ class _CreateApartmentState extends State<CreateApartment> {
   
 
   Future<int> getApartmentCode() async{
-    String currency = data['currency'];
     User user = data["user"];
     print(user.name);
     try{
@@ -190,7 +189,7 @@ class _CreateApartmentState extends State<CreateApartment> {
       }, body: jsonEncode({
         'user': user.toJson(),
         'aptName': '',
-        'currency': currency
+        'currency': user.currency,
       }
       )).timeout(const Duration(seconds: 10));
 

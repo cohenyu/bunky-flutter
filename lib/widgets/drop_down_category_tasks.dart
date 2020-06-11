@@ -11,7 +11,6 @@ class MyDropDown extends StatefulWidget {
 
 class _MyDropDownState extends State<MyDropDown> {
   String selected;
-  //why only 3 ???
   final List<String> _dropdownValues = [
     "daily",
     "weekly",
@@ -25,7 +24,7 @@ class _MyDropDownState extends State<MyDropDown> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: DropdownButton(
         value: selected,
-        hint: Text('Select duty frequency'),
+        hint: Text('Select frequency'),
         items: _dropdownValues.map((value) => DropdownMenuItem(
           child: Text(value),
           value: value,
