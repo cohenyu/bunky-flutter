@@ -90,7 +90,6 @@ class ExpenseItem extends StatelessWidget {
                     ),
                     SizedBox(height: 5.0,),
                     Row(
-//                      todo
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(

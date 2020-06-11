@@ -1,4 +1,3 @@
-import 'package:bunky/models/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:bunky/models/task.dart';
 
@@ -109,7 +108,7 @@ class TaskItem extends StatelessWidget {
 //                    ),
 //                    SizedBox(height: 5.0,),
 //                    Row(
-////                      todo
+//
 //                      mainAxisAlignment: MainAxisAlignment.start,
 //                      children: <Widget>[
 //                        Text(

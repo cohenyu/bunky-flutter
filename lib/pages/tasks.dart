@@ -1021,7 +1021,6 @@ class _TasksState extends State<Tasks> {
         print("200 OK updateTaskComletness ");
 
         if (response.body.isNotEmpty) {
-//          todo refresh charts if the date is between the range
           return;
         } else {
           showSnackBar('Error');

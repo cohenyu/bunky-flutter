@@ -18,8 +18,6 @@ class _NewApartmentState extends State<NewApartment> {
 
   @override
   Widget build(BuildContext context) {
-    print(haveApt);
-//    todo
     data = ModalRoute.of(context).settings.arguments;
     Logo logo = Logo(title: "Sign up");
     return SafeArea(
