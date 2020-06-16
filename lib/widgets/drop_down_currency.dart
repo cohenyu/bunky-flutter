@@ -27,11 +27,11 @@ class _DropDownCurrencyState extends State<DropDownCurrency> {
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
       decoration: InputDecoration(
-          border: new OutlineInputBorder(
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(60.0),
-            ),
-          ),
+//          border: new OutlineInputBorder(
+//            borderRadius: const BorderRadius.all(
+//              const Radius.circular(60.0),
+//            ),
+//          ),
           filled: true,
           hintStyle: new TextStyle(color: Colors.grey[800]),
           fillColor: Colors.white70),

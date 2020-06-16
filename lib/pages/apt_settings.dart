@@ -3,7 +3,6 @@ import 'package:bunky/pages/logo.dart';
 import 'package:bunky/widgets/custom_shape_clipper.dart';
 import 'package:bunky/widgets/drop_down_currency.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class AptSettings extends StatefulWidget {
   @override
@@ -36,11 +35,20 @@ class _AptSettingsState extends State<AptSettings> {
           ListView(
             children: <Widget>[
               logo.getLogo(),
+              SizedBox(height: 15.0,),
+              Text(
+                'Choose a currency',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20.0,
+                    color: Colors.black.withOpacity(0.7)
+                ),
+              ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 80.0, vertical: 20.0),
+                padding: const EdgeInsets.symmetric(horizontal: 130.0, vertical: 10.0),
                 child: DropDownCurrency(callback: (symbol){currency = symbol;}, scaffoldKey:_scaffoldKey),
               ),
-//              SizedBox(height: 30.0,),
+              SizedBox(height: 30.0,),
               FloatingActionButton(
                 onPressed: (){
                   User user = data['user'];

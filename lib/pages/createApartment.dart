@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:bunky/models/user.dart';
-import 'package:bunky/pages/http_service.dart';
-import 'package:bunky/widgets/drop_down_currency.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'logo.dart';
@@ -90,7 +88,7 @@ class _CreateApartmentState extends State<CreateApartment> {
                           ),
                           onPressed: (){
                             final RenderBox box = context.findRenderObject();
-                            Share.share('This is my apartment code! join me at Bunky app! \n$finalCode',
+                            Share.share('This is my apartment code! Join me at Bunky app! \n$finalCode',
                                 subject: 'This is my apartment code! join me at Bunky app!',
                                 sharePositionOrigin:
                                 box.localToGlobal(Offset.zero) &

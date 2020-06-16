@@ -130,7 +130,7 @@ class _SettingsState extends State<Settings> {
                               ),
                               onPressed: (){
                                 final RenderBox box = context.findRenderObject();
-                                Share.share('This is my apartment code! join me at Bunky app! \n$finalCode',
+                                Share.share('This is my apartment code! Join me at Bunky app! \n$finalCode',
                                     subject: 'This is your apartment code! join me at Bunky app!',
                                     sharePositionOrigin:
                                     box.localToGlobal(Offset.zero) &
