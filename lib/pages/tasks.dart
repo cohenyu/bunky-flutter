@@ -260,6 +260,7 @@ class _TasksState extends State<Tasks> {
                     Navigator.pushNamed(context, '/addTaskPage', arguments: {'user': data['user'], 'callback': (String frequency, List<User> performers,
                         String title, bool isFinish){
                       print(frequency);
+                      print(frequency);
                       print(title);
                       print(isFinish);
                       for(User c in performers){
@@ -964,48 +965,6 @@ class _TasksState extends State<Tasks> {
 //    }
   }
 
-  //this function add tsk to each list by frequency
-  void showAddTask(String frequency, List<User> performers, String task_name,
-      bool isFinish,int id) {
-//    http post
-    setState(() {
-      //_taskList.add(Task(frequency:frequency,performer:performer,task_name:task_name,isFinish:isFinish));
-      if (frequency == "Daily") {
-        print("add to day");
-        _dayTaskList.add(Task(
-            frequency: frequency,
-            performers: performers,
-            task_name: task_name,
-            isFinish: isFinish,
-            id:id
-        ));
-      } else if (frequency == "Weekly") {
-        print("add to week");
-        _weekTaskList.add(Task(
-            frequency: frequency,
-            performers: performers,
-            task_name: task_name,
-            isFinish: isFinish,
-            id:id
-        ));
-      } else {
-        print("add to Month");
-        _monthTaskList.add(Task(
-            frequency: frequency,
-            performers: performers,
-            task_name: task_name,
-            isFinish: isFinish,
-            id:id
-        ));
-      }
-      print(task_name);
-      print(frequency);
-      print(isFinish);
-      print(performers);
-      print(id);
-    });
-    //(frequency =="evey month")
-  }
 
   void showSnackBar(String title) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -1057,6 +1016,8 @@ class _TasksState extends State<Tasks> {
 
   Future<void> sendAddTask(String frequency, List<User> performers,
       String task_name, bool isFinish) async {
+    User user = data['user'];
+    print("the first performer is "+ performers[1].name);
     try {
       final response = await http
           .post('$url/addDuty',
@@ -1080,10 +1041,15 @@ class _TasksState extends State<Tasks> {
         print(task.frequency);
         print(task.isFinish);
         print(task.performers);
+        print("the first preformer is");
+        print(task.performers[0].name);
 
         //showAddTask(frequency, performers, task_name, isFinish);
         setState(() {
-          showAddTask(frequency, performers, task_name, isFinish,task.id);
+          if(performers[0].userId==user.userId) {
+            print("the first duty its of the user");
+            showAddTask(frequency, performers, task_name, isFinish, task.id);
+          }
           _aptTasks.insert(0, TaskItem(task));
         });
       } else {
@@ -1096,6 +1062,53 @@ class _TasksState extends State<Tasks> {
       showSnackBar('No Internet Connection');
     }
   } //end function
+
+  //this function add tsk to each list by frequency
+  void showAddTask(String frequency, List<User> performers, String task_name,
+      bool isFinish,int id) {
+//    http post
+    setState(() {
+      //_taskList.add(Task(frequency:frequency,performer:performer,task_name:task_name,isFinish:isFinish));
+
+//      if(performers[1].name==data["user"].name) {
+//        print("user that create the task is first");
+      if (frequency == "Daily") {
+        print("add to day");
+        _dayTaskList.add(Task(
+            frequency: frequency,
+            performers: performers,
+            task_name: task_name,
+            isFinish: isFinish,
+            id: id
+        ));
+      } else if (frequency == "Weekly") {
+        print("add to week");
+        _weekTaskList.add(Task(
+            frequency: frequency,
+            performers: performers,
+            task_name: task_name,
+            isFinish: isFinish,
+            id: id
+        ));
+      } else {
+        print("add to Month");
+        _monthTaskList.add(Task(
+            frequency: frequency,
+            performers: performers,
+            task_name: task_name,
+            isFinish: isFinish,
+            id: id
+        ));
+      }
+//      }
+      print(task_name);
+      print(frequency);
+      print(isFinish);
+      print(performers[1].name);
+      print(id);
+    });
+    //(frequency =="evey month")
+  }
 
   Future<void> getUsers() async {
     try {
