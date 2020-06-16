@@ -766,11 +766,13 @@ class _ExpensesState extends State<Expenses> {
                                     isLoading = true;
                                   }
                                   formKey.currentState.save();
-                                  print("im here");
                                   DateTime dateTimeExpense = DateTime.now();
-                                  String tmpTitle  = titleController.text.trim();
-                                  String firstLetter = tmpTitle[0].toUpperCase();
-                                  tmpTitle = firstLetter + tmpTitle.substring(1);
+                                  String tmpTitle = '';
+                                  if(titleController.text.isNotEmpty){
+                                    String tmpTitle  = titleController.text.trim();
+                                    String firstLetter = tmpTitle[0].toUpperCase();
+                                    tmpTitle = firstLetter + tmpTitle.substring(1);
+                                  }
                                   addExpense(category, categoryId, tmpTitle, double.parse(valueController.text.trim()), dateTimeExpense);
                                   Navigator.pop(context);
                                 },

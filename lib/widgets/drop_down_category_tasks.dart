@@ -52,9 +52,9 @@ class _MyDropDownState extends State<MyDropDown> {
         return null;
       },
       value: selected,
-      hint: Text('Select frequency'),
+      hint: Text('Select frequency', style: TextStyle(fontSize: 18.0),),
       items: _dropdownValues.map((value) => DropdownMenuItem(
-        child: Text(value),
+        child: Text(value, style: TextStyle(fontSize: 18.0),),
         value: value,
       )).toList(),
       onChanged: (value){

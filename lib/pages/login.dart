@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                        'New in Bunky?',
+                                        'New to Bunky?',
                                       style: TextStyle(
                                         color: Colors.grey
                                       ),
@@ -206,6 +206,7 @@ class _LoginState extends State<Login> {
         } else {
           var currencyJson = json.decode(utf8.decode(response.bodyBytes));
           print(currencyJson);
+          print('*********************************************');
           user.setCurrency(currencyJson);
           Navigator.pushReplacementNamed(context, '/home', arguments: {
             'user': user,

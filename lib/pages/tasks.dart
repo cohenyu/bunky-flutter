@@ -257,10 +257,16 @@ class _TasksState extends State<Tasks> {
                 child: FloatingActionButton(
                   child: Icon(Icons.add),
                   onPressed: (){
-                    setState(() {
-                      showAddDialog();
-                      getUsers();
-                    });
+                    Navigator.pushNamed(context, '/addTaskPage', arguments: {'user': data['user'], 'callback': (String frequency, List<User> performers,
+                        String title, bool isFinish){
+                      print(frequency);
+                      print(title);
+                      print(isFinish);
+                      for(User c in performers){
+                        print(c.name);
+                      }
+                      sendAddTask(frequency, performers, title, isFinish);
+                    }});
                   },
 //                  onPressed: () {
 //                    setState(() {
@@ -868,7 +874,7 @@ class _TasksState extends State<Tasks> {
                             tmpTitle = firstLetter + tmpTitle.substring(1);
 
                             if (taskNameController.text != '') {
-                              sendAddTak(frequency, this.participensInTask, tmpTitle, false);
+                              sendAddTask(frequency, this.participensInTask, tmpTitle, false);
                               Navigator.pop(context);
                               //send to or
                             }
@@ -964,7 +970,7 @@ class _TasksState extends State<Tasks> {
 //    http post
     setState(() {
       //_taskList.add(Task(frequency:frequency,performer:performer,task_name:task_name,isFinish:isFinish));
-      if (frequency == "daily") {
+      if (frequency == "Daily") {
         print("add to day");
         _dayTaskList.add(Task(
             frequency: frequency,
@@ -973,7 +979,7 @@ class _TasksState extends State<Tasks> {
             isFinish: isFinish,
             id:id
         ));
-      } else if (frequency == "weekly") {
+      } else if (frequency == "Weekly") {
         print("add to week");
         _weekTaskList.add(Task(
             frequency: frequency,
@@ -983,7 +989,7 @@ class _TasksState extends State<Tasks> {
             id:id
         ));
       } else {
-        print("add to month");
+        print("add to Month");
         _monthTaskList.add(Task(
             frequency: frequency,
             performers: performers,
@@ -1049,16 +1055,9 @@ class _TasksState extends State<Tasks> {
     }
   }
 
-  Future<void> sendAddTak(String frequency, List<User> performers,
+  Future<void> sendAddTask(String frequency, List<User> performers,
       String task_name, bool isFinish) async {
-    setState(() {});
     try {
-      //    http post
-      User user = data['user'];
-      for (User u in performers) {
-        print("yuval check");
-        print(u.name);
-      }
       final response = await http
           .post('$url/addDuty',
           headers: <String, String>{

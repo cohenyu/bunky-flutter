@@ -33,22 +33,22 @@ class Task{
 //this function change the frequency in the server to frequency in the program
 String changeFrequencyNameToProgram(String frequency){
   if(frequency=='DAILY'){
-    return "daily";
+    return "Daily";
   }
   else if(frequency=="WEEKLY"){
-    return 'weekly';
+    return 'Weekly';
   }
   else{
-    return 'monthly';
+    return 'Monthly';
   }
 }
 
 //this function change the frequency in the program to frequency in the server
 String changeFrequencyNameToServer(String frequency) {
-  if (frequency == "daily") {
+  if (frequency == "Daily") {
     return 'DAILY';
   }
-  else if (frequency == "weekly") {
+  else if (frequency == "Weekly") {
     return 'WEEKLY';
   }
   else {

@@ -1,3 +1,4 @@
+import 'package:bunky/pages/add_task_page.dart';
 import 'package:bunky/pages/apt_settings.dart';
 import 'package:bunky/pages/balancing.dart';
 import 'package:bunky/pages/connectApartment.dart';
@@ -12,8 +13,7 @@ import 'package:bunky/pages/createApartment.dart';
 import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
 
-// Yuval - 11/6 18:00
-// miriel 8/6 21:08
+// Yuval - 16/6 14:43
 //miriel 16/6 11:40
 
 void main() => runApp(MaterialApp(
@@ -32,5 +32,6 @@ void main() => runApp(MaterialApp(
     '/register': (context) => Register(),
     '/notifications': (context) => Notifications(),
     '/aptSettings': (context) => AptSettings(),
+    '/addTaskPage': (context) => AddTask(),
   },
 ));

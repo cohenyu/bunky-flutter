@@ -21,6 +21,8 @@ class _ConnectApartmentState extends State<ConnectApartment> {
   Map data = {};
   bool _loading = false;
   bool _autoValidate = false;
+  String url = 'https://bunkyapp.herokuapp.com';
+
 
 
   @override
@@ -157,11 +159,7 @@ class _ConnectApartmentState extends State<ConnectApartment> {
           print('AptCode not found');
           showSnackBar('Apartment Code Not Found');
         } else {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false, arguments: {
-            'user': data["user"],
-            'index': 0,
-          });
+          getCurrency(data["user"]);
         }
       } else {
         print('error');
@@ -173,6 +171,36 @@ class _ConnectApartmentState extends State<ConnectApartment> {
       showSnackBar('No Internet Connection');
     }
 
+  }
+
+  Future<void> getCurrency(User user) async {
+    try{
+      final response = await http.get(
+        '$url/aptCurrency?userId=${user.userId}&name=${user.name}&mail=${user.mail}', headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },).timeout(const Duration(seconds: 7));
+
+
+      if(response.statusCode == 200){
+        print("200 OK");
+        if(response.body.isEmpty){
+          showSnackBar('Error');
+        } else {
+          var currencyJson = json.decode(utf8.decode(response.bodyBytes));
+          user.setCurrency(currencyJson);
+          Navigator.pushReplacementNamed(context, '/home', arguments: {
+            'user': user,
+            'index': 0,
+          });
+        }
+      } else {
+        print('error');
+        showSnackBar('Error');
+      }
+    } catch (_) {
+      print('No Internet Connection');
+      showSnackBar('No Internet Connection');
+    }
   }
 
   void showSnackBar (String title){
