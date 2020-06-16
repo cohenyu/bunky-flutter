@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:bunky/widgets/drop_down_category_tasks.dart';
 import 'package:bunky/widgets/bottom_navy_bar.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 
@@ -693,8 +694,10 @@ class _TasksState extends State<Tasks> {
 
   void showAddDialog() {
     String frequency;
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     TextEditingController taskNameController = new TextEditingController();
     TextEditingController frequencyController = new TextEditingController();
+    bool _autoValidate = false;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -703,31 +706,34 @@ class _TasksState extends State<Tasks> {
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             backgroundColor: Colors.teal[100],
             content: Container(
-              height: 300,
+              height: 350,
               width: 400,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Add new duty',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 20),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Form(
+                autovalidate: _autoValidate,
+                key:  formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Add new duty',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
 //                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Container(
-                      height: 50,
-                      width: 400,
+                      child: Container(
+                        height: 50,
+                        width: 400,
 //                        child: ReorderableListView(
 //                          header: Text(
 //                            'Participans',
@@ -761,33 +767,33 @@ class _TasksState extends State<Tasks> {
 //                              ),
 //                          ],
 //                        ),
-                      child: RaisedButton(
-                        //color:Colors.teal[100],
-                        color: Colors.teal.withOpacity(0.2),
-                        child:
+                        child: RaisedButton(
+                          //color:Colors.teal[100],
+                          color: Colors.teal.withOpacity(0.2),
+                          child:
 //                          TextField(
 //                            decoration: InputDecoration(
 //                                border: InputBorder.none,
 //                                hintText: "press to choose partisipans"
 //                            ),
 //                          ),
-                        Text(
-                          "Press to choose participants",
-                          style: TextStyle(
-                              color: Colors.black45,
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 18.0),
+                          Text(
+                            "Press to choose participants",
+                            style: TextStyle(
+                                color: Colors.black45,
+                                //fontWeight: FontWeight.bold,
+                                fontSize: 18.0),
+                          ),
+                          // onPressed: () => _showMultiSelect(context),
+                          onPressed: () {
+                            //ShowUsersDialog();
+                            _showMultiSelect(context);
+                            //choosePartisipansIsPressed=true;
+                            setState(() {
+                              //_showParticipans();
+                            });
+                          },
                         ),
-                        // onPressed: () => _showMultiSelect(context),
-                        onPressed: () {
-                          //ShowUsersDialog();
-                          _showMultiSelect(context);
-                          //choosePartisipansIsPressed=true;
-                          setState(() {
-                            //_showParticipans();
-                          });
-                        },
-                      ),
 //                      child: TextField(
 //                        controller: frequencyController,
 //                        decoration: InputDecoration(
@@ -798,71 +804,80 @@ class _TasksState extends State<Tasks> {
 //                        ),
 //                      ),
 
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  MyDropDown(callback: (val) {
-                    setState(() {
-                      frequency = val;
-                    });
-                  }),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Container(
-                      child: TextField(
-                        controller: taskNameController,
-                        decoration: InputDecoration(
-                            hintText: 'title',
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black))),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      RaisedButton(
-                        color: Colors.pink[800],
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0),
+//                    SizedBox(
+//                      height: 10.0,
+//                    ),
+                    MyDropDown(callback: (val) {
+                      setState(() {
+                        frequency = val;
+                      });
+                    }),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Container(
+                        child: TextField(
+                          inputFormatters: [new WhitelistingTextInputFormatter(RegExp('[a-zA-Z0-9 ."\'()-_=+;,!?@#%^&*\$/<>|]+')),],
+                          controller: taskNameController,
+                          decoration: InputDecoration(
+                              hintText: 'Title',
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black))),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
                       ),
-                      RaisedButton(
-                        color: Colors.pink[800],
-                        child: Text(
-                          "Add",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0),
-                        ),
-                        onPressed: () {
-                          String tmpTitle  = taskNameController.text.trim();
-                          String firstLetter = tmpTitle[0].toUpperCase();
-                          tmpTitle = firstLetter + tmpTitle.substring(1);
-
-                          if (taskNameController.text != '') {
-                            sendAddTak(frequency, this.participensInTask, tmpTitle, false);
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        RaisedButton(
+                          color: Colors.pink[800],
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0),
+                          ),
+                          onPressed: () {
                             Navigator.pop(context);
-                            //send to or
-                          }
-                        },
-                      ),
-                    ],
-                  )
-                ],
+                          },
+                        ),
+                        RaisedButton(
+                          color: Colors.pink[800],
+                          child: Text(
+                            "Add",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0),
+                          ),
+                          onPressed: () {
+                            if(!formKey.currentState.validate()){
+                              setState(() {
+                                _autoValidate = true;
+                              });
+                              return;
+                            }
+                            formKey.currentState.save();
+                            String tmpTitle  = taskNameController.text.trim();
+                            String firstLetter = tmpTitle[0].toUpperCase();
+                            tmpTitle = firstLetter + tmpTitle.substring(1);
+
+                            if (taskNameController.text != '') {
+                              sendAddTak(frequency, this.participensInTask, tmpTitle, false);
+                              Navigator.pop(context);
+                              //send to or
+                            }
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           );
