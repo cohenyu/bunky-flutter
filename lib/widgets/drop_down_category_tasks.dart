@@ -47,7 +47,7 @@ class _MyDropDownState extends State<MyDropDown> {
       validator: (value){
         print(value);
         if (value == null) {
-          return 'Select a frequency';
+          return 'Select frequency';
         }
         return null;
       },
