@@ -14,7 +14,7 @@ import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
 
 // Yuval - 16/6 14:43
-//miriel 16/6 16:13
+//miriel 17/6 11:46
 
 void main() => runApp(MaterialApp(
   initialRoute: '/login',
