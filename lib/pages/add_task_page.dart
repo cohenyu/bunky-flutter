@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bunky/widgets/custom_shape_clipper.dart';
 import 'package:bunky/widgets/drop_down_category_tasks.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:bunky/models/user.dart';
@@ -47,7 +48,6 @@ class _AddTaskState extends State<AddTask> {
       key: _scaffoldKey,
       backgroundColor: Colors.teal,
         body: SingleChildScrollView(
-          physics: PageScrollPhysics(),
           child: Form(
             autovalidate: _autoValidate,
             key: formKey,
@@ -107,70 +107,6 @@ class _AddTaskState extends State<AddTask> {
                               ),
                             ),
                             SizedBox(height: 20.0,),
-                            Container(
-                              height: 30.0,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('Select participants:', style: TextStyle(fontSize: 18.0), textAlign: TextAlign.start,),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10.0),
-                            Container(
-                              height: usersList.length * 55.0,
-                              width: double.infinity,
-                              color: Colors.white,
-                              child: ReorderableListView(
-                                onReorder: (oldIndex, newIndex){
-                                  setState(() {
-                                    User s = usersList[oldIndex];
-                                    usersList.removeAt(oldIndex);
-                                    usersList.insert(newIndex, s);
-                                  });
-                                },
-                                children: <Widget>[
-                                  for(final item in usersList)
-                                    Dismissible(
-                                      background: Container(
-                                        color: Colors.redAccent,
-                                      ),
-                                      onDismissed: (direction){
-                                        setState(() {
-                                          deletedItems.add(item);
-                                          usersList.removeAt(usersList.indexOf(item));
-                                        });
-                                      },
-                                      key: ValueKey(item.userId),
-                                      child: ListTile(
-                                        key: ValueKey(item),
-                                        title: Text('${item.name}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),),
-                                        leading: Text('${usersList.indexOf(item) + 1}', style: TextStyle(fontSize: 18.0),),
-                                        trailing: Icon(Icons.list),
-                                      ),
-                                    )
-                                ],
-                              ),
-                            ),
-                            deletedItems.isNotEmpty ? RaisedButton(
-                              color: Colors.grey[200],
-                              onPressed: (){
-                                _showMultiSelect(context);
-                              },
-                              child: Container(
-                                height: 30.0,
-                                child: Row(
-                                  children: <Widget>[
-                                    Icon(Icons.add),
-                                    SizedBox(width: 10.0,),
-                                    Text('Add a bunky', style: TextStyle(fontSize: 16.0),)
-                                  ],
-                                ),
-                              ),
-                            ): SizedBox.shrink(),
                             SizedBox(height: 5.0,),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -201,6 +137,77 @@ class _AddTaskState extends State<AddTask> {
                               ),
                             ),
                             SizedBox(height: 20.0,),
+                            Container(
+                              height: 30.0,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text('Select participants:', style: TextStyle(fontSize: 18.0), textAlign: TextAlign.start,),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10.0),
+                            deletedItems.isNotEmpty ? RaisedButton(
+                              color: Colors.grey[200],
+                              onPressed: (){
+                                _showMultiSelect(context);
+                              },
+                              child: Container(
+                                height: 30.0,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.add),
+                                    SizedBox(width: 10.0,),
+                                    Text('Add a bunky', style: TextStyle(fontSize: 16.0),)
+                                  ],
+                                ),
+                              ),
+                            ): SizedBox.shrink(),
+                            Container(
+                              height: usersList.length * 81.0,
+                              width: double.infinity,
+                              color: Colors.white,
+                              child: ReorderableListView(
+                                padding: EdgeInsets.only(top: 0.0),
+                                scrollDirection: Axis.vertical,
+                                onReorder: (oldIndex, newIndex){
+                                  setState(() {
+                                    if(newIndex > oldIndex){
+                                      newIndex -= 1;
+                                    }
+                                    final item  = usersList.removeAt(oldIndex);
+                                    usersList.insert(newIndex, item);
+//                                    User s = usersList[oldIndex];
+//                                    usersList.removeAt(oldIndex);
+//                                    usersList.insert(newIndex, s);
+                                  });
+                                },
+                                children: <Widget>[
+                                  for(final item in usersList)
+                                    Dismissible(
+                                      background: Container(
+                                        color: Colors.redAccent,
+                                      ),
+                                      onDismissed: (direction){
+                                        setState(() {
+                                          deletedItems.add(item);
+                                          usersList.removeAt(usersList.indexOf(item));
+                                        });
+                                      },
+                                      key: ValueKey(item.userId),
+                                      child: ListTile(
+                                        key: ValueKey(item),
+                                        title: Text('${item.name}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),),
+                                        leading: Text('${usersList.indexOf(item) + 1}', style: TextStyle(fontSize: 18.0),),
+                                        trailing: Icon(Icons.list),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            ),
                           ],
                         )
                     ),
