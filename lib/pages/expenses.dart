@@ -376,7 +376,7 @@ class _ExpensesState extends State<Expenses> {
                       ),
                       content: Padding(
                         padding: const EdgeInsets.only(left: 20.0),
-                        child: Text("Are you sure you wish to delete this item?", style: TextStyle(fontSize: 18.0),),
+                        child: Text("Are you sure you wish to delete this expense?", style: TextStyle(fontSize: 18.0),),
                       ),
                       actions: <Widget>[
                         FlatButton(
@@ -769,9 +769,10 @@ class _ExpensesState extends State<Expenses> {
                                   DateTime dateTimeExpense = DateTime.now();
                                   String tmpTitle = '';
                                   if(titleController.text.isNotEmpty){
-                                    String tmpTitle  = titleController.text.trim();
+                                    tmpTitle  = titleController.text.trim();
                                     String firstLetter = tmpTitle[0].toUpperCase();
                                     tmpTitle = firstLetter + tmpTitle.substring(1);
+                                    print(tmpTitle);
                                   }
                                   addExpense(category, categoryId, tmpTitle, double.parse(valueController.text.trim()), dateTimeExpense);
                                   Navigator.pop(context);

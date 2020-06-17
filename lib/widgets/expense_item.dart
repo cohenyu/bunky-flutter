@@ -102,7 +102,7 @@ class ExpenseItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                    this.expanse.title.isNotEmpty ? Text(
+                    this.expanse.title != null && this.expanse.title.isNotEmpty ? Text(
                       this.expanse.title,
                       softWrap: true,
                       style: TextStyle(

@@ -144,7 +144,7 @@ class _AddTaskState extends State<AddTask> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('Select participants:', style: TextStyle(fontSize: 18.0), textAlign: TextAlign.start,),
+                                    Text('Choose order (or swipe to delete):', style: TextStyle(fontSize: 18.0), textAlign: TextAlign.start,),
                                   ],
                                 ),
                               ),

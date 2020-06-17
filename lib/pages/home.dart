@@ -263,7 +263,7 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          recentExpanses.isNotEmpty ? 'Recently expenses' : 'No expenses yet',
+                          recentExpanses.isNotEmpty ? 'Recent expenses' : 'No expenses',
                           style: TextStyle(
                             color: Colors.black.withOpacity(0.7),
                             fontWeight: FontWeight.bold,

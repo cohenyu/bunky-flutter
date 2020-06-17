@@ -30,12 +30,12 @@ class _DropDownNamesState extends State<DropDownNames> {
     return DropdownButtonFormField(
       validator: (value){
         if (value == null) {
-          return 'Select a bunky';
+          return 'Select bunky';
         }
         return null;
       },
       value: selected,
-      hint: Text('Select a bunky'),
+      hint: Text('Select bunky'),
       items: _dropdownValues.map((value) => DropdownMenuItem(
         child: Text(value.name,),
         value: value,
