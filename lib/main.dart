@@ -13,7 +13,7 @@ import 'package:bunky/pages/createApartment.dart';
 import 'package:bunky/pages/expenses.dart';
 import 'package:bunky/pages/register.dart';
 
-// Yuval - 16/6 14:43
+// Yuval - 17/6 12:35
 //miriel 17/6 11:46
 
 void main() => runApp(MaterialApp(
