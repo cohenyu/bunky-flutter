@@ -579,6 +579,12 @@ class _TasksState extends State<Tasks> {
               onDismissed: (direction) {
                 deleteTaskRequest(index);
                 setState(() {
+                  //print(index);
+//                  _taskList.remove(_aptTasks[index].task);
+                  print("duty del");
+                  print(_aptTasks[index].task.task_name);
+                  print(_aptTasks[index].task.id);
+                  showDelTask(_aptTasks[index].task);
                   _aptTasks.removeAt(index);
                   showSnackBar('Duty deleted');
                 });
@@ -893,6 +899,24 @@ class _TasksState extends State<Tasks> {
 
   Future<void> deleteTaskRequest(int index) async {
     Task task = _aptTasks[index].task;
+//    print("remove task "+task.frequency+task.task_name);
+//    _taskList.remove(task);
+//      if (task.frequency== "Daily") {
+//        print("renove daily");
+//        setState(() {
+//          _dayTaskList.remove(task);
+//        });
+//      } else if (task.frequency == "Weekly") {
+//        print("renove weekly");
+//        setState(() {
+//          _weekTaskList.remove(task);
+//        });
+//      } else {
+//        print("renove montly");
+//        setState(() {
+//          _monthTaskList.remove(task);
+//        });
+//      }
 
     try {
       final response = await http
@@ -904,7 +928,6 @@ class _TasksState extends State<Tasks> {
             task.id,
           ))
           .timeout(const Duration(seconds: 7));
-
       if (response.statusCode == 200) {
         if (response.body.isNotEmpty) {
           print('***************** yes!!! deleted');
@@ -1063,6 +1086,34 @@ class _TasksState extends State<Tasks> {
     }
   } //end function
 
+  //this function add tsk to each list by frequency
+  void showDelTask(Task delTask) {
+    setState(() {
+      if (delTask.frequency == "Daily") {
+        print("delte to day");
+        for(var i=0 ;i<_dayTaskList.length;i++){
+          if(_dayTaskList[i].id==delTask.id){
+            _dayTaskList.removeAt(i);
+          }
+        }
+      } else if (delTask.frequency == "Weekly") {
+        print("delete to week");
+        for(var i=0 ;i<_weekTaskList.length;i++){
+          if(_weekTaskList[i].id==delTask.id){
+            _weekTaskList.removeAt(i);
+          }
+        }
+      } else {
+        print("delete to Month");
+        for(var i=0 ;i<_monthTaskList.length;i++){
+          if(_monthTaskList[i].id==delTask.id){
+            _monthTaskList.removeAt(i);
+          }
+        }
+      }
+//      }
+    });
+  }
   //this function add tsk to each list by frequency
   void showAddTask(String frequency, List<User> performers, String task_name,
       bool isFinish,int id) {
@@ -1616,11 +1667,11 @@ class _TasksState extends State<Tasks> {
 
     for (var i = 0; i < _taskList.length; i++) {
       print(_taskList[i].frequency);
-      if (_taskList[i].frequency == "daily") {
+      if (_taskList[i].frequency == "Daily") {
         setState(() {
           _dayTaskList.add(_taskList[i]);
         });
-      } else if (_taskList[i].frequency == "weekly") {
+      } else if (_taskList[i].frequency == "Weekly") {
         setState(() {
           _weekTaskList.add(_taskList[i]);
         });
