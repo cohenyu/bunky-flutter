@@ -4,6 +4,7 @@ import 'package:bunky/widgets/custom_shape_clipper.dart';
 import 'package:bunky/widgets/drop_down_category_tasks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:bunky/models/user.dart';
@@ -120,6 +121,7 @@ class _AddTaskState extends State<AddTask> {
                               padding: const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Container(
                                 child: TextFormField(
+                                  inputFormatters: [new WhitelistingTextInputFormatter(RegExp('[a-zA-Z0-9 ."\'()-_=+;,!?@#%^&*\$/<>|]+')),],
                                   validator: (value){
                                     value = value.trim();
                                     if (value.isEmpty) {
@@ -167,7 +169,7 @@ class _AddTaskState extends State<AddTask> {
                               ),
                             ): SizedBox.shrink(),
                             Container(
-                              height: usersList.length * 81.0,
+                              height: usersList.length * 84.0,
                               width: double.infinity,
                               color: Colors.white,
                               child: ReorderableListView(
